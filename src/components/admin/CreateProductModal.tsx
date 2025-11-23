@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -16,24 +15,20 @@ import {
   FaInfoCircle
 } from 'react-icons/fa';
 import Image from 'next/image';
-
 interface Brand {
   id: number;
   name: string;
 }
-
 interface Model {
   id: number;
   name: string;
   image_url?: string;
 }
-
 interface CreateProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
 }
-
 interface ProductFormData {
   name: string;
   description: string;
@@ -46,16 +41,13 @@ interface ProductFormData {
   brand_id: string;
   model_id: string;
 }
-
 export default function CreateProductModal({ isOpen, onClose, onSuccess }: CreateProductModalProps) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  
   const [brands, setBrands] = useState<Brand[]>([]);
   const [models, setModels] = useState<Model[]>([]);
-  
   const [formData, setFormData] = useState<ProductFormData>({
     name: '',
     description: '',
@@ -68,18 +60,14 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
     brand_id: '',
     model_id: ''
   });
-
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [primaryImageIndex, setPrimaryImageIndex] = useState<number | null>(null);
-
   useEffect(() => {
     if (isOpen) {
       loadInitialData();
     }
   }, [isOpen]);
-
-
   const loadInitialData = async () => {
     try {
       setLoading(true);
@@ -87,12 +75,10 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
         fetch('/api/brands'),
         fetch('/api/models')
       ]);
-
       const [brandsData, modelsData] = await Promise.all([
         brandsRes.json(),
         modelsRes.json()
       ]);
-
       if (brandsData.success) setBrands(brandsData.data || []);
       if (modelsData.success) setModels(modelsData.data || []);
     } catch (error) {
@@ -102,21 +88,16 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
       setLoading(false);
     }
   };
-
-
   const handleInputChange = (field: keyof ProductFormData, value: string | boolean) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
   };
-
   const handleImageUpload = (files: FileList | null) => {
     if (!files) return;
-
     const newImages: File[] = [];
     const newPreviews: string[] = [];
-
     Array.from(files).forEach(file => {
       if (file.type.startsWith('image/')) {
         newImages.push(file);
@@ -124,35 +105,28 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
         newPreviews.push(preview);
       }
     });
-
     setImages(prev => [...prev, ...newImages]);
     setImagePreviews(prev => [...prev, ...newPreviews]);
-    
     if (primaryImageIndex === null && newPreviews.length > 0) {
       setPrimaryImageIndex(0);
     }
   };
-
   const removeImage = (index: number) => {
     setImages(prev => prev.filter((_, i) => i !== index));
     setImagePreviews(prev => {
       const newPreviews = prev.filter((_, i) => i !== index);
       URL.revokeObjectURL(prev[index]);
-      
       if (primaryImageIndex === index) {
         setPrimaryImageIndex(newPreviews.length > 0 ? 0 : null);
       } else if (primaryImageIndex !== null && primaryImageIndex > index) {
         setPrimaryImageIndex(primaryImageIndex - 1);
       }
-      
       return newPreviews;
     });
   };
-
   const setPrimaryImage = (index: number) => {
     setPrimaryImageIndex(index);
   };
-
   const generateSlug = (name: string) => {
     return name
       .toLowerCase()
@@ -163,30 +137,24 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
       .replace(/-+/g, '-')
       .trim();
   };
-
   const validateForm = (): string | null => {
     if (!formData.name.trim()) return 'Nome do produto é obrigatório';
     if (!formData.price || parseFloat(formData.price) <= 0) return 'Preço deve ser maior que zero';
     if (!formData.brand_id) return 'Marca é obrigatória';
     if (!formData.model_id) return 'Modelo é obrigatório';
     if (!formData.stock_quantity || parseInt(formData.stock_quantity) < 0) return 'Quantidade em estoque deve ser maior ou igual a zero';
-    
     return null;
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
       return;
     }
-
     try {
       setSaving(true);
       setError(null);
-
        const productData = {
          ...formData,
          price: parseFloat(formData.price),
@@ -199,21 +167,16 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
          is_active: true, 
          is_featured: false 
        };
-
       const productResponse = await fetch('/api/admin/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(productData)
       });
-
       const productResult = await productResponse.json();
-
       if (!productResult.success) {
         throw new Error(productResult.error || 'Erro ao criar produto');
       }
-
       const productId = productResult?.product?.id || productResult?.data?.id;
-
       if (images.length > 0) {
         const formData = new FormData();
         images.forEach((image, index) => {
@@ -221,25 +184,21 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
         });
         formData.append('type', 'image');
         formData.append('isPrimary', primaryImageIndex?.toString() || '0');
-
         const imageResponse = await fetch(`/api/admin/products/${productId}/media`, {
           method: 'POST',
           body: formData
         });
-
         const imageResult = await imageResponse.json();
         if (!imageResult.success) {
           console.warn('Erro ao fazer upload das imagens:', imageResult.error);
         }
       }
-
       setSuccess('Produto criado com sucesso!');
       setTimeout(() => {
         onSuccess();
         onClose();
         resetForm();
       }, 1500);
-
     } catch (error: any) {
       console.error('Erro ao criar produto:', error);
       setError(error.message || 'Erro ao criar produto');
@@ -247,7 +206,6 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
       setSaving(false);
     }
   };
-
   const resetForm = () => {
     setFormData({
       name: '',
@@ -267,16 +225,13 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
     setError(null);
     setSuccess(null);
   };
-
   const handleClose = () => {
     if (!saving) {
       resetForm();
       onClose();
     }
   };
-
   if (!isOpen) return null;
-
   return (
     <AnimatePresence>
       <motion.div
@@ -293,7 +248,6 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
           className="bg-dark-800 rounded-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          
           <div className="flex items-center justify-between p-6 border-b border-dark-700">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-primary-500/20 rounded-lg">
@@ -309,11 +263,8 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
               <FaTimes size={20} />
             </button>
           </div>
-
-          
           <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
             <form onSubmit={handleSubmit} className="p-6 space-y-8">
-              
               {error && (
                 <motion.div
                   initial={{ opacity: 0, y: -20 }}
@@ -324,7 +275,6 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                   {error}
                 </motion.div>
               )}
-              
               {success && (
                 <motion.div
                   initial={{ opacity: 0, y: -20 }}
@@ -335,14 +285,11 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                   {success}
                 </motion.div>
               )}
-
-              
               <div className="bg-dark-700/30 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                   <FaInfoCircle className="text-primary-400" />
                   Informações Básicas
                 </h3>
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -357,7 +304,6 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                       required
                     />
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
                       SKU
@@ -370,8 +316,6 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                       placeholder="Ex: NIKE-AM270-001"
                     />
                   </div>
-
-
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
                       Marca *
@@ -388,7 +332,6 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                       ))}
                     </select>
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
                       Modelo *
@@ -407,14 +350,11 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                   </div>
                 </div>
               </div>
-
-              
               <div className="bg-dark-700/30 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                   <FaDollarSign className="text-primary-400" />
                   Preços e Estoque
                 </h3>
-                
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                    <div>
                      <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -434,7 +374,6 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                        />
                      </div>
                    </div>
-
                    <div>
                      <label className="block text-sm font-medium text-gray-300 mb-2">
                        Preço Original
@@ -452,7 +391,6 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                        />
                      </div>
                    </div>
-
                    <div>
                      <label className="block text-sm font-medium text-gray-300 mb-2">
                        Quantidade em Estoque *
@@ -467,7 +405,6 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                        required
                      />
                    </div>
-
                    <div>
                      <label className="block text-sm font-medium text-gray-300 mb-2">
                        Estoque Mínimo
@@ -483,15 +420,11 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                    </div>
                  </div>
               </div>
-
-
-              
               <div className="bg-dark-700/30 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                   <FaInfoCircle className="text-primary-400" />
                   Descrições
                 </h3>
-                
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -509,7 +442,6 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                       {formData.short_description.length}/500
                     </div>
                   </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
                       Descrição Completa
@@ -522,20 +454,14 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                       placeholder="Descrição detalhada do produto"
                     />
                   </div>
-
                 </div>
               </div>
-
-
-              
               <div className="bg-dark-700/30 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                   <FaImage className="text-primary-400" />
                   Imagens do Produto
                 </h3>
-                
                 <div className="space-y-6">
-                  
                   <div className="border-2 border-dashed border-dark-600 rounded-xl p-8 text-center hover:border-primary-500/50 transition-all duration-300">
                     <input
                       type="file"
@@ -558,8 +484,6 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                       </div>
                     </label>
                   </div>
-
-                  
                   {imagePreviews.length > 0 && (
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                       {imagePreviews.map((preview, index) => (
@@ -578,8 +502,6 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                             height={200}
                             className="w-full h-32 object-cover"
                           />
-                          
-                          
                           <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                             <button
                               type="button"
@@ -602,8 +524,6 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                               <FaTimes size={14} />
                             </button>
                           </div>
-
-                          
                           {primaryImageIndex === index && (
                             <div className="absolute top-2 right-2 bg-primary-500 text-white px-2 py-1 rounded-full text-xs font-medium">
                               Principal
@@ -615,9 +535,6 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
                   )}
                 </div>
               </div>
-
-
-              
               <div className="flex items-center justify-end gap-4 pt-6 border-t border-dark-700">
                 <button
                   type="button"

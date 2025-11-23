@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -19,7 +18,6 @@ import {
   FaChevronUp
 } from 'react-icons/fa';
 import Link from 'next/link'
-
 interface Order {
   id: number;
   order_number: string;
@@ -41,13 +39,11 @@ interface Order {
     total_price: number;
   }>;
 }
-
 interface OrderStats {
   totalOrders: number;
   totalRevenue: number;
   statusBreakdown: Record<string, number>;
 }
-
 export default function AdminOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [stats, setStats] = useState<OrderStats | null>(null);
@@ -60,17 +56,14 @@ export default function AdminOrders() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalOrders, setTotalOrders] = useState(0);
-  
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
-
   const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
       const params = new URLSearchParams({
         page: page.toString(),
         limit: '10',
@@ -79,10 +72,8 @@ export default function AdminOrders() {
         paymentStatus: selectedPaymentStatus,
         dateFilter
       });
-
       const response = await fetch(`/api/admin/orders?${params}`);
       const result = await response.json();
-      
       if (result.success) {
         setOrders(result.data.orders);
         setStats(result.data.stats);
@@ -98,13 +89,11 @@ export default function AdminOrders() {
       setLoading(false);
     }
   }, [page, searchTerm, selectedStatus, selectedPaymentStatus, dateFilter]);
-
   useEffect(() => {
     const checkScreenSize = () => {
       const width = window.innerWidth;
       setIsMobile(width < 768);
       setIsTablet(width >= 768 && width < 1024);
-      
       if (width < 768) {
         setViewMode('grid');
       } else if (width >= 768 && width < 1024) {
@@ -115,21 +104,16 @@ export default function AdminOrders() {
         setViewMode('table');
       }
     };
-
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
-    
     return () => window.removeEventListener('resize', checkScreenSize);
   }, [viewMode]);
-
   useEffect(() => {
     fetchOrders();
   }, [fetchOrders]);
-
   const refreshOrders = () => {
     fetchOrders();
   };
-
   const getStatusInfo = (status: string) => {
     switch (status) {
       case 'pending':
@@ -146,7 +130,6 @@ export default function AdminOrders() {
         return { label: 'Desconhecido', color: 'bg-gray-100 text-gray-800', icon: FaClock };
     }
   };
-
   const getPaymentStatusInfo = (status: string) => {
     switch (status) {
       case 'pending':
@@ -159,7 +142,6 @@ export default function AdminOrders() {
         return { label: 'Desconhecido', color: 'bg-gray-100 text-gray-800' };
     }
   };
-
   const clearFilters = () => {
     setSearchTerm('');
     setSelectedStatus('all');
@@ -167,12 +149,10 @@ export default function AdminOrders() {
     setDateFilter('all');
     setPage(1);
   };
-
   const OrderCard = ({ order }: { order: Order }) => {
     const statusInfo = getStatusInfo(order.status);
     const paymentInfo = getPaymentStatusInfo(order.payment_status);
     const StatusIcon = statusInfo.icon;
-    
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -194,7 +174,6 @@ export default function AdminOrders() {
             </span>
           </div>
         </div>
-        
         <div className="space-y-2 mb-3">
           <div className="flex items-center gap-2">
             <span className="text-gray-400 text-xs">Cliente:</span>
@@ -221,7 +200,6 @@ export default function AdminOrders() {
             </div>
           )}
         </div>
-        
         <div className="flex items-center gap-2">
           <Link 
             href={`/admin/pedidos/${order.id}`} 
@@ -241,7 +219,6 @@ export default function AdminOrders() {
       </motion.div>
     );
   };
-
   if (loading && orders.length === 0) {
     return (
       <div className="space-y-6">
@@ -257,7 +234,6 @@ export default function AdminOrders() {
       </div>
     );
   }
-
   if (error && orders.length === 0) {
     return (
       <div className="space-y-6">
@@ -275,10 +251,8 @@ export default function AdminOrders() {
       </div>
     );
   }
-
   return (
     <div className="space-y-6 max-w-full overflow-hidden">
-      
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -289,10 +263,7 @@ export default function AdminOrders() {
           <h1 className="text-xl md:text-2xl font-bold text-white mb-1">Gestão de Pedidos</h1>
           <p className="text-gray-400 text-xs md:text-sm">Gerencie todos os pedidos da sua loja</p>
         </div>
-        
-        
         <div className="flex flex-col sm:flex-row gap-3">
-          
           {!isMobile && (
             <div className="flex bg-dark-800/50 rounded-xl p-1">
               <button
@@ -319,7 +290,6 @@ export default function AdminOrders() {
               </button>
             </div>
           )}
-          
           <button
             onClick={refreshOrders}
             className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-3 lg:px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:shadow-primary-500/25 flex items-center justify-center gap-1 text-xs lg:text-sm whitespace-nowrap"
@@ -331,8 +301,6 @@ export default function AdminOrders() {
           </button>
         </div>
       </motion.div>
-
-      
       {stats && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -353,7 +321,6 @@ export default function AdminOrders() {
               </div>
             </div>
           </div>
-
           <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-700/50 rounded-xl p-3 lg:p-4 border-l-4 border-primary-500">
             <div className="flex items-center justify-between">
               <div>
@@ -367,7 +334,6 @@ export default function AdminOrders() {
               </div>
             </div>
           </div>
-
           <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-700/50 rounded-xl p-3 lg:p-4 border-l-4 border-primary-500">
             <div className="flex items-center justify-between">
               <div>
@@ -381,7 +347,6 @@ export default function AdminOrders() {
               </div>
             </div>
           </div>
-
           <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-700/50 rounded-xl p-3 lg:p-4 border-l-4 border-primary-500">
             <div className="flex items-center justify-between">
               <div>
@@ -397,15 +362,12 @@ export default function AdminOrders() {
           </div>
         </motion.div>
       )}
-
-      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
         className="bg-dark-800/50 backdrop-blur-sm border border-dark-700/50 rounded-2xl p-4 md:p-6"
       >
-        
         {isMobile && (
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -420,11 +382,8 @@ export default function AdminOrders() {
             </button>
           </div>
         )}
-
-        
         <div className={`${isMobile && !showFilters ? 'hidden' : ''} space-y-4`}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            
             <div className="relative sm:col-span-2 lg:col-span-1">
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
               <input
@@ -435,8 +394,6 @@ export default function AdminOrders() {
                 className="w-full bg-dark-700/50 border border-dark-600/50 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:bg-dark-700 transition-all duration-300 text-sm md:text-base"
               />
             </div>
-
-            
             <div className="relative">
               <select
                 value={selectedStatus}
@@ -452,8 +409,6 @@ export default function AdminOrders() {
               </select>
               <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
             </div>
-
-            
             <div className="relative">
               <select
                 value={selectedPaymentStatus}
@@ -467,8 +422,6 @@ export default function AdminOrders() {
               </select>
               <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
             </div>
-
-            
             <div className="relative">
               <select 
                 value={dateFilter}
@@ -483,8 +436,6 @@ export default function AdminOrders() {
               <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
             </div>
           </div>
-
-          
           <div className="flex justify-center sm:justify-start">
             <button
               onClick={clearFilters}
@@ -495,8 +446,6 @@ export default function AdminOrders() {
               <span className="sm:hidden">Limpar</span>
             </button>
           </div>
-
-          
           {isMobile && (
             <div className="bg-dark-700/30 rounded-xl p-3">
               <div className="text-center text-gray-400 text-sm">
@@ -506,8 +455,6 @@ export default function AdminOrders() {
           )}
         </div>
       </motion.div>
-
-      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -515,7 +462,6 @@ export default function AdminOrders() {
         className="bg-dark-800/50 backdrop-blur-sm border border-dark-700/50 rounded-2xl overflow-hidden"
       >
         {viewMode === 'table' ? (
-          
           <div className="overflow-x-auto max-w-full">
             <table className="w-full table-fixed">
               <thead className="bg-dark-700/50 border-b border-dark-600/50">
@@ -551,7 +497,6 @@ export default function AdminOrders() {
                   const statusInfo = getStatusInfo(order.status);
                   const paymentInfo = getPaymentStatusInfo(order.payment_status);
                   const StatusIcon = statusInfo.icon;
-                  
                   return (
                     <motion.tr 
                       key={order.id} 
@@ -563,7 +508,6 @@ export default function AdminOrders() {
                         <div className="truncate">
                           <div className="text-white font-medium text-xs truncate">{order.order_number}</div>
                           <div className="text-gray-400 text-xs">{order.items.length} item(s)</div>
-                          
                           <div className="md:hidden flex items-center gap-1 mt-1">
                             <span className="text-gray-400 text-xs truncate">{order.customer_name}</span>
                           </div>
@@ -625,7 +569,6 @@ export default function AdminOrders() {
             </table>
           </div>
         ) : (
-          
           <div className="p-4 lg:p-6">
             {orders && orders.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
@@ -644,16 +587,12 @@ export default function AdminOrders() {
             )}
           </div>
         )}
-
-        
         {loading && orders.length > 0 && (
           <div className="flex items-center justify-center py-8">
             <FaSpinner className="animate-spin text-primary-500 mr-2" size={20} />
             <span className="text-gray-400">Carregando...</span>
           </div>
         )}
-
-        
         {!loading && orders.length === 0 && (
           <div className="text-center py-12">
             <div className="text-gray-400">
@@ -664,8 +603,6 @@ export default function AdminOrders() {
           </div>
         )}
       </motion.div>
-
-      
       {totalPages > 1 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -676,7 +613,6 @@ export default function AdminOrders() {
           <div className="text-gray-400 text-sm text-center md:text-left">
             Mostrando {orders.length} de {totalOrders} pedidos
           </div>
-          
           <div className="flex items-center justify-center gap-2">
             <button 
               onClick={() => setPage(Math.max(1, page - 1))}
@@ -686,16 +622,13 @@ export default function AdminOrders() {
               <span className="hidden md:inline">Anterior</span>
               <span className="md:hidden">‹</span>
             </button>
-            
             <div className="flex items-center gap-1">
-              
               {(() => {
                 const maxVisible = isMobile ? 3 : 5;
                 const startPage = Math.max(1, page - Math.floor(maxVisible / 2));
                 const endPage = Math.min(totalPages, startPage + maxVisible - 1);
                 const actualStartPage = Math.max(1, endPage - maxVisible + 1);
                 const pages = [];
-                
                 if (actualStartPage > 1) {
                   pages.push(
                     <button
@@ -712,7 +645,6 @@ export default function AdminOrders() {
                     );
                   }
                 }
-                
                 for (let i = actualStartPage; i <= endPage; i++) {
                   pages.push(
                     <button
@@ -728,7 +660,6 @@ export default function AdminOrders() {
                     </button>
                   );
                 }
-                
                 if (endPage < totalPages) {
                   if (endPage < totalPages - 1) {
                     pages.push(
@@ -745,11 +676,9 @@ export default function AdminOrders() {
                     </button>
                   );
                 }
-                
                 return pages;
               })()}
             </div>
-            
             <button 
               onClick={() => setPage(Math.min(totalPages, page + 1))}
               disabled={page === totalPages}

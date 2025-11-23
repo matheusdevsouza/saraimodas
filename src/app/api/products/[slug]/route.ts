@@ -1,31 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProductBySlug, getProductImages, getProductVideos, getProductVariants, getProductSizes, getProductReviews } from '@/lib/database';
-
 export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
   try {
     const { slug } = params;
     if (!slug) {
       return NextResponse.json({ error: 'Slug não informado' }, { status: 400 });
     }
-
     const product = await getProductBySlug(slug);
     if (!product) {
       return NextResponse.json({ error: 'Produto não encontrado' }, { status: 404 });
     }
-
     const images = await getProductImages(product.id);
     const videos = await getProductVideos(product.id);
-    
     const productSizes = await getProductSizes(product.id);
-    
     const reviews = await getProductReviews(product.id, 10);
-
     const sizes = productSizes.map((size: any) => ({
       size: size.size,
       stock: size.stock_quantity,
       available: size.stock_quantity > 0 && size.is_active
     })).filter((s: any) => s.size);
-    
     const defaultSizes = ['38', '39', '40', '41', '42', '43'];
     if (sizes.length === 0) {
       sizes.push(...defaultSizes.map(size => ({
@@ -34,7 +27,6 @@ export async function GET(request: NextRequest, { params }: { params: { slug: st
         available: (product.stock_quantity || 0) > 0
       })));
     }
-
     return NextResponse.json({
       id: product.id,
       name: product.name,

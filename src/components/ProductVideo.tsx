@@ -1,10 +1,8 @@
 "use client";
-
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { FaPlay, FaPause, FaVolumeUp, FaVolumeMute, FaExpand } from 'react-icons/fa';
-
 interface ProductVideoProps {
   src: string;
   thumbnail?: string;
@@ -14,7 +12,6 @@ interface ProductVideoProps {
   muted?: boolean;
   controls?: boolean;
 }
-
 export default function ProductVideo({ 
   src, 
   thumbnail, 
@@ -29,7 +26,6 @@ export default function ProductVideo({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-
   const togglePlay = () => {
     if (videoRef.current) {
       if (isPlaying) {
@@ -40,14 +36,12 @@ export default function ProductVideo({
       setIsPlaying(!isPlaying);
     }
   };
-
   const toggleMute = () => {
     if (videoRef.current) {
       videoRef.current.muted = !isMuted;
       setIsMuted(!isMuted);
     }
   };
-
   const toggleFullscreen = () => {
     if (videoRef.current) {
       if (!document.fullscreenElement) {
@@ -59,25 +53,21 @@ export default function ProductVideo({
       }
     }
   };
-
   const handleVideoClick = () => {
     if (!controls) {
       togglePlay();
     }
   };
-
   const handleMouseEnter = () => {
     if (!controls) {
       setShowControls(true);
     }
   };
-
   const handleMouseLeave = () => {
     if (!controls) {
       setShowControls(false);
     }
   };
-
   return (
     <div className={`relative group ${className}`}>
       <video
@@ -97,8 +87,6 @@ export default function ProductVideo({
       >
         Seu navegador não suporta vídeos.
       </video>
-
-      
       {!controls && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -110,23 +98,18 @@ export default function ProductVideo({
             animate={{ scale: showControls || !isPlaying ? 1 : 0.8 }}
             className="flex items-center gap-4"
           >
-            
             <button
               onClick={togglePlay}
               className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-200 hover:scale-110"
             >
               {isPlaying ? <FaPause size={20} /> : <FaPlay size={20} />}
             </button>
-
-            
             <button
               onClick={toggleMute}
               className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-200 hover:scale-110"
             >
               {isMuted ? <FaVolumeMute size={20} /> : <FaVolumeUp size={20} />}
             </button>
-
-            
             <button
               onClick={toggleFullscreen}
               className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 rounded-full transition-all duration-200 hover:scale-110"
@@ -136,8 +119,6 @@ export default function ProductVideo({
           </motion.div>
         </motion.div>
       )}
-
-      
       {!isPlaying && thumbnail && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="bg-black/20 backdrop-blur-sm rounded-full p-4">
@@ -148,6 +129,3 @@ export default function ProductVideo({
     </div>
   );
 }
-
-
-

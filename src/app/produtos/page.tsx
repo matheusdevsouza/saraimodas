@@ -1,36 +1,27 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-
-export default function ProdutosPage() {
+function ProdutosContent() {
   const searchParams = useSearchParams();
   const [produtos, setProdutos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
-
   const [modelos, setModelos] = useState<any[]>([]);
   const [modeloSelecionado, setModeloSelecionado] = useState<string | null>(null);
   const [precoMin, setPrecoMin] = useState(0);
   const [precoMax, setPrecoMax] = useState(2000);
   const [filtros, setFiltros] = useState<{ preco: number[]; order: string }>({ preco: [0, 2000], order: '' });
-
   useEffect(() => {
     const search = searchParams.get('search');
     if (search) {
       setSearchQuery(search);
     }
   }, [searchParams]);
-
   useEffect(() => {
     async function fetchFiltros() {
-
-
-
-
       const resModelos = await fetch('/api/models');
       const dataModelos = await resModelos.json();
       setModelos(dataModelos.data || []);
@@ -47,7 +38,6 @@ export default function ProdutosPage() {
     }
     fetchFiltros();
   }, []);
-
   useEffect(() => {
     async function fetchProdutos() {
       setLoading(true);
@@ -59,11 +49,9 @@ export default function ProdutosPage() {
         return;
       }
       const params = new URLSearchParams();
-
       if (searchQuery) {
         params.append('search', searchQuery);
       }
-
       if (filtros.preco) {
         params.append('min_price', String(filtros.preco[0]));
         params.append('max_price', String(filtros.preco[1]));
@@ -76,7 +64,6 @@ export default function ProdutosPage() {
     }
     fetchProdutos();
   }, [filtros, modeloSelecionado, searchQuery]);
-
   function handlePrecoChange(e: any) {
     const value = Number(e.target.value);
     setFiltros(f => ({ ...f, preco: [precoMin, value] }));
@@ -87,7 +74,6 @@ export default function ProdutosPage() {
   function handleModeloClick(slug: string) {
     setModeloSelecionado(prev => prev === slug ? null : slug);
   }
-
   return (
     <section className="min-h-screen bg-dark-900 py-8 md:py-12">
       <div className="container mx-auto px-4">
@@ -139,7 +125,6 @@ export default function ProdutosPage() {
             {loading ? (
               <aside className="w-full bg-dark-800/80 border border-dark-700 rounded-2xl p-6 mb-4 md:mb-0 shadow-xl md:sticky md:top-8 animate-pulse">
                 <h2 className="text-lg font-bold text-white mb-4">Filtrar</h2>
-
                 <div className="mb-6">
                   <div className="h-4 w-20 bg-dark-700 rounded mb-2" />
                   <div className="flex flex-wrap gap-2">
@@ -148,7 +133,6 @@ export default function ProdutosPage() {
                     ))}
                   </div>
                 </div>
-
                 <div className="mb-6">
                   <div className="h-4 w-16 bg-dark-700 rounded mb-2" />
                   <div className="h-5 w-full bg-dark-700 rounded mb-2" />
@@ -162,7 +146,6 @@ export default function ProdutosPage() {
             ) : (
               <aside className="w-full bg-dark-800/80 border border-dark-700 rounded-2xl p-6 mb-4 md:mb-0 shadow-xl md:sticky md:top-8">
                 <h2 className="text-lg font-bold text-white mb-4">Filtrar</h2>
-
                 <div className="mb-6">
                   <label className="block text-gray-300 font-semibold mb-2">Modelos</label>
                   <div className="flex flex-wrap gap-2">
@@ -181,7 +164,6 @@ export default function ProdutosPage() {
                     ))}
                   </div>
                 </div>
-
                 <div className="mb-6">
                   <label className="block text-gray-300 font-semibold mb-2">Preço (R$)</label>
                   <div className="flex items-center gap-2">
@@ -237,7 +219,6 @@ export default function ProdutosPage() {
                       <Image src={prod.primary_image || (prod.images && prod.images[0]?.url) || prod.image || '/images/Logo.png'} alt={prod.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="(max-width: 768px) 100vw, 220px" />
                     </div>
                     <h3 className="text-base font-semibold text-white text-center group-hover:text-primary-400 transition-colors duration-300 mb-1 line-clamp-2">{prod.name}</h3>
-    
                     <span className="text-primary-400 font-bold text-lg mb-2">R$ {prod.price}</span>
                     <button className="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition-all duration-200 mt-auto">Ver detalhes</button>
                   </Link>
@@ -248,5 +229,16 @@ export default function ProdutosPage() {
         </div>
       </div>
     </section>
+  );
+}
+export default function ProdutosPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-dark-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+      </div>
+    }>
+      <ProdutosContent />
+    </Suspense>
   );
 } 

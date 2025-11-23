@@ -23,7 +23,7 @@ const nextConfig = {
   },
 
   experimental: {
-    serverComponentsExternalPackages: ['mysql2'],
+    serverComponentsExternalPackages: ['pg'],
     serverActions: {
       allowedOrigins: ['localhost:3000', 'saraimodas.com.br']
     }

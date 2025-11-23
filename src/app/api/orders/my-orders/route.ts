@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authenticateUser } from '@/lib/auth';
 import database from '@/lib/database';
-
 export async function GET(request: NextRequest) {
   try {
     const user = await authenticateUser(request);
-    
     if (!user) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
-
     const userId = user.userId;
-
     const orders = await database.query(`
       SELECT 
         o.id,
@@ -43,7 +39,6 @@ export async function GET(request: NextRequest) {
       WHERE o.user_id = ? 
       ORDER BY o.created_at DESC
     `, [userId]);
-
     for (const order of orders) {
       const items = await database.query(`
         SELECT 
@@ -63,10 +58,8 @@ export async function GET(request: NextRequest) {
         WHERE oi.order_id = ?
         ORDER BY oi.id
       `, [order.id]);
-      
       order.items = items;
     }
-
     return NextResponse.json({ orders });
   } catch (error) {
     console.error('Erro ao buscar pedidos:', error);

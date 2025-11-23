@@ -1,5 +1,4 @@
 'use client'
-
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
@@ -17,45 +16,36 @@ const heroImages = [
     alt: 'Nova Coleção - Moda Feminina de Alta Sofisticação'
   }
 ]
-
 export function HeroSection() {
   const [currentImage, setCurrentImage] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const autoPlayRef = useRef<NodeJS.Timeout>()
-
   useEffect(() => {
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth < 768)
     }
-
     checkIsMobile()
     window.addEventListener('resize', checkIsMobile)
-
     return () => window.removeEventListener('resize', checkIsMobile)
   }, [])
-
   useEffect(() => {
     autoPlayRef.current = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % heroImages.length)
     }, 5000)
-
     return () => {
       if (autoPlayRef.current) {
         clearInterval(autoPlayRef.current)
       }
     }
   }, [])
-
   const goToImage = (index: number) => {
     if (isAnimating) return
     setIsAnimating(true)
     setCurrentImage(index)
     setTimeout(() => setIsAnimating(false), 500)
   }
-
   const currentImageData = heroImages[currentImage]
-
   return (
     <section className="relative min-h-[calc(100svh-112px)] sm:min-h-[calc(100vh-112px)] overflow-hidden" style={{ marginTop: '112px' }}>
       <AnimatePresence mode="wait">
@@ -76,13 +66,10 @@ export function HeroSection() {
               className="object-cover"
               priority
             />
-            
             <div className="absolute inset-0 bg-[#0D0D0D]/60" />
           </div>
         </motion.div>
       </AnimatePresence>
-
-      
       <div className="absolute inset-0 flex items-center justify-center z-10 px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -127,8 +114,6 @@ export function HeroSection() {
           </motion.a>
         </motion.div>
       </div>
-
-      
       <div className="absolute bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
         {heroImages.map((_, index) => (
           <button

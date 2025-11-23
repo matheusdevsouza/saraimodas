@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -22,7 +21,6 @@ import {
   MagnifyingGlass,
   X
 } from 'phosphor-react';
-
 interface OrderItem {
   id: number;
   product_id: number;
@@ -35,7 +33,6 @@ interface OrderItem {
   unit_price: number;
   total_price: number;
 }
-
 interface Order {
   id: number;
   order_number: string;
@@ -64,7 +61,6 @@ interface Order {
   shipping_notes?: string;
   items: OrderItem[];
 }
-
 const statusConfig = {
   pending: { label: 'Pendente', color: 'text-yellow-500', bg: 'bg-yellow-500/10', icon: Clock },
   paid: { label: 'Pago', color: 'text-green-500', bg: 'bg-green-500/10', icon: CheckCircle },
@@ -74,14 +70,12 @@ const statusConfig = {
   cancelled: { label: 'Cancelado', color: 'text-red-500', bg: 'bg-red-500/10', icon: XCircle },
   refunded: { label: 'Reembolsado', color: 'text-gray-500', bg: 'bg-gray-500/10', icon: XCircle }
 };
-
 const paymentStatusConfig = {
   pending: { label: 'Pendente', color: 'text-yellow-500' },
   paid: { label: 'Pago', color: 'text-green-500' },
   failed: { label: 'Falhou', color: 'text-red-500' },
   refunded: { label: 'Reembolsado', color: 'text-gray-500' }
 };
-
 export default function MeusPedidosPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -90,34 +84,28 @@ export default function MeusPedidosPage() {
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [error, setError] = useState('');
   const [expandedOrders, setExpandedOrders] = useState<Set<number>>(new Set());
-  
   const [filters, setFilters] = useState({
     status: 'all',
     period: 'all',
     search: '',
     showFilters: false
   });
-
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login');
       return;
     }
-
     if (user) {
       fetchOrders();
     }
   }, [user, loading, router]);
-
   const fetchOrders = async () => {
     try {
       setLoadingOrders(true);
       const response = await fetch('/api/orders/my-orders');
-      
       if (!response.ok) {
         throw new Error('Erro ao carregar pedidos');
       }
-
       const data = await response.json();
       setOrders(data.orders || []);
     } catch (err) {
@@ -127,14 +115,12 @@ export default function MeusPedidosPage() {
       setLoadingOrders(false);
     }
   };
-
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
     }).format(value);
   };
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, '0');
@@ -142,18 +128,14 @@ export default function MeusPedidosPage() {
     const year = date.getFullYear();
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
-    
     return `${day}/${month}/${year} ${hours}:${minutes}`;
   };
-
   const getStatusConfig = (status: string) => {
     return statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
   };
-
   const getPaymentStatusConfig = (status: string) => {
     return paymentStatusConfig[status as keyof typeof paymentStatusConfig] || paymentStatusConfig.pending;
   };
-
   const toggleOrderExpansion = (orderId: number) => {
     setExpandedOrders(prev => {
       const newSet = new Set(prev);
@@ -165,22 +147,17 @@ export default function MeusPedidosPage() {
       return newSet;
     });
   };
-
   const isOrderExpanded = (orderId: number) => {
     return expandedOrders.has(orderId);
   };
-
   useEffect(() => {
     let filtered = [...orders];
-
     if (filters.status !== 'all') {
       filtered = filtered.filter(order => order.status === filters.status);
     }
-
     if (filters.period !== 'all') {
       const now = new Date();
       const orderDate = new Date();
-      
       switch (filters.period) {
         case 'last7days':
           filtered = filtered.filter(order => {
@@ -214,7 +191,6 @@ export default function MeusPedidosPage() {
           break;
       }
     }
-
     if (filters.search.trim()) {
       const searchTerm = filters.search.toLowerCase();
       filtered = filtered.filter(order => 
@@ -225,10 +201,8 @@ export default function MeusPedidosPage() {
         order.customer_name.toLowerCase().includes(searchTerm)
       );
     }
-
     setFilteredOrders(filtered);
   }, [orders, filters]);
-
   const clearFilters = () => {
     setFilters({
       status: 'all',
@@ -237,15 +211,12 @@ export default function MeusPedidosPage() {
       showFilters: false
     });
   };
-
   const getFilteredCount = () => {
     return filteredOrders.length;
   };
-
   const getTotalCount = () => {
     return orders.length;
   };
-
   const getPaymentMethodLabel = (method?: string) => {
     if (!method) return 'Não informado';
     const map: Record<string, string> = {
@@ -260,7 +231,6 @@ export default function MeusPedidosPage() {
     };
     return map[method] || method;
   };
-
   const formatAddress = (raw?: string) => {
     if (!raw) return 'Endereço não informado';
     try {
@@ -281,20 +251,17 @@ export default function MeusPedidosPage() {
       return raw;
     }
   };
-
   const getTrackingLink = (code?: string, url?: string) => {
     if (!code && !url) return null;
     if (url) return url;
     if (code) return `https://www.17track.net/pt#nums=${encodeURIComponent(code)}`;
     return null;
   };
-
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
     } catch {}
   };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-dark-950 pt-20 pb-10">
@@ -320,16 +287,13 @@ export default function MeusPedidosPage() {
       </div>
     );
   }
-
   if (!user) {
     return null;
   }
-
   return (
     <div className="min-h-screen bg-dark-950 pt-20 pb-10">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
-          
           <div className="mb-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
@@ -341,8 +305,6 @@ export default function MeusPedidosPage() {
                   Acompanhe todos os seus pedidos e seu histórico de compras
                 </p>
               </div>
-              
-              
               <div className="text-right">
                 <p className="text-sm text-gray-400">
                   Mostrando <span className="text-white font-semibold">{getFilteredCount()}</span> de <span className="text-white font-semibold">{getTotalCount()}</span> pedidos
@@ -350,10 +312,7 @@ export default function MeusPedidosPage() {
               </div>
             </div>
           </div>
-
-          
           <div className="mb-6">
-            
             {(filters.status !== 'all' || filters.period !== 'all' || filters.search) && (
               <div className="mb-4 p-3 bg-primary-500/10 border border-primary-500/20 rounded-lg">
                 <div className="flex items-center justify-between">
@@ -410,8 +369,6 @@ export default function MeusPedidosPage() {
                 </div>
               </div>
             )}
-
-            
             <div className="relative mb-4">
               <MagnifyingGlass 
                 size={20} 
@@ -433,8 +390,6 @@ export default function MeusPedidosPage() {
                 </button>
               )}
             </div>
-
-            
             <div className="flex items-center justify-between mb-4">
               <button
                 onClick={() => setFilters(prev => ({ ...prev, showFilters: !prev.showFilters }))}
@@ -443,7 +398,6 @@ export default function MeusPedidosPage() {
                 <Funnel size={18} />
                 Filtros Avançados
               </button>
-              
               {(filters.status !== 'all' || filters.period !== 'all' || filters.search) && (
                 <button
                   onClick={clearFilters}
@@ -454,12 +408,9 @@ export default function MeusPedidosPage() {
                 </button>
               )}
             </div>
-
-            
             {filters.showFilters && (
               <div className="bg-dark-800/50 rounded-lg p-4 border border-dark-700">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  
                   <div>
                     <label className="block text-sm font-medium text-white mb-2">
                       Status do Pedido
@@ -479,8 +430,6 @@ export default function MeusPedidosPage() {
                       <option value="refunded">Reembolsado</option>
                     </select>
                   </div>
-
-                  
                   <div>
                     <label className="block text-sm font-medium text-white mb-2">
                       Período
@@ -501,8 +450,6 @@ export default function MeusPedidosPage() {
               </div>
             )}
           </div>
-
-          
           {loadingOrders && (
             <div className="space-y-4">
               {[...Array(3)].map((_, i) => (
@@ -517,8 +464,6 @@ export default function MeusPedidosPage() {
               ))}
             </div>
           )}
-
-          
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 text-center">
               <XCircle className="text-red-500 mx-auto mb-3" size={32} />
@@ -531,8 +476,6 @@ export default function MeusPedidosPage() {
               </button>
             </div>
           )}
-
-          
           {!loadingOrders && !error && (
             <>
               {filteredOrders.length === 0 ? (
@@ -583,7 +526,6 @@ export default function MeusPedidosPage() {
                     const paymentStatus = getPaymentStatusConfig(order.payment_status);
                     const StatusIcon = status.icon;
                     const isExpanded = isOrderExpanded(order.id);
-
                     return (
                       <motion.div 
                         key={order.id} 
@@ -598,14 +540,12 @@ export default function MeusPedidosPage() {
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.99 }}
                       >
-                        
                         <div 
                           className="p-4 sm:p-6 cursor-pointer hover:bg-dark-800/50 transition-colors"
                           onClick={() => toggleOrderExpansion(order.id)}
                         >
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
-                              
                               {order.items && order.items.length > 0 && (
                                 <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-lg overflow-hidden bg-dark-800 flex-shrink-0">
                                   <Image 
@@ -625,7 +565,6 @@ export default function MeusPedidosPage() {
                                   )}
                                 </div>
                               )}
-                              
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 sm:gap-3 mb-2">
                                   <div className={`p-1.5 sm:p-2 rounded-lg ${status.bg} flex-shrink-0`}>
@@ -640,8 +579,6 @@ export default function MeusPedidosPage() {
                                     </p>
                                   </div>
                                 </div>
-                                
-                                
                                 <div className="text-xs sm:text-sm text-gray-400">
                                   {order.items && order.items.length > 0 ? (
                                     <div>
@@ -660,7 +597,6 @@ export default function MeusPedidosPage() {
                                 </div>
                               </div>
                             </div>
-                            
                             <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                               <div className="text-right">
                                 <p className="text-lg sm:text-xl font-bold text-white">
@@ -670,8 +606,6 @@ export default function MeusPedidosPage() {
                                   {formatDate(order.created_at)}
                                 </p>
                               </div>
-                              
-                              
                               <motion.div 
                                 animate={{ rotate: isExpanded ? 180 : 0 }}
                                 transition={{ duration: 0.3, ease: "easeInOut" }}
@@ -682,8 +616,6 @@ export default function MeusPedidosPage() {
                             </div>
                           </div>
                         </div>
-
-                        
                         <AnimatePresence>
                           {isExpanded && (
                             <motion.div 
@@ -698,7 +630,6 @@ export default function MeusPedidosPage() {
                               className="border-t border-dark-800 bg-dark-800/30 overflow-hidden"
                             >
                               <div className="p-6 space-y-6">
-                                
                                 <div>
                                   <h4 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
                                     <Package size={16} />
@@ -735,8 +666,6 @@ export default function MeusPedidosPage() {
                                     ))}
                                   </div>
                                 </div>
-
-                                
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                   <div className="space-y-2">
                                     <div className="flex items-center gap-2 text-sm text-gray-400">
@@ -770,8 +699,6 @@ export default function MeusPedidosPage() {
                                     )}
                                   </div>
                                 </div>
-
-                                
                                 {(order.tracking_code || order.tracking_url) && (
                                   <div className="bg-dark-900 rounded-lg p-3 sm:p-4 border border-dark-800">
                                     <div className="flex flex-col sm:flex-row sm:items-start gap-3">
@@ -827,8 +754,6 @@ export default function MeusPedidosPage() {
                                     </div>
                                   </div>
                                 )}
-
-                                
                                 <div className="bg-dark-800 rounded-lg p-4">
                                   <h4 className="text-sm font-semibold text-white mb-3">Informações do Cliente</h4>
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm">
@@ -854,8 +779,6 @@ export default function MeusPedidosPage() {
                                     )}
                                   </div>
                                 </div>
-
-                                
                                 <div className="bg-dark-800 rounded-lg p-4">
                                   <h4 className="text-sm font-semibold text-white mb-3">Resumo do Pedido</h4>
                                   <div className="space-y-2 text-sm">
@@ -887,8 +810,6 @@ export default function MeusPedidosPage() {
                                     </div>
                                   </div>
                                 </div>
-
-                                
                                 {order.notes && (
                                   <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
                                     <p className="text-sm text-blue-400">

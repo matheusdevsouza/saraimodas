@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import database from '@/lib/database';
 import { authenticateUser, isAdmin } from '@/lib/auth';
-
-const prisma = new PrismaClient();
-
 export async function GET(request: NextRequest) {
   try {
     const user = await authenticateUser(request);
@@ -13,24 +10,24 @@ export async function GET(request: NextRequest) {
         { status: 403 }
       );
     }
-
-    const categories = await prisma.category.findMany({
-      where: { is_active: true },
-      include: {
-        subcategories: {
-          where: { is_active: true },
-          orderBy: { sort_order: 'asc' }
-        },
-        _count: {
-          select: { products: true }
-        }
-      },
-      orderBy: { sort_order: 'asc' }
-    });
-
+    const categories = await database.query(
+      `SELECT c.*, 
+        (SELECT COUNT(*) FROM products p WHERE p.category_id = c.id) as product_count 
+       FROM categories c 
+       WHERE c.is_active = TRUE 
+       ORDER BY c.sort_order ASC`
+    );
+    const mappedCategories = categories.map((cat: any) => ({
+      ...cat,
+      is_active: Boolean(cat.is_active),
+      subcategories: [], 
+      _count: {
+        products: cat.product_count || 0
+      }
+    }));
     return NextResponse.json({
       success: true,
-      data: categories
+      data: mappedCategories
     });
   } catch (error) {
     console.error('Erro ao buscar categorias:', error);
@@ -38,11 +35,8 @@ export async function GET(request: NextRequest) {
       { success: false, error: 'Erro interno do servidor' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
-
 export async function POST(request: NextRequest) {
   try {
     const user = await authenticateUser(request);
@@ -52,30 +46,21 @@ export async function POST(request: NextRequest) {
         { status: 403 }
       );
     }
-
     const body = await request.json();
-    
     const { name, description, image_url, sort_order } = body;
-
     const slug = name.toLowerCase()
       .replace(/[^a-z0-9\s-]/g, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .trim();
-
-    const category = await prisma.category.create({
-      data: {
-        name,
-        slug,
-        description,
-        image_url,
-        sort_order: sort_order ? parseInt(sort_order) : 0
-      }
-    });
-
+    const result = await database.query(
+      `INSERT INTO categories (name, slug, description, image_url, sort_order, is_active, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, TRUE, NOW(), NOW())`,
+      [name, slug, description, image_url, sort_order ? parseInt(sort_order) : 0]
+    );
     return NextResponse.json({
       success: true,
-      data: category,
+      data: { id: result.insertId, name, slug, description, image_url, sort_order, is_active: true },
       message: 'Categoria criada com sucesso'
     });
   } catch (error) {
@@ -84,7 +69,5 @@ export async function POST(request: NextRequest) {
       { success: false, error: 'Erro interno do servidor' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

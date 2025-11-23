@@ -1,5 +1,4 @@
 'use client'
-
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Star, Heart, Eye, ShoppingCart, Lightning, Fire } from 'phosphor-react'
@@ -7,17 +6,14 @@ import { formatPrice, getImageUrl } from '@/lib/utils'
 import { useGSAP } from '@/hooks/useGSAP'
 import { useCart } from '@/contexts/CartContext'
 import Link from 'next/link'
-
 export function ProductsSection() {
   const [activeFilter, setActiveFilter] = useState('todos')
   const [favorites, setFavorites] = useState<string[]>([])
   const [products, setProducts] = useState<any[]>([])
-
   const [loading, setLoading] = useState(true)
   const sectionRef = useRef<HTMLDivElement>(null)
   const { scrollAnimation } = useGSAP()
   const { addItem } = useCart()
-
   useEffect(() => {
     if (sectionRef.current) {
       scrollAnimation(sectionRef.current, {
@@ -28,14 +24,11 @@ export function ProductsSection() {
       })
     }
   }, [scrollAnimation])
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         const productsResponse = await fetch('/api/products?limit=8&featured=true')
         const productsData = await productsResponse.json()
-        
         if (productsData.success) {
           setProducts(productsData.data)
         }
@@ -45,21 +38,17 @@ export function ProductsSection() {
         setLoading(false)
       }
     }
-    
     fetchData()
   }, [])
-
   const filters = [
     { id: 'todos', label: 'Todos', count: products.length }
   ]
-
   const filteredProducts = activeFilter === 'todos' 
     ? products 
     : products.filter(product => 
         product.brand.toLowerCase() === activeFilter || 
         product.brand.toLowerCase().includes(activeFilter)
       )
-
   const toggleFavorite = (productId: string) => {
     setFavorites(prev =>
       prev.includes(productId)
@@ -67,11 +56,9 @@ export function ProductsSection() {
         : [...prev, productId]
     )
   }
-
   const calculateDiscount = (original: number, current: number) => {
     return Math.round(((original - current) / original) * 100)
   }
-
   return (
     <section ref={sectionRef} className="py-24 bg-[#0D0D0D]">
       <div className="container mx-auto px-4">
@@ -108,7 +95,6 @@ export function ProductsSection() {
             Tecidos finos, caimento perfeito e alta sofisticação.
           </motion.p>
         </motion.div>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -132,8 +118,6 @@ export function ProductsSection() {
             </motion.button>
           ))}
         </motion.div>
-
-        
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <div className="animate-spin rounded-sm h-32 w-32 border-b border-[#F2C063]"></div>
@@ -157,7 +141,6 @@ export function ProductsSection() {
               const discount = product.originalPrice 
                 ? calculateDiscount(product.originalPrice, product.price)
                 : 0
-
               return (
                 <motion.div
                   key={product.id}
@@ -167,7 +150,6 @@ export function ProductsSection() {
                   whileHover={{ y: -8 }}
                   className="group bg-[#261E10] rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-500"
                 >
-                  
                   <div className="relative aspect-[2/3] overflow-hidden bg-[#0D0D0D]">
                     <Link href={`/produto/${product.slug}`} className="block w-full h-full">
                       <motion.img
@@ -177,9 +159,7 @@ export function ProductsSection() {
                         whileHover={{ scale: 1.05 }}
                       />
                     </Link>
-                    
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    
                     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <Link
                         href={`/produto/${product.slug}`}
@@ -189,10 +169,7 @@ export function ProductsSection() {
                       </Link>
                     </div>
                   </div>
-
-                  
                   <div className="p-4 space-y-3">
-                    
                     <div className="h-16 flex flex-col items-center justify-center">
                       <Link href={`/produto/${product.slug}`}>
                         <h3 className="text-lg font-semibold text-white group-hover:text-[var(--logo-gold,#D4AF37)] transition-colors duration-300 text-center leading-tight line-clamp-2">
@@ -211,8 +188,6 @@ export function ProductsSection() {
                         </h3>
                       </Link>
                     </div>
-
-                    
                     <div className="flex items-center justify-center gap-3">
                       <span className="text-xl font-semibold text-[var(--logo-gold,#D4AF37)]">
                         {formatPrice(product.price)}
@@ -223,8 +198,6 @@ export function ProductsSection() {
                         </span>
                       )}
                     </div>
-
-                    
                     <div className="text-center">
                       <span className="text-xs text-gray-500 uppercase tracking-wider">
                         ou 12x de {formatPrice(product.price / 12)}
@@ -237,8 +210,6 @@ export function ProductsSection() {
             </motion.div>
           </AnimatePresence>
         )}
-
-        
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}

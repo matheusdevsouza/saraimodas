@@ -1,11 +1,8 @@
 import { NextRequest } from 'next/server';
-
 const SQL_INJECTION_PATTERNS = [
   /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT|TRUNCATE)\b)/gi,
-  
   /[;'\"\\]/gi,
   /(\-\-|\/\*|\*\/|#)/gi,
-  
   /(OR\s+['"]?\d*['"]?\s*=\s*['"]?\d*['"]?)/gi,
   /(AND\s+['"]?\d*['"]?\s*=\s*['"]?\d*['"]?)/gi,
   /(UNION\s+SELECT)/gi,
@@ -16,32 +13,24 @@ const SQL_INJECTION_PATTERNS = [
   /(ALTER\s+TABLE)/gi,
   /(CREATE\s+TABLE)/gi,
   /(EXEC\s*\()/gi,
-  
   /(\/\*.*?\*\/)/gi,
   /(--.*$)/gm,
   /(#.*$)/gm,
-  
   /(SLEEP\s*\()/gi,
   /(WAITFOR\s+DELAY)/gi,
   /(BENCHMARK\s*\()/gi,
-  
   /(INFORMATION_SCHEMA)/gi,
   /(mysql\.user)/gi,
   /(sys\.databases)/gi,
-  
   /(%27|%22|%3D|%3B|%2D|%2D)/gi,
   /(0x[0-9a-f]+)/gi,
-  
   /(ASCII\s*\()/gi,
   /(SUBSTRING\s*\()/gi,
   /(LENGTH\s*\()/gi,
   /(CONCAT\s*\()/gi,
-  
   /(\$where|\$ne|\$gt|\$lt|\$regex|\$exists|\$in|\$nin|\$or|\$and)/gi,
-  
   /(\*|\(|\)|\\|\/|\+|<|>|;|,|"|'|=)/g
 ];
-
 const XSS_PATTERNS = [
   /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
   /<script[^>]*>.*?<\/script>/gi,
@@ -88,19 +77,14 @@ const XSS_PATTERNS = [
   /<audio[^>]*src\s*=\s*x[^>]*onerror/gi,
   /<details[^>]*open[^>]*ontoggle/gi
 ];
-
 export function detectSQLInjection(input: string): boolean {
   if (!input || typeof input !== 'string') return false;
-  
   return SQL_INJECTION_PATTERNS.some(pattern => pattern.test(input));
 }
-
 export function detectXSS(input: string): boolean {
   if (!input || typeof input !== 'string') return false;
-  
   return XSS_PATTERNS.some(pattern => pattern.test(input));
 }
-
 export function sanitizeInput(input: any): any {
   if (typeof input === 'string') {
     if (detectSQLInjection(input)) {
@@ -109,7 +93,6 @@ export function sanitizeInput(input: any): any {
     if (detectXSS(input)) {
       throw new Error('Entrada maliciosa detectada - possível XSS');
     }
-    
     return input
       .replace(/[<>]/g, '') 
       .replace(/['"]/g, '') 
@@ -117,10 +100,8 @@ export function sanitizeInput(input: any): any {
       .replace(/[(){}[\]|&$]/g, '') 
       .trim();
   }
-  
   if (typeof input === 'object' && input !== null) {
     const sanitized: any = Array.isArray(input) ? [] : {};
-    
     for (const key in input) {
       try {
         sanitized[key] = sanitizeInput(input[key]);
@@ -128,13 +109,10 @@ export function sanitizeInput(input: any): any {
         throw new Error(`Campo '${key}' contém entrada maliciosa`);
       }
     }
-    
     return sanitized;
   }
-  
   return input;
 }
-
 export function validateInput(data: any): { isValid: boolean; error?: string } {
   try {
     sanitizeInput(data);
@@ -146,14 +124,11 @@ export function validateInput(data: any): { isValid: boolean; error?: string } {
     };
   }
 }
-
 export function sqlInjectionProtection(request: NextRequest): { blocked: boolean; error?: string } {
   try {
     const url = new URL(request.url);
     const searchParams = url.searchParams;
-    
     const params = Array.from(searchParams.entries());
-    
     for (const [key, value] of params) {
       if (detectSQLInjection(value)) {
         logSQLInjectionAttempt(request, `SQL Injection in param '${key}': ${value}`);
@@ -170,9 +145,7 @@ export function sqlInjectionProtection(request: NextRequest): { blocked: boolean
         };
       }
     }
-    
     return { blocked: false };
-    
   } catch (error) {
     return { 
       blocked: true, 
@@ -180,16 +153,13 @@ export function sqlInjectionProtection(request: NextRequest): { blocked: boolean
     };
   }
 }
-
 export function validateRequestBody(body: any): { isValid: boolean; error?: string } {
   return validateInput(body);
 }
-
 export function logSQLInjectionAttempt(request: NextRequest, details: string) {
   const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
   const userAgent = request.headers.get('user-agent') || 'unknown';
   const timestamp = new Date().toISOString();
-  
   console.log(`🚨 SECURITY ALERT DETECTED:`);
   console.log(`   IP: ${ip}`);
   console.log(`   User-Agent: ${userAgent}`);

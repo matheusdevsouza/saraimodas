@@ -4,7 +4,6 @@ import { checkRateLimit, getClientIP } from '@/lib/rate-limit'
 import { validateCSRFRequest, createCSRFResponse } from '@/lib/csrf-protection'
 import database from '@/lib/database'
 import { detectSQLInjection, detectXSS } from '@/lib/sql-injection-protection'
-
 const createTransporter = () => {
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST,
@@ -16,7 +15,6 @@ const createTransporter = () => {
     },
   });
 };
-
 export async function POST(request: NextRequest) {
   try {
     if (!validateCSRFRequest(request)) {
@@ -25,10 +23,8 @@ export async function POST(request: NextRequest) {
         403
       );
     }
-
     const ip = getClientIP(request);
     const rateLimit = checkRateLimit(ip, 'contact', request);
-
     if (!rateLimit.allowed) {
       return NextResponse.json(
         { 
@@ -38,10 +34,8 @@ export async function POST(request: NextRequest) {
         { status: 429 }
       );
     }
-
     const body = await request.json();
     const { name, email, phone, subject, message } = body;
-
     if (detectSQLInjection(name) || detectSQLInjection(email) || detectSQLInjection(phone) || 
         detectSQLInjection(subject) || detectSQLInjection(message)) {
       return NextResponse.json(
@@ -49,7 +43,6 @@ export async function POST(request: NextRequest) {
         { status: 403 }
       );
     }
-
     if (detectXSS(name) || detectXSS(email) || detectXSS(phone) || 
         detectXSS(subject) || detectXSS(message)) {
       return NextResponse.json(
@@ -57,14 +50,12 @@ export async function POST(request: NextRequest) {
         { status: 403 }
       );
     }
-
     if (!name || !email || !subject || !message) {
       return NextResponse.json(
         { error: 'Todos os campos obrigatórios devem ser preenchidos' },
         { status: 400 }
       );
     }
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -72,7 +63,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
     try {
       await database.query(
         'INSERT INTO contact_messages (name, email, phone, subject, message, created_at) VALUES (?, ?, ?, ?, ?, NOW())',
@@ -81,10 +71,8 @@ export async function POST(request: NextRequest) {
     } catch (dbError) {
       console.error('Erro ao salvar mensagem no banco:', dbError);
     }
-
     try {
     const transporter = createTransporter();
-
       const mailOptions = {
         from: process.env.SMTP_USER,
         to: process.env.CONTACT_EMAIL || process.env.SMTP_USER,
@@ -99,12 +87,10 @@ export async function POST(request: NextRequest) {
           <p>${message.replace(/\n/g, '<br>')}</p>
         `
       };
-
       await transporter.sendMail(mailOptions);
     } catch (emailError) {
       console.error('Erro ao enviar e-mail:', emailError);
     }
-
     return NextResponse.json(
       { 
         success: true, 
@@ -112,7 +98,6 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
-
   } catch (error) {
     console.error('Erro no formulário de contato:', error);
     return NextResponse.json(

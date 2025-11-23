@@ -2,11 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { authenticateUser, isAuthenticated, isEmailVerified } from '@/lib/auth';
 import database from '@/lib/database';
 import { decryptFromDatabase } from '@/lib/transparent-encryption';
-
 export async function GET(request: NextRequest) {
   try {
     const payload = await authenticateUser(request);
-    
     if (!isAuthenticated(payload)) {
       return NextResponse.json(
         { 
@@ -17,7 +15,6 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       );
     }
-
     if (!payload) {
       return NextResponse.json(
         { 
@@ -28,9 +25,7 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       );
     }
-    
     const users = await database.query('SELECT * FROM users WHERE id = ?', [payload.userId]);
-    
     if (!users || users.length === 0) {
       return NextResponse.json(
         { 
@@ -41,9 +36,7 @@ export async function GET(request: NextRequest) {
         { status: 404 }
       );
     }
-
     const user = users[0];
-
     return NextResponse.json(
       { 
         success: true, 
@@ -67,7 +60,6 @@ export async function GET(request: NextRequest) {
       },
       { status: 200 }
     );
-
   } catch (error) {
     console.error('Erro ao verificar autenticação:', error);
     return NextResponse.json(

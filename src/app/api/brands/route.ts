@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server'
 import database from '@/lib/database'
-
 export async function GET() {
   try {
     const brands = await database.query(
-      'SELECT * FROM brands WHERE is_active = 1 ORDER BY name ASC'
+      'SELECT * FROM brands WHERE is_active = TRUE ORDER BY name ASC'
     )
-
     return NextResponse.json({
       success: true,
       data: brands || []

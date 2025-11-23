@@ -1,13 +1,10 @@
 'use client'
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaQuestionCircle } from 'react-icons/fa';
-
 const FAQSkeleton = () => (
   <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
     <div className="max-w-4xl mx-auto flex flex-col gap-8">
-      
       <div className="text-center">
         <div className="h-12 bg-gray-800 rounded-lg mx-auto max-w-md mb-4 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
@@ -16,8 +13,6 @@ const FAQSkeleton = () => (
           <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
         </div>
       </div>
-      
-      
       <div className="space-y-4">
         {[...Array(15)].map((_, i) => (
           <div key={i} className="overflow-hidden rounded-xl bg-dark-900/80 border border-dark-700">
@@ -32,8 +27,6 @@ const FAQSkeleton = () => (
           </div>
         ))}
       </div>
-
-      
       <div className="text-center mt-12">
         <div className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8">
           <div className="w-12 h-12 bg-gray-700 rounded-full mx-auto mb-4 relative overflow-hidden">
@@ -58,11 +51,9 @@ const FAQSkeleton = () => (
     </div>
   </div>
 );
-
 export default function FAQ() {
   const [loading, setLoading] = useState(true);
   const [openItems, setOpenItems] = useState<number[]>([]);
-
   const faqs = [
     { pergunta: 'Quais são os horários de atendimento?', resposta: 'Nosso atendimento é de segunda a sexta, das 9h às 18h, exceto feriados.' },
     { pergunta: 'Como acompanho meu pedido?', resposta: 'Você pode acompanhar seu pedido acessando sua conta ou pelo link de rastreamento enviado por e-mail.' },
@@ -79,15 +70,12 @@ export default function FAQ() {
     { pergunta: 'Os produtos têm garantia?', resposta: 'Sim, todos os nossos produtos possuem garantia de 30 dias.' },
     { pergunta: 'Posso parcelar no cartão?', resposta: 'Sim! Oferecemos parcelamento em até 12x sem juros no cartão de crédito.' },
   ];
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
-
     return () => clearTimeout(timer);
   }, []);
-
   const toggleItem = (index: number) => {
     setOpenItems(prev => 
       prev.includes(index) 
@@ -95,11 +83,9 @@ export default function FAQ() {
         : [...prev, index]
     );
   };
-
   if (loading) {
     return <FAQSkeleton />;
   }
-
   return (
     <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
       <div className="max-w-4xl mx-auto flex flex-col gap-8 text-left">
@@ -112,7 +98,6 @@ export default function FAQ() {
           <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-0">Perguntas Frequentes</h1>
           <p className="text-gray-400 text-lg mb-10">Encontre respostas para as principais dúvidas sobre nossos produtos e serviços</p>
         </motion.div>
-        
         <motion.section 
           initial={{ opacity: 0, y: 20 }} 
           animate={{ opacity: 1, y: 0 }} 
@@ -162,7 +147,6 @@ export default function FAQ() {
             );
           })}
         </motion.section>
-
         <motion.div 
           className="text-center mt-12"
           initial={{ opacity: 0, y: 30 }}

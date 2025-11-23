@@ -1,92 +1,74 @@
 import { NextRequest } from 'next/server';
-
 interface RateLimitInfo {
   count: number;
   resetTime: number;
   blocked: boolean;
   blockExpiry: number;
 }
-
 const rateLimitStore = new Map<string, RateLimitInfo>();
-
 const RATE_LIMIT_CONFIG = {
   login: {
     maxAttempts: 5,
     windowMs: 15 * 60 * 1000,
     blockDuration: 30 * 60 * 1000,
   },
-  
   register: {
     maxAttempts: 3,
     windowMs: 60 * 60 * 1000,
     blockDuration: 60 * 60 * 1000,
   },
-  
   emailVerification: {
     maxAttempts: 5,
     windowMs: 60 * 60 * 1000,
     blockDuration: 60 * 60 * 1000,
   },
-  
   passwordReset: {
     maxAttempts: 3,
     windowMs: 60 * 60 * 1000,
     blockDuration: 60 * 60 * 1000,
   },
-
   contact: {
     maxAttempts: 5,
     windowMs: 60 * 60 * 1000,
     blockDuration: 60 * 60 * 1000,
   },
-  
   general: {
     maxAttempts: 100,
     windowMs: 60 * 1000,
     blockDuration: 5 * 60 * 1000,
   },
-  
   checkout: {
     maxAttempts: 10,
     windowMs: 5 * 60 * 1000,
     blockDuration: 15 * 60 * 1000,
   },
-  
   imageUpload: {
     maxAttempts: 20,
     windowMs: 60 * 1000,
     blockDuration: 10 * 60 * 1000,
   },
 };
-
 function getRateLimitKey(identifier: string, type: keyof typeof RATE_LIMIT_CONFIG): string {
   return `${type}:${identifier}`;
 }
-
 export function getClientIP(request: NextRequest): string {
   const forwarded = request.headers.get('x-forwarded-for');
   const realIP = request.headers.get('x-real-ip');
   const cfConnectingIP = request.headers.get('cf-connecting-ip');
-  
   if (forwarded) {
     return forwarded.split(',')[0].trim();
   }
-  
   if (realIP) {
     return realIP;
   }
-  
   if (cfConnectingIP) {
     return cfConnectingIP;
   }
-  
   return '127.0.0.1';
 }
-
 export function getUserAgent(request: NextRequest): string {
   return request.headers.get('user-agent') || 'unknown';
 }
-
 export function checkRateLimit(
   identifier: string,
   type: keyof typeof RATE_LIMIT_CONFIG,
@@ -95,9 +77,7 @@ export function checkRateLimit(
   const config = RATE_LIMIT_CONFIG[type];
   const key = getRateLimitKey(identifier, type);
   const now = Date.now();
-  
   let info = rateLimitStore.get(key);
-  
   if (!info) {
     info = {
       count: 1,
@@ -113,7 +93,6 @@ export function checkRateLimit(
       blocked: false,
     };
   }
-  
   if (info.blocked) {
     if (now < info.blockExpiry) {
       return {
@@ -128,18 +107,15 @@ export function checkRateLimit(
       info.resetTime = now + config.windowMs;
     }
   }
-  
   if (now > info.resetTime) {
     info.count = 1;
     info.resetTime = now + config.windowMs;
   } else {
     info.count++;
   }
-  
   if (info.count > config.maxAttempts) {
     info.blocked = true;
     info.blockExpiry = now + config.blockDuration;
-    
     if (request) {
       console.warn(`Rate limit exceeded for ${type}:`, {
         identifier,
@@ -148,7 +124,6 @@ export function checkRateLimit(
         timestamp: new Date().toISOString(),
       });
     }
-    
     return {
       allowed: false,
       remaining: 0,
@@ -156,9 +131,7 @@ export function checkRateLimit(
       blocked: true,
     };
   }
-  
   rateLimitStore.set(key, info);
-  
   return {
     allowed: true,
     remaining: Math.max(0, config.maxAttempts - info.count),
@@ -166,24 +139,19 @@ export function checkRateLimit(
     blocked: false,
   };
 }
-
 export function cleanupExpiredRateLimits(): void {
   const now = Date.now();
-  
   for (const [key, info] of Array.from(rateLimitStore.entries())) {
     if (now > info.resetTime && !info.blocked) {
       rateLimitStore.delete(key);
     }
-    
     if (info.blocked && now > info.blockExpiry) {
       rateLimitStore.delete(key);
     }
   }
 }
-
 export function getRateLimitStats(): Record<string, number> {
   const stats: Record<string, number> = {};
-  
   for (const [key, info] of Array.from(rateLimitStore.entries())) {
     const type = key.split(':')[0];
     if (!stats[type]) {
@@ -191,33 +159,25 @@ export function getRateLimitStats(): Record<string, number> {
     }
     stats[type]++;
   }
-  
   return stats;
 }
-
 export function resetRateLimit(identifier: string, type: keyof typeof RATE_LIMIT_CONFIG): boolean {
   const key = getRateLimitKey(identifier, type);
   return rateLimitStore.delete(key);
 }
-
 export function isIPBlocked(ip: string, type: keyof typeof RATE_LIMIT_CONFIG): boolean {
   const key = getRateLimitKey(ip, type);
   const info = rateLimitStore.get(key);
-  
   if (!info) return false;
-  
   if (info.blocked && Date.now() < info.blockExpiry) {
     return true;
   }
-  
   return false;
 }
-
 export function createRateLimitMiddleware(type: keyof typeof RATE_LIMIT_CONFIG) {
   return function rateLimitMiddleware(request: NextRequest) {
     const ip = getClientIP(request);
     const result = checkRateLimit(ip, type, request);
-    
     if (!result.allowed) {
       return {
         success: false,
@@ -227,7 +187,6 @@ export function createRateLimitMiddleware(type: keyof typeof RATE_LIMIT_CONFIG) 
         blocked: result.blocked,
       };
     }
-    
     return {
       success: true,
       remaining: result.remaining,
@@ -235,7 +194,6 @@ export function createRateLimitMiddleware(type: keyof typeof RATE_LIMIT_CONFIG) 
     };
   };
 }
-
 if (typeof setInterval !== 'undefined') {
   setInterval(cleanupExpiredRateLimits, 5 * 60 * 1000);
 }

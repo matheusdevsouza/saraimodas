@@ -70,7 +70,6 @@ npm install
 ```
 
 ### 3. Configure as variáveis de ambiente
-Crie um arquivo `.env` na raiz do projeto baseando-se nas chaves necessárias (DB, Auth, Pagamentos).
 
 ### 4. Configure o banco de dados
 ```bash

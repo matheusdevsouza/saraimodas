@@ -1,5 +1,4 @@
 'use client'
-
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCart } from '@/contexts/CartContext'
@@ -30,7 +29,6 @@ import {
   Info
 } from 'phosphor-react'
 import React from 'react'
-
 interface CustomerData {
   name: string
   email: string
@@ -45,7 +43,6 @@ interface CustomerData {
   city: string
   state: string
 }
-
 interface PaymentMethod {
   id: string
   name: string
@@ -53,7 +50,6 @@ interface PaymentMethod {
   description: string
   installments?: number[]
 }
-
 export default function CheckoutPage() {
   const { state: cartState, removeItem, updateQuantity, clearCart } = useCart()
   const { user, authenticated } = useAuth()
@@ -68,7 +64,6 @@ export default function CheckoutPage() {
     acceptTracking: false,
     acceptPrivacy: false
   })
-  
   const [customerData, setCustomerData] = useState<CustomerData>({
     name: user?.display_name || user?.name || '',
     email: user?.email || '',
@@ -83,7 +78,6 @@ export default function CheckoutPage() {
     city: '',
     state: ''
   })
-
   const paymentMethods: PaymentMethod[] = [
     {
       id: 'credit_card',
@@ -107,15 +101,12 @@ export default function CheckoutPage() {
       installments: [1]
     }
   ]
-
   const total = cartState.total
-
   useEffect(() => {
     if (user?.email && customerData.email === user.email) {
       setCustomerData(prev => ({ ...prev, emailConfirm: user.email }))
     }
   }, [user?.email, customerData.email])
-  
   const handleNextStep = () => {
     if (currentStep === 1) {
       const requiredFields = {
@@ -131,71 +122,55 @@ export default function CheckoutPage() {
         city: 'Cidade',
         state: 'Estado'
       }
-
       const missingFields = []
-      
       for (const [field, label] of Object.entries(requiredFields)) {
         if (!customerData[field as keyof CustomerData] || customerData[field as keyof CustomerData].trim() === '') {
           missingFields.push(label)
         }
       }
-
       const validationErrors = []
-
       if (missingFields.length > 0) {
         validationErrors.push(`Campos obrigatórios não preenchidos: ${missingFields.join(', ')}`)
       }
-
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       if (customerData.email && !emailRegex.test(customerData.email)) {
         validationErrors.push('E-mail inválido')
       }
-
       if (customerData.email !== customerData.emailConfirm) {
         validationErrors.push('Os e-mails não coincidem')
       }
-
       if (!customerData.email || !customerData.emailConfirm) {
         validationErrors.push('E-mail e confirmação são obrigatórios')
       }
-
       if (customerData.email !== customerData.emailConfirm) {
         validationErrors.push('Os e-mails não coincidem')
       }
-
       const cpfClean = customerData.cpf.replace(/\D/g, '')
       if (customerData.cpf && cpfClean.length !== 11) {
         validationErrors.push('CPF deve ter 11 dígitos')
       }
-
       const phoneClean = customerData.phone.replace(/\D/g, '')
       if (customerData.phone && phoneClean.length < 10) {
         validationErrors.push('Telefone deve ter pelo menos 10 dígitos')
       }
-
       const cepClean = customerData.zipCode.replace(/\D/g, '')
       if (customerData.zipCode && cepClean.length !== 8) {
         validationErrors.push('CEP deve ter 8 dígitos')
       }
-
       if (validationErrors.length > 0) {
         showErrorMessages(validationErrors)
         return
       }
     }
-
     if (currentStep === 2 && !selectedPaymentMethod) {
       showErrorMessages(['Por favor, selecione uma forma de pagamento'])
       return
     }
-
     setCurrentStep(prev => Math.min(prev + 1, 3))
   }
-
   const handlePrevStep = () => {
     setCurrentStep(prev => Math.max(prev - 1, 1))
   }
-
   const handleFinishOrder = async () => {
     if (!authenticated) {
       const allAccepted = Object.values(guestChecklist).every(accepted => accepted)
@@ -204,7 +179,6 @@ export default function CheckoutPage() {
         return
       }
     }
-
     setIsLoading(true)
     try {
       const checkoutData = {
@@ -234,7 +208,6 @@ export default function CheckoutPage() {
         },
         payment_method: selectedPaymentMethod
       }
-
       const response = await fetch('/api/checkout/create-order', {
         method: 'POST',
         headers: {
@@ -242,22 +215,17 @@ export default function CheckoutPage() {
         },
         body: JSON.stringify(checkoutData),
       })
-
       if (!response.ok) {
         const errorData = await response.json()
         throw new Error(errorData.error || 'Erro ao criar pedido')
       }
-
       const result = await response.json()
-
       if (!result.success) {
         throw new Error(result.error || 'Erro ao criar pedido')
       }
-
       const initPoint = process.env.NODE_ENV === 'production' 
         ? result.init_point 
         : result.sandbox_init_point
-
       if (initPoint) {
         clearCart()
         window.open(initPoint, '_blank', 'noopener,noreferrer')
@@ -269,7 +237,6 @@ export default function CheckoutPage() {
           router.push('/meus-pedidos')
         }, 3000)
       }
-
     } catch (error) {
       console.error('Erro ao finalizar pedido:', error)
       showErrorMessages([`Erro ao finalizar pedido: ${(error as Error).message}`])
@@ -277,7 +244,6 @@ export default function CheckoutPage() {
       setIsLoading(false)
     }
   }
-
   const handleQuantityChange = (productId: string, newQuantity: number) => {
     if (newQuantity <= 0) {
       removeItem(productId)
@@ -285,7 +251,6 @@ export default function CheckoutPage() {
       updateQuantity(productId, newQuantity)
     }
   }
-
   const getRequiredFieldsCount = () => {
     const requiredFields = [
       customerData.name,
@@ -300,11 +265,9 @@ export default function CheckoutPage() {
       customerData.city,
       customerData.state
     ]
-    
     const filledFields = requiredFields.filter(field => field && field.trim() !== '').length
     return { filled: filledFields, total: requiredFields.length }
   }
-
   const showErrorMessages = (errorList: string[]) => {
     setErrors(errorList)
     setShowErrors(true)
@@ -312,7 +275,6 @@ export default function CheckoutPage() {
       setShowErrors(false)
     }, 5000) 
   }
-
   if (cartState.items.length === 0) {
     return (
       <div className="min-h-screen bg-dark-950 flex items-center justify-center">
@@ -340,10 +302,8 @@ export default function CheckoutPage() {
       </div>
     )
   }
-
   return (
     <div className="min-h-screen bg-dark-950">
-      
       <div className="container mx-auto px-4 py-4 pt-12">
         <div className="flex items-center justify-between">
           <motion.button
@@ -355,7 +315,6 @@ export default function CheckoutPage() {
             <ArrowLeft size={20} />
             Voltar
           </motion.button>
-          
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <ShoppingCart size={20} className="text-primary-400" />
@@ -366,8 +325,6 @@ export default function CheckoutPage() {
             </div>
           </div>
         </div>
-        
-        
         {!authenticated && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -383,17 +340,14 @@ export default function CheckoutPage() {
           </motion.div>
         )}
       </div>
-
       <div className="container mx-auto px-4 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
           <div className="lg:col-span-2">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="bg-dark-900 rounded-2xl p-6"
             >
-              
               <AnimatePresence>
                 {showErrors && errors.length > 0 && (
                   <motion.div
@@ -424,8 +378,6 @@ export default function CheckoutPage() {
                   </motion.div>
                 )}
               </AnimatePresence>
-
-              
               <div className="flex items-center justify-center mb-8">
                 {[1, 2, 3].map((step) => (
                   <div key={step} className="flex items-center">
@@ -444,8 +396,6 @@ export default function CheckoutPage() {
                   </div>
                 ))}
               </div>
-
-              
               {currentStep === 1 && (
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
@@ -456,7 +406,6 @@ export default function CheckoutPage() {
                     <User size={24} className="text-primary-400" />
                     <h2 className="text-2xl font-bold text-white">Dados Pessoais</h2>
                   </div>
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-gray-300 mb-2">Nome <span className="text-red-400">*</span></label>
@@ -471,7 +420,6 @@ export default function CheckoutPage() {
                         required
                       />
                     </div>
-                    
                     <div>
                       <label className="block text-gray-300 mb-2">E-mail <span className="text-red-400">*</span></label>
                       <input
@@ -485,7 +433,6 @@ export default function CheckoutPage() {
                         required
                       />
                     </div>
-                    
                     <div>
                       <label className="block text-gray-300 mb-2">Confirmar E-mail <span className="text-red-400">*</span></label>
                       <input
@@ -503,7 +450,6 @@ export default function CheckoutPage() {
                         <p className="text-red-400 text-sm mt-1">Os e-mails não coincidem</p>
                       )}
                     </div>
-                    
                     <div>
                       <label className="block text-gray-300 mb-2">Telefone <span className="text-red-400">*</span></label>
                       <input
@@ -517,7 +463,6 @@ export default function CheckoutPage() {
                         required
                       />
                     </div>
-                    
                     <div>
                       <label className="block text-gray-300 mb-2">CPF <span className="text-red-400">*</span></label>
                       <input
@@ -532,14 +477,11 @@ export default function CheckoutPage() {
                       />
                     </div>
                   </div>
-
-                  
                   <div className="pt-6 border-t border-dark-700">
                     <div className="flex items-center gap-2 mb-6">
                       <MapPin size={24} className="text-primary-400" />
                       <h3 className="text-xl font-bold text-white">Endereço de Entrega</h3>
                     </div>
-
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="md:col-span-2">
                         <label className="block text-gray-300 mb-2">CEP <span className="text-red-400">*</span></label>
@@ -558,7 +500,6 @@ export default function CheckoutPage() {
                           required
                         />
                       </div>
-                      
                       <div className="md:col-span-2">
                         <label className="block text-gray-300 mb-2">Rua <span className="text-red-400">*</span></label>
                         <input
@@ -572,7 +513,6 @@ export default function CheckoutPage() {
                           required
                         />
                       </div>
-                      
                       <div>
                         <label className="block text-gray-300 mb-2">Número <span className="text-red-400">*</span></label>
                         <input
@@ -586,7 +526,6 @@ export default function CheckoutPage() {
                           required
                         />
                       </div>
-                      
                       <div>
                         <label className="block text-gray-300 mb-2">Complemento</label>
                         <input
@@ -597,7 +536,6 @@ export default function CheckoutPage() {
                           placeholder="Apto, bloco, etc."
                         />
                       </div>
-                      
                       <div>
                         <label className="block text-gray-300 mb-2">Bairro <span className="text-red-400">*</span></label>
                         <input
@@ -611,7 +549,6 @@ export default function CheckoutPage() {
                           required
                         />
                       </div>
-                      
                       <div>
                         <label className="block text-gray-300 mb-2">Cidade <span className="text-red-400">*</span></label>
                         <input
@@ -625,7 +562,6 @@ export default function CheckoutPage() {
                           required
                         />
                       </div>
-                      
                       <div>
                         <label className="block text-gray-300 mb-2">Estado <span className="text-red-400">*</span></label>
                         <input
@@ -641,7 +577,6 @@ export default function CheckoutPage() {
                       </div>
                     </div>
                   </div>
-
                   <div className="flex justify-between items-center pt-6">
                     <div className="text-sm text-gray-400">
                       {getRequiredFieldsCount().filled} de {getRequiredFieldsCount().total} campos obrigatórios preenchidos
@@ -657,8 +592,6 @@ export default function CheckoutPage() {
                   </div>
                 </motion.div>
               )}
-
-              
               {currentStep === 2 && (
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
@@ -669,7 +602,6 @@ export default function CheckoutPage() {
                     <CreditCard size={24} className="text-primary-400" />
                     <h2 className="text-2xl font-bold text-white">Forma de Pagamento</h2>
                   </div>
-
                   <div className="space-y-4">
                     {paymentMethods.map((method) => (
                       <div
@@ -702,7 +634,6 @@ export default function CheckoutPage() {
                       </div>
                     ))}
                   </div>
-
                   <div className="flex justify-between pt-6">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
@@ -712,7 +643,6 @@ export default function CheckoutPage() {
                     >
                       Voltar
                     </motion.button>
-                    
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -725,8 +655,6 @@ export default function CheckoutPage() {
                   </div>
                 </motion.div>
               )}
-
-              
               {currentStep === 3 && (
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
@@ -737,7 +665,6 @@ export default function CheckoutPage() {
                     <CheckCircle size={24} className="text-primary-400" />
                     <h2 className="text-2xl font-bold text-white">Confirmação do Pedido</h2>
                   </div>
-
                                      <div className="bg-dark-800 rounded-lg p-4">
                      <h3 className="font-semibold text-white mb-3">Resumo do Pedido</h3>
                      <div className="space-y-2 text-sm text-gray-300">
@@ -757,8 +684,6 @@ export default function CheckoutPage() {
                        </div>
                      </div>
                    </div>
-
-                   
                    {!authenticated && (
                      <motion.div
                        initial={{ opacity: 0, y: 20 }}
@@ -769,7 +694,6 @@ export default function CheckoutPage() {
                          <Warning size={24} className="text-yellow-400" />
                          <h3 className="text-lg font-semibold text-white">Importante para Usuários sem Conta</h3>
                        </div>
-                       
                        <div className="space-y-4 mb-6">
                          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4">
                            <p className="text-yellow-200 text-sm leading-relaxed">
@@ -781,7 +705,6 @@ export default function CheckoutPage() {
                              <li>• Não será possível alterar dados do pedido após a compra</li>
                            </ul>
                          </div>
-                         
                          <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
                            <p className="text-blue-200 text-sm leading-relaxed">
                              <strong>📧 Boa notícia:</strong> Quando seu pedido for despachado, você receberá um e-mail com:
@@ -794,7 +717,6 @@ export default function CheckoutPage() {
                            </ul>
                          </div>
                        </div>
-
                        <div className="space-y-3">
                          <label className="flex items-start gap-3 cursor-pointer">
                            <input
@@ -807,7 +729,6 @@ export default function CheckoutPage() {
                              <span className="text-primary-400 font-medium">Aceito os termos de compra</span> e entendo que não estarei logado em uma conta
                            </span>
                          </label>
-                         
                          <label className="flex items-start gap-3 cursor-pointer">
                            <input
                              type="checkbox"
@@ -819,7 +740,6 @@ export default function CheckoutPage() {
                              <span className="text-primary-400 font-medium">Aceito receber o código de rastreio por e-mail</span> quando o pedido for despachado
                            </span>
                          </label>
-                         
                          <label className="flex items-start gap-3 cursor-pointer">
                            <input
                              type="checkbox"
@@ -832,8 +752,6 @@ export default function CheckoutPage() {
                            </span>
                          </label>
                        </div>
-                       
-                       
                        {Object.values(guestChecklist).every(accepted => accepted) && (
                          <motion.div
                            initial={{ opacity: 0, scale: 0.95 }}
@@ -850,7 +768,6 @@ export default function CheckoutPage() {
                        )}
                      </motion.div>
                    )}
-
                   <div className="flex justify-between pt-6">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
@@ -860,7 +777,6 @@ export default function CheckoutPage() {
                     >
                       Voltar
                     </motion.button>
-                    
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -870,8 +786,6 @@ export default function CheckoutPage() {
                     >
                       {isLoading ? 'Processando...' : 'Finalizar Pedido'}
                     </motion.button>
-                    
-                    
                     {!authenticated && !Object.values(guestChecklist).every(accepted => accepted) && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
@@ -888,8 +802,6 @@ export default function CheckoutPage() {
               )}
             </motion.div>
           </div>
-
-          
           <div className="lg:col-span-1">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -897,8 +809,6 @@ export default function CheckoutPage() {
               className="bg-dark-900 rounded-2xl p-6 sticky top-4"
             >
               <h3 className="text-lg font-bold text-white mb-4">Resumo do Pedido</h3>
-              
-              
               <div className="space-y-3 mb-4">
                 {cartState.items.map(item => (
                   <div key={item.product.id} className="flex gap-3">
@@ -911,7 +821,6 @@ export default function CheckoutPage() {
                         sizes="64px"
                       />
                     </div>
-                    
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-white truncate">{item.product.name}</h3>
                       <p className="text-sm text-gray-400">Tamanho: {item.size || 'Único'}</p>
@@ -939,7 +848,6 @@ export default function CheckoutPage() {
                         </button>
                       </div>
                     </div>
-                    
                     <div className="text-right">
                       <p className="font-semibold text-white">R$ {(Number(item.price) * item.quantity).toFixed(2)}</p>
                       <p className="text-sm text-gray-400">R$ {Number(item.price).toFixed(2)} cada</p>
@@ -947,22 +855,16 @@ export default function CheckoutPage() {
                   </div>
                 ))}
               </div>
-
-              
               <div className="space-y-3 border-t border-dark-700 pt-4">
                 <div className="flex justify-between text-gray-400">
                   <span>Subtotal ({cartState.itemCount} itens)</span>
                   <span>R$ {cartState.total.toFixed(2)}</span>
                 </div>
-                
                  <div className="flex justify-between text-lg font-bold text-white border-t border-dark-700 pt-3">
                    <span>Total Final</span>
                    <span className="text-primary-400">R$ {total.toFixed(2)}</span>
                  </div>
-                 
               </div>
-
-              
               <div className="mt-6 space-y-3">
                 <div className="flex items-center gap-3 text-sm text-gray-400">
                   <Shield size={16} className="text-primary-400" />

@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -17,7 +16,6 @@ import {
   FaTimes 
 } from 'react-icons/fa';
 import Image from 'next/image';
-
 interface Model {
   id: number;
   name: string;
@@ -30,7 +28,6 @@ interface Model {
   created_at: string;
   updated_at: string;
 }
-
 interface Product {
   id: number;
   name: string;
@@ -41,17 +38,14 @@ interface Product {
   brand_name: string;
   primary_image?: string;
 }
-
 interface AvailableProduct extends Product {
   current_model_name?: string;
   model_id?: number;
 }
-
 export default function ModelDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const modelId = parseInt(params.id as string);
-
   const [model, setModel] = useState<Model | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [availableProducts, setAvailableProducts] = useState<AvailableProduct[]>([]);
@@ -61,12 +55,10 @@ export default function ModelDetailsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
   const [addingProducts, setAddingProducts] = useState(false);
-
   const fetchModelDetails = useCallback(async () => {
     try {
       const response = await fetch(`/api/admin/models/${modelId}`);
       const result = await response.json();
-
       if (result.success) {
         setModel(result.data);
       } else {
@@ -77,12 +69,10 @@ export default function ModelDetailsPage() {
       setError('Erro ao conectar com o servidor');
     }
   }, [modelId]);
-
   const fetchModelProducts = useCallback(async () => {
     try {
       const response = await fetch(`/api/admin/models/${modelId}/products`);
       const result = await response.json();
-
       if (result.success) {
         setProducts(result.data);
       } else {
@@ -94,18 +84,15 @@ export default function ModelDetailsPage() {
       setLoading(false);
     }
   }, [modelId]);
-
   useEffect(() => {
     if (isNaN(modelId)) {
       setError('ID do modelo inválido');
       setLoading(false);
       return;
     }
-
     fetchModelDetails();
     fetchModelProducts();
   }, [modelId, fetchModelDetails, fetchModelProducts]);
-
   const fetchAvailableProducts = async () => {
     try {
       const params = new URLSearchParams({
@@ -113,10 +100,8 @@ export default function ModelDetailsPage() {
         search: searchTerm,
         limit: '50'
       });
-
       const response = await fetch(`/api/admin/models/available-products?${params}`);
       const result = await response.json();
-
       if (result.success) {
         setAvailableProducts(result.data.products);
       } else {
@@ -126,10 +111,8 @@ export default function ModelDetailsPage() {
       console.error('Erro ao carregar produtos disponíveis:', error);
     }
   };
-
   const handleAddProducts = async () => {
     if (selectedProducts.length === 0) return;
-
     setAddingProducts(true);
     try {
       const response = await fetch(`/api/admin/models/${modelId}/products`, {
@@ -141,9 +124,7 @@ export default function ModelDetailsPage() {
           productIds: selectedProducts
         })
       });
-
       const result = await response.json();
-
       if (result.success) {
         alert(`${selectedProducts.length} produto(s) adicionado(s) com sucesso!`);
         setSelectedProducts([]);
@@ -160,12 +141,10 @@ export default function ModelDetailsPage() {
       setAddingProducts(false);
     }
   };
-
   const handleRemoveProduct = async (productId: number, productName: string) => {
     if (!confirm(`Tem certeza que deseja remover "${productName}" deste modelo?`)) {
       return;
     }
-
     try {
       const response = await fetch(`/api/admin/models/${modelId}/products`, {
         method: 'DELETE',
@@ -176,9 +155,7 @@ export default function ModelDetailsPage() {
           productIds: [productId]
         })
       });
-
       const result = await response.json();
-
       if (result.success) {
         alert('Produto removido com sucesso!');
         fetchModelProducts();
@@ -191,21 +168,16 @@ export default function ModelDetailsPage() {
       alert('Erro ao conectar com o servidor');
     }
   };
-
   const handleDeleteModel = async () => {
     if (!model) return;
-
     if (!confirm(`Tem certeza que deseja excluir o modelo "${model.name}"?`)) {
       return;
     }
-
     try {
       const response = await fetch(`/api/admin/models/${modelId}`, {
         method: 'DELETE'
       });
-
       const result = await response.json();
-
       if (result.success) {
         alert('Modelo excluído com sucesso!');
         router.push('/admin/modelos');
@@ -217,7 +189,6 @@ export default function ModelDetailsPage() {
       alert('Erro ao conectar com o servidor');
     }
   };
-
   const getModelImage = (model: Model) => {
     if (model.image_url) {
       if (model.image_url.startsWith('/api/models/images/')) {
@@ -227,21 +198,18 @@ export default function ModelDetailsPage() {
     }
     return null;
   };
-
   const getProductImage = (product: Product | AvailableProduct) => {
     if (product.primary_image) {
       return product.primary_image;
     }
     return null;
   };
-
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
     }).format(price);
   };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -252,7 +220,6 @@ export default function ModelDetailsPage() {
       </div>
     );
   }
-
   if (error || !model) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -269,10 +236,8 @@ export default function ModelDetailsPage() {
       </div>
     );
   }
-
   return (
     <div className="space-y-6">
-      
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -291,7 +256,6 @@ export default function ModelDetailsPage() {
             <p className="text-gray-400">Detalhes do modelo</p>
           </div>
         </div>
-
         <div className="flex items-center space-x-3">
           <button
             onClick={() => router.push(`/admin/modelos/${modelId}/editar`)}
@@ -309,8 +273,6 @@ export default function ModelDetailsPage() {
           </button>
         </div>
       </motion.div>
-
-      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -318,7 +280,6 @@ export default function ModelDetailsPage() {
         className="bg-dark-800/50 rounded-xl border border-dark-700/50 p-6"
       >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
           <div className="lg:col-span-1">
             <div className="aspect-video bg-dark-700/50 rounded-lg overflow-hidden">
               {getModelImage(model) ? (
@@ -336,20 +297,16 @@ export default function ModelDetailsPage() {
               )}
             </div>
           </div>
-
-          
           <div className="lg:col-span-2">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-400 text-sm mb-1">Nome</label>
                 <p className="text-white font-medium">{model.name}</p>
               </div>
-
               <div>
                 <label className="block text-gray-400 text-sm mb-1">Slug</label>
                 <p className="text-gray-300">{model.slug}</p>
               </div>
-
               <div>
                 <label className="block text-gray-400 text-sm mb-1">Status</label>
                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -360,17 +317,14 @@ export default function ModelDetailsPage() {
                   {model.is_active ? 'Ativo' : 'Inativo'}
                 </span>
               </div>
-
               <div>
                 <label className="block text-gray-400 text-sm mb-1">Ordem de Exibição</label>
                 <p className="text-gray-300">{model.sort_order}</p>
               </div>
-
               <div>
                 <label className="block text-gray-400 text-sm mb-1">Produtos Associados</label>
                 <p className="text-white font-medium">{model.product_count}</p>
               </div>
-
               <div>
                 <label className="block text-gray-400 text-sm mb-1">Criado em</label>
                 <p className="text-gray-300">
@@ -384,7 +338,6 @@ export default function ModelDetailsPage() {
                 </p>
               </div>
             </div>
-
             {model.description && (
               <div className="mt-4">
                 <label className="block text-gray-400 text-sm mb-1">Descrição</label>
@@ -394,8 +347,6 @@ export default function ModelDetailsPage() {
           </div>
         </div>
       </motion.div>
-
-      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -417,7 +368,6 @@ export default function ModelDetailsPage() {
             Adicionar Produtos
           </button>
         </div>
-
         {products.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {products.map((product) => (
@@ -425,7 +375,6 @@ export default function ModelDetailsPage() {
                 key={product.id}
                 className="bg-dark-700/50 rounded-lg border border-dark-600/50 overflow-hidden"
               >
-                
                 <div className="aspect-video bg-dark-600/50 relative">
                   {getProductImage(product) ? (
                     <Image
@@ -440,12 +389,9 @@ export default function ModelDetailsPage() {
                     </div>
                   )}
                 </div>
-
-                
                 <div className="p-4">
                   <h3 className="text-white font-medium text-sm mb-1">{product.name}</h3>
                   <p className="text-gray-400 text-xs mb-2">{product.brand_name}</p>
-                  
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-primary-400 font-bold text-sm">
                       {formatPrice(product.price)}
@@ -454,7 +400,6 @@ export default function ModelDetailsPage() {
                       Estoque: {product.stock_quantity}
                     </span>
                   </div>
-
                   <div className="flex items-center justify-between">
                     <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                       product.is_active
@@ -463,7 +408,6 @@ export default function ModelDetailsPage() {
                     }`}>
                       {product.is_active ? 'Ativo' : 'Inativo'}
                     </span>
-
                     <button
                       onClick={() => handleRemoveProduct(product.id, product.name)}
                       className="p-1.5 text-gray-400 hover:text-red-400 transition-colors"
@@ -492,8 +436,6 @@ export default function ModelDetailsPage() {
           </div>
         )}
       </motion.div>
-
-      
       {showAddProducts && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <motion.div
@@ -501,7 +443,6 @@ export default function ModelDetailsPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-dark-800 rounded-xl border border-dark-700 w-full max-w-4xl max-h-[80vh] overflow-hidden"
           >
-            
             <div className="p-6 border-b border-dark-700">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-white">Adicionar Produtos ao Modelo</h3>
@@ -516,8 +457,6 @@ export default function ModelDetailsPage() {
                   <FaTimes size={20} />
                 </button>
               </div>
-
-              
               <div className="mt-4">
                 <div className="relative">
                   <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -534,8 +473,6 @@ export default function ModelDetailsPage() {
                 </div>
               </div>
             </div>
-
-            
             <div className="p-6 overflow-y-auto max-h-96">
               {availableProducts.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -567,7 +504,6 @@ export default function ModelDetailsPage() {
                             )}
                           </div>
                         </div>
-
                         <div className="flex-shrink-0 w-12 h-12">
                           {getProductImage(product) ? (
                             <Image
@@ -583,7 +519,6 @@ export default function ModelDetailsPage() {
                             </div>
                           )}
                         </div>
-
                         <div className="flex-1 min-w-0">
                           <p className="text-white font-medium text-sm truncate">{product.name}</p>
                           <p className="text-gray-400 text-xs">{product.brand_name}</p>
@@ -609,8 +544,6 @@ export default function ModelDetailsPage() {
                 </div>
               )}
             </div>
-
-            
             <div className="p-6 border-t border-dark-700">
               <div className="flex items-center justify-between">
                 <p className="text-gray-400 text-sm">

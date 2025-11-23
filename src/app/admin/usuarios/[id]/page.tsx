@@ -1,9 +1,7 @@
 "use client"
-
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { FaSpinner, FaSave, FaArrowLeft, FaCheckCircle, FaExclamationTriangle, FaUser, FaEnvelope, FaPhone, FaIdCard, FaCalendar, FaVenusMars, FaShieldAlt, FaToggleOn, FaToggleOff, FaShoppingBag, FaMapMarkerAlt } from 'react-icons/fa'
-
 interface UserAddress {
   id: number
   street: string
@@ -15,7 +13,6 @@ interface UserAddress {
   zip_code: string
   is_default: boolean
 }
-
 interface UserOrder {
   id: number
   order_number: string
@@ -23,7 +20,6 @@ interface UserOrder {
   status: string
   createdAt: string
 }
-
 interface User {
   id: number
   name: string
@@ -45,19 +41,16 @@ interface User {
   recent_orders: UserOrder[]
   addresses: UserAddress[]
 }
-
 export default function UserDetailPage() {
   const router = useRouter()
   const params = useParams()
   const id = Number(params?.id)
-
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
-
   useEffect(() => {
     async function fetchUser() {
       try {
@@ -66,7 +59,6 @@ export default function UserDetailPage() {
         if (!res.ok) throw new Error('Falha ao carregar usuário')
         const response = await res.json()
         const data = response.data
-        
         setUser(data)
       } catch (e: any) {
         setError(e.message || 'Erro inesperado')
@@ -76,13 +68,11 @@ export default function UserDetailPage() {
     }
     if (id) fetchUser()
   }, [id])
-
   async function handleSave() {
     if (!user) return
     try {
       setSaving(true)
       setError(null)
-      
       const res = await fetch(`/api/admin/users/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -97,12 +87,10 @@ export default function UserDetailPage() {
           is_active: user.is_active
         })
       })
-      
       if (!res.ok) {
         const errorData = await res.json()
         throw new Error(errorData.error || 'Falha ao salvar alterações')
       }
-      
       setSaved(true)
       setIsEditing(false)
       setTimeout(() => setSaved(false), 3000)
@@ -112,27 +100,21 @@ export default function UserDetailPage() {
       setSaving(false)
     }
   }
-
   async function handleDelete() {
     if (!user) return
-    
     if (!confirm(`Tem certeza que deseja excluir o usuário "${user.name}"? Esta ação não pode ser desfeita.`)) {
       return
     }
-
     try {
       setSaving(true)
       setError(null)
-      
       const res = await fetch(`/api/admin/users/${id}`, {
         method: 'DELETE'
       })
-      
       if (!res.ok) {
         const errorData = await res.json()
         throw new Error(errorData.error || 'Falha ao excluir usuário')
       }
-      
       router.push('/admin/usuarios')
     } catch (e: any) {
       setError(e.message || 'Erro ao excluir usuário')
@@ -140,7 +122,6 @@ export default function UserDetailPage() {
       setSaving(false)
     }
   }
-
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
@@ -148,7 +129,6 @@ export default function UserDetailPage() {
       </div>
     )
   }
-
   if (error) {
     return (
       <div className="p-6">
@@ -168,9 +148,7 @@ export default function UserDetailPage() {
       </div>
     )
   }
-
   if (!user) return null
-
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
@@ -180,7 +158,6 @@ export default function UserDetailPage() {
         >
           <FaArrowLeft /> Voltar
         </button>
-        
         <div className="flex items-center gap-3">
           {!isEditing && (
             <>
@@ -199,7 +176,6 @@ export default function UserDetailPage() {
               </button>
             </>
           )}
-          
           {isEditing && (
             <button
               onClick={handleSave}
@@ -211,13 +187,11 @@ export default function UserDetailPage() {
           )}
         </div>
       </div>
-
       {saved && (
         <div className="flex items-center gap-2 text-green-400 bg-green-500/10 border border-green-500/30 p-4 rounded-lg">
           <FaCheckCircle /> Usuário atualizado com sucesso!
         </div>
       )}
-
       <div className="bg-dark-800/60 border border-dark-700/60 rounded-xl p-6 space-y-6">
         <div className="flex items-center gap-4">
           <div className="h-16 w-16 rounded-full bg-blue-500 flex items-center justify-center">
@@ -248,7 +222,6 @@ export default function UserDetailPage() {
             </div>
           </div>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-dark-900/60 border border-dark-700/60 rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-white">{user.stats.total_orders}</div>
@@ -265,7 +238,6 @@ export default function UserDetailPage() {
             <div className="text-gray-400 text-sm">Email Verificado</div>
           </div>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm text-gray-400 mb-1 flex items-center gap-2">
@@ -278,7 +250,6 @@ export default function UserDetailPage() {
               className="w-full bg-dark-900 border border-dark-700 rounded-lg p-2 text-white disabled:opacity-70"
             />
           </div>
-          
           <div>
             <label className="block text-sm text-gray-400 mb-1 flex items-center gap-2">
               <FaEnvelope size={12} /> Email
@@ -290,7 +261,6 @@ export default function UserDetailPage() {
               className="w-full bg-dark-900 border border-dark-700 rounded-lg p-2 text-white disabled:opacity-70"
             />
           </div>
-          
           <div>
             <label className="block text-sm text-gray-400 mb-1 flex items-center gap-2">
               <FaPhone size={12} /> Telefone
@@ -302,7 +272,6 @@ export default function UserDetailPage() {
               className="w-full bg-dark-900 border border-dark-700 rounded-lg p-2 text-white disabled:opacity-70"
             />
           </div>
-          
           <div>
             <label className="block text-sm text-gray-400 mb-1 flex items-center gap-2">
               <FaIdCard size={12} /> CPF
@@ -314,7 +283,6 @@ export default function UserDetailPage() {
               className="w-full bg-dark-900 border border-dark-700 rounded-lg p-2 text-white disabled:opacity-70"
             />
           </div>
-          
           <div>
             <label className="block text-sm text-gray-400 mb-1 flex items-center gap-2">
               <FaCalendar size={12} /> Data de Nascimento
@@ -327,7 +295,6 @@ export default function UserDetailPage() {
               className="w-full bg-dark-900 border border-dark-700 rounded-lg p-2 text-white disabled:opacity-70"
             />
           </div>
-          
           <div>
             <label className="block text-sm text-gray-400 mb-1 flex items-center gap-2">
               <FaVenusMars size={12} /> Gênero
@@ -344,7 +311,6 @@ export default function UserDetailPage() {
               <option value="other">Outro</option>
             </select>
           </div>
-          
           <div>
             <label className="block text-sm text-gray-400 mb-1 flex items-center gap-2">
               <FaShieldAlt size={12} /> Tipo de Usuário
@@ -359,7 +325,6 @@ export default function UserDetailPage() {
               <option value="true">Administrador</option>
             </select>
           </div>
-          
           <div>
             <label className="block text-sm text-gray-400 mb-1 flex items-center gap-2">
               <FaToggleOn size={12} /> Status
@@ -375,7 +340,6 @@ export default function UserDetailPage() {
             </select>
           </div>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-gray-400">Criado em:</span>
@@ -393,7 +357,6 @@ export default function UserDetailPage() {
           )}
         </div>
       </div>
-
       {user.recent_orders.length > 0 && (
         <div className="bg-dark-800/60 border border-dark-700/60 rounded-xl p-6">
           <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
@@ -435,7 +398,6 @@ export default function UserDetailPage() {
           </div>
         </div>
       )}
-
       {user.addresses.length > 0 && (
         <div className="bg-dark-800/60 border border-dark-700/60 rounded-xl p-6">
           <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">

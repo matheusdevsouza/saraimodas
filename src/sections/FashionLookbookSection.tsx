@@ -1,10 +1,8 @@
 'use client'
-
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight } from 'phosphor-react'
-
 const looks = [
   {
     id: 1,
@@ -28,12 +26,10 @@ const looks = [
     products: ['Blazer Premium', 'Saia Midi', 'Bolsa Clutch']
   }
 ]
-
 export function FashionLookbookSection() {
   return (
     <section className="pt-0 pb-24 bg-[#0D0D0D]">
       <div className="container mx-auto px-4">
-        
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -51,8 +47,6 @@ export function FashionLookbookSection() {
             Inspire-se com combinações perfeitas criadas pela nossa equipe de estilo
           </p>
         </motion.div>
-
-        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {looks.map((look, index) => (
             <motion.div
@@ -72,10 +66,7 @@ export function FashionLookbookSection() {
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
                   />
-                  
                   <div className="absolute inset-0 bg-[#0D0D0D]/60 group-hover:bg-[#0D0D0D]/40 transition-all duration-500" />
-                  
-                  
                   <div className="absolute inset-0 flex flex-col justify-end p-8">
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
@@ -89,8 +80,6 @@ export function FashionLookbookSection() {
                       <p className="text-gray-300 mb-4 font-light">
                         {look.description}
                       </p>
-                      
-                      
                       <ul className="space-y-2 mb-6">
                         {look.products.map((product, i) => (
                           <li key={i} className="text-sm text-gray-300 flex items-center gap-2">
@@ -99,8 +88,6 @@ export function FashionLookbookSection() {
                           </li>
                         ))}
                       </ul>
-
-                      
                       <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--logo-gold,#D4AF37)] text-[#0D0D0D] rounded-lg group-hover:gap-3 transition-all duration-300">
                         <span className="text-sm uppercase tracking-wider font-semibold">
                           Ver Look Completo
@@ -118,4 +105,3 @@ export function FashionLookbookSection() {
     </section>
   )
 }
-

@@ -1,23 +1,19 @@
 'use client'
-
 import { useEffect, useRef, createContext, useContext, useCallback } from 'react'
 import Lenis from 'lenis'
 import { usePathname } from 'next/navigation'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
 }
-
 interface LenisContextType {
   lenis: Lenis | null
-  scrollTo: (target: string | number | HTMLElement, options?: Lenis.ScrollToOptions) => void
-  scrollToTop: (options?: Lenis.ScrollToOptions) => void
+  scrollTo: (target: string | number | HTMLElement, options?: any) => void
+  scrollToTop: (options?: any) => void
   stop: () => void
   start: () => void
 }
-
 const LenisContext = createContext<LenisContextType>({
   lenis: null,
   scrollTo: () => {},
@@ -25,7 +21,6 @@ const LenisContext = createContext<LenisContextType>({
   stop: () => {},
   start: () => {},
 })
-
 interface SmoothScrollProps {
   children: React.ReactNode
   options?: {
@@ -40,17 +35,14 @@ interface SmoothScrollProps {
     lerp?: number
   }
 }
-
 export function SmoothScroll({ children, options }: SmoothScrollProps) {
   const lenisRef = useRef<Lenis | null>(null)
   const rafIdRef = useRef<number | null>(null)
   const pathname = usePathname()
-
   useEffect(() => {
     if (pathname?.startsWith('/admin')) {
       return
     }
-
     const lenis = new Lenis({
       duration: options?.duration ?? 1.2,
       easing: options?.easing ?? ((t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))),
@@ -64,24 +56,17 @@ export function SmoothScroll({ children, options }: SmoothScrollProps) {
       syncTouch: true,
       syncTouchLerp: 0.075,
     })
-
     lenisRef.current = lenis
-
     lenis.on('scroll', ScrollTrigger.update)
-
     function raf(time: number) {
       lenis.raf(time)
       rafIdRef.current = requestAnimationFrame(raf)
     }
-
     rafIdRef.current = requestAnimationFrame(raf)
-
     const scrollTriggerUpdate = () => {
       ScrollTrigger.update()
     }
-
     lenis.on('scroll', scrollTriggerUpdate)
-
     return () => {
       if (rafIdRef.current !== null) {
         cancelAnimationFrame(rafIdRef.current)
@@ -91,7 +76,6 @@ export function SmoothScroll({ children, options }: SmoothScrollProps) {
       lenisRef.current = null
     }
   }, [pathname, options])
-
   useEffect(() => {
     if (lenisRef.current && !pathname?.startsWith('/admin')) {
       lenisRef.current.scrollTo(0, {
@@ -102,31 +86,26 @@ export function SmoothScroll({ children, options }: SmoothScrollProps) {
       }, 100)
     }
   }, [pathname])
-
-  const scrollTo = useCallback((target: string | number | HTMLElement, scrollOptions?: Lenis.ScrollToOptions) => {
+  const scrollTo = useCallback((target: string | number | HTMLElement, scrollOptions?: any) => {
     if (lenisRef.current) {
       lenisRef.current.scrollTo(target, scrollOptions)
     }
   }, [])
-
-  const scrollToTop = useCallback((scrollOptions?: Lenis.ScrollToOptions) => {
+  const scrollToTop = useCallback((scrollOptions?: any) => {
     if (lenisRef.current) {
       lenisRef.current.scrollTo(0, scrollOptions)
     }
   }, [])
-
   const stop = useCallback(() => {
     if (lenisRef.current) {
       lenisRef.current.stop()
     }
   }, [])
-
   const start = useCallback(() => {
     if (lenisRef.current) {
       lenisRef.current.start()
     }
   }, [])
-
   const contextValue: LenisContextType = {
     lenis: lenisRef.current,
     scrollTo,
@@ -134,20 +113,16 @@ export function SmoothScroll({ children, options }: SmoothScrollProps) {
     stop,
     start,
   }
-
   return (
     <LenisContext.Provider value={contextValue}>
       {children}
     </LenisContext.Provider>
   )
 }
-
 export function useLenis() {
   const context = useContext(LenisContext)
-  
   if (!context) {
     throw new Error('useLenis must be used within SmoothScroll')
   }
-
   return context
 }

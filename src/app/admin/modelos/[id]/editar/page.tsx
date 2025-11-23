@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -14,7 +13,6 @@ import {
   FaEdit
 } from 'react-icons/fa';
 import Image from 'next/image';
-
 interface Model {
   id: number;
   name: string;
@@ -27,7 +25,6 @@ interface Model {
   created_at: string;
   updated_at: string;
 }
-
 interface FormData {
   name: string;
   description: string;
@@ -35,12 +32,10 @@ interface FormData {
   sort_order: number;
   is_active: boolean;
 }
-
 export default function EditModelPage() {
   const params = useParams();
   const router = useRouter();
   const modelId = parseInt(params.id as string);
-
   const [model, setModel] = useState<Model | null>(null);
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -58,7 +53,6 @@ export default function EditModelPage() {
   const [reassignModelFor, setReassignModelFor] = useState<number | null>(null);
   const [reassignTargetId, setReassignTargetId] = useState<number | null>(null);
   const [actionModalProductId, setActionModalProductId] = useState<number | null>(null);
-
   const fetchModel = useCallback(async () => {
     try {
       const [response, productsRes, modelsRes] = await Promise.all([
@@ -67,7 +61,6 @@ export default function EditModelPage() {
         fetch(`/api/models`)
       ]);
       const result = await response.json();
-
       if (result.success) {
         const modelData = result.data;
         setModel(modelData);
@@ -82,12 +75,10 @@ export default function EditModelPage() {
       } else {
         setError(result.error || 'Erro ao carregar modelo');
       }
-
       if (productsRes.ok) {
         const productsJson = await productsRes.json();
         if (productsJson.success) setAssociatedProducts(productsJson.data || []);
       }
-
       if (modelsRes.ok) {
         const modelsJson = await modelsRes.json();
         if (modelsJson.success) setAllModels(modelsJson.data || []);
@@ -99,41 +90,33 @@ export default function EditModelPage() {
       setLoading(false);
     }
   }, [modelId]);
-
   useEffect(() => {
     if (isNaN(modelId)) {
       setError('ID do modelo inválido');
       setLoading(false);
       return;
     }
-
     fetchModel();
   }, [modelId, fetchModel]);
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
-    
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : 
               type === 'number' ? parseInt(value) || 0 : value
     }));
   };
-
   const handleImageUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value;
     setFormData(prev => ({ ...prev, image_url: url }));
     setImagePreview(url || null);
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!formData.name.trim()) {
       alert('Nome do modelo é obrigatório');
       return;
     }
-
     setSaving(true);
     try {
       const response = await fetch(`/api/admin/models/${modelId}`, {
@@ -143,9 +126,7 @@ export default function EditModelPage() {
         },
         body: JSON.stringify(formData)
       });
-
       const result = await response.json();
-
       if (result.success) {
         alert('Modelo atualizado com sucesso!');
         router.push(`/admin/modelos/${modelId}`);
@@ -159,7 +140,6 @@ export default function EditModelPage() {
       setSaving(false);
     }
   };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -170,7 +150,6 @@ export default function EditModelPage() {
       </div>
     );
   }
-
   if (error || !model) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -187,12 +166,9 @@ export default function EditModelPage() {
       </div>
     );
   }
-
   const hasExistingImage = Boolean(imagePreview || formData.image_url)
-
   return (
     <div className="space-y-6">
-      
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -211,7 +187,6 @@ export default function EditModelPage() {
             <p className="text-gray-400">{model.name}</p>
           </div>
         </div>
-
         <div className="flex items-center space-x-3">
           <button
             onClick={() => router.push(`/admin/modelos/${modelId}`)}
@@ -229,8 +204,6 @@ export default function EditModelPage() {
           </button>
         </div>
       </motion.div>
-
-      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -239,11 +212,8 @@ export default function EditModelPage() {
       >
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-white mb-4">Informações Básicas</h3>
-
-              
               <div>
                 <label htmlFor="name" className="block text-gray-400 text-sm font-medium mb-2">
                   Nome do Modelo *
@@ -259,8 +229,6 @@ export default function EditModelPage() {
                   placeholder="Ex: Air Max 95"
                 />
               </div>
-
-              
               <div>
                 <label htmlFor="description" className="block text-gray-400 text-sm font-medium mb-2">
                   Descrição
@@ -275,8 +243,6 @@ export default function EditModelPage() {
                   placeholder="Descrição do modelo..."
                 />
               </div>
-
-              
               <div>
                 <label htmlFor="sort_order" className="block text-gray-400 text-sm font-medium mb-2">
                   Ordem de Exibição
@@ -295,8 +261,6 @@ export default function EditModelPage() {
                   Menor número aparece primeiro no carrossel
                 </p>
               </div>
-
-              
               <div>
                 <label className="flex items-center justify-between p-3 bg-dark-700/40 border border-dark-600/50 rounded-lg cursor-pointer select-none">
                   <div>
@@ -316,12 +280,8 @@ export default function EditModelPage() {
                 </label>
               </div>
             </div>
-
-            
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-white mb-4">Imagem do Modelo</h3>
-
-              
               <div className="aspect-video bg-dark-700/50 rounded-lg overflow-hidden border border-dark-600/50">
                 {imagePreview ? (
                   <div className="relative w-full h-full">
@@ -352,8 +312,6 @@ export default function EditModelPage() {
                   </div>
                 )}
               </div>
-
-              
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="block text-gray-200 text-sm font-semibold">
@@ -411,8 +369,6 @@ export default function EditModelPage() {
               </div>
             </div>
           </div>
-
-          
           <div className="flex items-center justify-end space-x-4 pt-6 border-t border-dark-700">
             <button
               type="button"
@@ -432,8 +388,6 @@ export default function EditModelPage() {
           </div>
         </form>
       </motion.div>
-
-      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -446,7 +400,6 @@ export default function EditModelPage() {
             {associatedProducts.length} produto{associatedProducts.length === 1 ? '' : 's'}
           </span>
         </div>
-
         {associatedProducts.length === 0 ? (
           <p className="text-gray-400 text-sm">Nenhum produto associado a este modelo.</p>
         ) : (
@@ -476,7 +429,6 @@ export default function EditModelPage() {
             ))}
           </div>
         )}
-
         {reassignModelFor && (
           <div className="mt-4 flex items-center gap-2">
             <select
@@ -523,8 +475,6 @@ export default function EditModelPage() {
           </div>
         )}
       </motion.div>
-
-      
       {actionModalProductId && (
         <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4" onClick={() => setActionModalProductId(null)}>
           <div className="bg-dark-800 border border-dark-700 rounded-xl w-full max-w-md overflow-hidden" onClick={(e) => e.stopPropagation()}>
@@ -559,7 +509,6 @@ export default function EditModelPage() {
               >
                 Desassociar do Modelo
               </button>
-
               <div className="rounded-lg border border-dark-700 p-3">
                 <label className="block text-sm text-gray-400 mb-2">Mudar para o modelo</label>
                 <div className="flex items-center gap-2">

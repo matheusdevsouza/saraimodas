@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import { useState } from 'react'
-
 interface SafeImageProps {
   src: string
   alt: string
@@ -13,7 +12,6 @@ interface SafeImageProps {
   onError?: () => void
   fallbackSrc?: string
 }
-
 export function SafeImage({
   src,
   alt,
@@ -28,7 +26,6 @@ export function SafeImage({
 }: SafeImageProps) {
   const [imgSrc, setImgSrc] = useState(src)
   const [isError, setIsError] = useState(false)
-
   const handleError = () => {
     if (!isError) {
       setIsError(true)
@@ -36,7 +33,6 @@ export function SafeImage({
       onError?.()
     }
   }
-
   if (imgSrc.endsWith('.svg')) {
     if (fill) {
       return (
@@ -66,7 +62,6 @@ export function SafeImage({
       )
     }
   }
-
   const imageProps = {
     src: imgSrc,
     alt,
@@ -74,7 +69,6 @@ export function SafeImage({
     onError: handleError,
     priority
   }
-
   if (fill) {
     return (
       <Image
@@ -85,7 +79,6 @@ export function SafeImage({
       />
     )
   }
-
   return (
     <Image
       {...imageProps}

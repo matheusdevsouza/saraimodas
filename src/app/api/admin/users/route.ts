@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import database from '@/lib/database';
 import { authenticateUser, isAdmin } from '@/lib/auth';
 import { decryptFromDatabase } from '@/lib/transparent-encryption';
-
 export async function GET(request: NextRequest) {
   try {
     const user = await authenticateUser(request);
@@ -12,23 +11,18 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       );
     }
-
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const search = searchParams.get('search') || '';
-
     let whereClause = '';
     const params: any[] = [];
-    
     if (search) {
       whereClause = ' WHERE (name LIKE ? OR email LIKE ?)';
       const searchTerm = `%${search}%`;
       params.push(searchTerm, searchTerm);
     }
-
     const offset = (page - 1) * limit;
-    
     const users = await database.query(`
       SELECT 
         u.id, 
@@ -56,14 +50,11 @@ export async function GET(request: NextRequest) {
       ORDER BY u.created_at DESC 
       LIMIT ? OFFSET ?
     `, [...params, limit.toString(), offset.toString()]);
-
     const totalResult = await database.query(`
       SELECT COUNT(*) as total FROM users 
       ${whereClause}
     `, params);
-    
     const totalUsers = totalResult[0].total;
-
     const decryptedUsers = users.map((user: any) => {
       const decryptedUser = decryptFromDatabase('users', user);
       return {
@@ -81,7 +72,6 @@ export async function GET(request: NextRequest) {
         updatedAt: decryptedUser.updated_at
       };
     });
-
     return NextResponse.json({
       success: true,
       data: {
@@ -94,7 +84,6 @@ export async function GET(request: NextRequest) {
         }
       }
     });
-
   } catch (error) {
     console.error('Erro ao buscar usuários:', error);
     return NextResponse.json(
@@ -103,7 +92,6 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
 export async function POST(request: NextRequest) {
   try {
     const user = await authenticateUser(request);
@@ -113,12 +101,10 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
-
     return NextResponse.json(
       { success: false, error: 'Método não implementado' },
       { status: 501 }
     );
-
   } catch (error) {
     console.error('Erro ao criar usuário:', error);
     return NextResponse.json(

@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserByUuid } from '@/lib/database';
 import { authenticateUser, isAuthenticated } from '@/lib/auth';
-
 export async function GET(
   request: NextRequest,
   { params }: { params: { uuid: string } }
 ) {
   try {
     const payload = await authenticateUser(request);
-    
     if (!isAuthenticated(payload)) {
       return NextResponse.json(
         { 
@@ -18,9 +16,7 @@ export async function GET(
         { status: 401 }
       );
     }
-
     const { uuid } = params;
-
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(uuid)) {
       return NextResponse.json(
@@ -31,9 +27,7 @@ export async function GET(
         { status: 400 }
       );
     }
-
     const user = await getUserByUuid(uuid);
-    
     if (!user) {
       return NextResponse.json(
         { 
@@ -43,7 +37,6 @@ export async function GET(
         { status: 404 }
       );
     }
-
     if (payload && (payload.userId !== user.id && !payload.isAdmin)) {
       return NextResponse.json(
         { 
@@ -53,7 +46,6 @@ export async function GET(
         { status: 403 }
       );
     }
-
     return NextResponse.json({
       success: true,
       user: {
@@ -73,7 +65,6 @@ export async function GET(
         created_at: user.created_at,
       }
     });
-
   } catch (error) {
     console.error('Erro ao buscar usuário por UUID:', error);
     return NextResponse.json(

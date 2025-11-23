@@ -3,17 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ShoppingCart, X, Plus, Minus, Trash } from 'phosphor-react'
 import Image from 'next/image'
 import { useCart } from '@/contexts/CartContext'
-
 interface SidebarCartProps {
   open: boolean
   onClose: () => void
 }
-
 export default function SidebarCart({ open, onClose }: SidebarCartProps) {
   const { state, addItem, removeItem, updateQuantity, clearCart } = useCart()
-  
   const canProceedToCheckout = state.items.length > 0
-
   return (
     <AnimatePresence>
       {open && (
@@ -33,7 +29,6 @@ export default function SidebarCart({ open, onClose }: SidebarCartProps) {
               <X size={28} />
             </button>
           </div>
-
           <div className="flex-1 overflow-y-auto px-6 py-4">
             {state.items.length === 0 ? (
               <div className="text-center text-gray-400 mt-16">
@@ -70,7 +65,6 @@ export default function SidebarCart({ open, onClose }: SidebarCartProps) {
                     </li>
                   ))}
                 </ul>
-                
                 {state.items.length > 0 && (
                   <div className="flex justify-center mt-6">
                     <button
@@ -84,33 +78,25 @@ export default function SidebarCart({ open, onClose }: SidebarCartProps) {
               </>
             )}
           </div>
-
           <div className="border-t border-dark-700 px-6 py-5 bg-dark-950 z-[300]">
-            
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-300 font-semibold">Subtotal</span>
               <span className="text-lg font-bold text-primary-400">
                 R$ {state.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </span>
             </div>
-            
-            
             <div className="flex items-center justify-between mb-2">
               <span className="text-gray-400 text-sm">Frete</span>
               <span className="text-sm text-green-400 font-bold">
                 GRÁTIS!
               </span>
             </div>
-            
-            
             <div className="flex items-center justify-between mb-4 pt-2 border-t border-dark-700">
               <span className="text-gray-300 font-semibold">Total</span>
               <span className="text-xl font-bold text-primary-400">
                 R$ {state.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </span>
             </div>
-
-            
             <button
               onClick={() => {
                 onClose()

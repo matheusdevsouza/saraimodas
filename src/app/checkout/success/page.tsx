@@ -1,12 +1,9 @@
 'use client'
-
 import { motion } from 'framer-motion'
 import { CheckCircle, ArrowRight, House, Receipt, Truck } from 'phosphor-react'
 import { useRouter } from 'next/navigation'
-
 export default function CheckoutSuccessPage() {
   const router = useRouter()
-
   return (
     <div className="min-h-screen bg-dark-950 flex items-center justify-center">
       <motion.div
@@ -14,7 +11,6 @@ export default function CheckoutSuccessPage() {
         animate={{ opacity: 1, scale: 1 }}
         className="bg-dark-900 rounded-2xl p-8 max-w-2xl mx-4 text-center"
       >
-        
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -23,8 +19,6 @@ export default function CheckoutSuccessPage() {
         >
           <CheckCircle size={40} className="text-white" />
         </motion.div>
-
-        
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -33,8 +27,6 @@ export default function CheckoutSuccessPage() {
         >
           Pedido Confirmado!
         </motion.h1>
-
-        
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -43,8 +35,6 @@ export default function CheckoutSuccessPage() {
         >
           Seu pedido foi processado com sucesso. Você receberá um e-mail com os detalhes da compra em breve.
         </motion.p>
-
-        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -52,7 +42,6 @@ export default function CheckoutSuccessPage() {
           className="bg-dark-800 rounded-xl p-6 mb-8"
         >
           <h2 className="text-xl font-semibold text-white mb-4">Próximos Passos</h2>
-          
           <div className="space-y-4">
             <div className="flex items-center gap-3 text-left">
               <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0">
@@ -63,7 +52,6 @@ export default function CheckoutSuccessPage() {
                 <p className="text-gray-400 text-sm">Você receberá um e-mail com os detalhes do pedido</p>
               </div>
             </div>
-
             <div className="flex items-center gap-3 text-left">
               <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0">
                 <span className="text-white font-bold text-sm">2</span>
@@ -73,7 +61,6 @@ export default function CheckoutSuccessPage() {
                 <p className="text-gray-400 text-sm">Seu pedido será preparado e enviado</p>
               </div>
             </div>
-
             <div className="flex items-center gap-3 text-left">
               <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0">
                 <span className="text-white font-bold text-sm">3</span>
@@ -85,8 +72,6 @@ export default function CheckoutSuccessPage() {
             </div>
           </div>
         </motion.div>
-
-        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -98,21 +83,17 @@ export default function CheckoutSuccessPage() {
             <h3 className="font-semibold text-white text-sm">Envio</h3>
             <p className="text-gray-400 text-xs">Para todo o Brasil</p>
           </div>
-
           <div className="bg-dark-800 rounded-xl p-4">
             <CheckCircle size={24} className="text-primary-400 mx-auto mb-2" />
             <h3 className="font-semibold text-white text-sm">Garantia</h3>
             <p className="text-gray-400 text-xs">30 dias de garantia</p>
           </div>
-
           <div className="bg-dark-800 rounded-xl p-4">
             <Receipt size={24} className="text-primary-400 mx-auto mb-2" />
             <h3 className="font-semibold text-white text-sm">Rastreamento</h3>
             <p className="text-gray-400 text-xs">Acompanhe seu pedido</p>
           </div>
         </motion.div>
-
-        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -128,7 +109,6 @@ export default function CheckoutSuccessPage() {
             <House size={18} />
             Voltar ao Início
           </motion.button>
-
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -140,8 +120,6 @@ export default function CheckoutSuccessPage() {
             <ArrowRight size={18} />
           </motion.button>
         </motion.div>
-
-        
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

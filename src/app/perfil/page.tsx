@@ -1,16 +1,13 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShieldCheck, Check, X, MapPin, UserCircle, Calendar, IdentificationCard, Phone, House } from "phosphor-react";
 import Image from "next/image";
-
 export default function PerfilPage() {
   const { user, authenticated, loading } = useAuth();
   const router = useRouter();
-
   type EditFields = {
     display_name: boolean;
     phone: boolean;
@@ -25,7 +22,6 @@ export default function PerfilPage() {
     birth_date: string;
     address: string;
   };
-
   const [edit, setEdit] = useState<EditFields>({
     display_name: false,
     phone: false,
@@ -43,13 +39,11 @@ export default function PerfilPage() {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
-
   useEffect(() => {
     if (!loading && !authenticated) {
       router.replace("/login");
     }
   }, [authenticated, loading, router]);
-
   useEffect(() => {
     setForm({
       display_name: (user as any)?.display_name || "",
@@ -59,18 +53,15 @@ export default function PerfilPage() {
       address: (user as any)?.address || "",
     });
   }, [user]);
-
   if (loading || !user) {
     return (
       <section className="min-h-screen flex items-center justify-center bg-dark-950">
         <div className="w-full max-w-4xl bg-dark-900 border border-dark-800 rounded-3xl shadow-2xl p-0 md:p-10 flex flex-col gap-8 animate-pulse">
-          
           <div className="flex flex-col items-center justify-center gap-2 bg-dark-900 rounded-t-3xl p-8 border-b border-dark-800">
             <div className="h-8 w-48 bg-dark-800 rounded mb-3" />
             <div className="h-5 w-40 bg-dark-800 rounded mb-2" />
             <div className="h-4 w-32 bg-dark-800 rounded" />
           </div>
-          
           <div className="w-full flex flex-col gap-6 p-4 md:p-0">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {Array.from({ length: 6 }).map((_, i) => (
@@ -80,7 +71,6 @@ export default function PerfilPage() {
                 </div>
               ))}
             </div>
-            
             <div>
               <div className="bg-dark-800 rounded-xl p-5 h-20 flex items-center gap-4 shadow w-full">
                 <div className="h-8 w-8 bg-dark-900 rounded-full flex-shrink-0" />
@@ -92,7 +82,6 @@ export default function PerfilPage() {
       </section>
     );
   }
-
   async function handleSave(field: keyof FormFields) {
     setSaving(true);
     setError("");
@@ -117,11 +106,9 @@ export default function PerfilPage() {
       setSaving(false);
     }
   }
-
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
-
   return (
     <section className="min-h-screen w-full flex flex-col items-center justify-center bg-dark-950 py-12 px-2 md:px-8">
       <motion.div 
@@ -134,7 +121,6 @@ export default function PerfilPage() {
           delay: 0.1
         }}
       >
-        
         <motion.div 
           className="flex flex-col items-center justify-center gap-2 bg-dark-900 rounded-t-3xl p-8 border-b border-dark-800"
           initial={{ opacity: 0, y: -20 }}
@@ -171,8 +157,6 @@ export default function PerfilPage() {
           </div>
           <span className="text-gray-400 text-base md:text-lg break-all text-center max-w-full">{user.email}</span>
         </motion.div>
-
-        
         <motion.div 
           className="w-full flex flex-col gap-6 p-4 md:p-0"
           initial={{ opacity: 0 }}
@@ -184,7 +168,6 @@ export default function PerfilPage() {
           }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
             <motion.div 
               className="bg-dark-800 rounded-xl p-5 flex items-start gap-4 shadow min-h-[80px]"
               initial={{ opacity: 0, x: -30 }}
@@ -238,7 +221,6 @@ export default function PerfilPage() {
                 )}
               </div>
             </motion.div>
-            
             <motion.div 
               className="bg-dark-800 rounded-xl p-5 flex items-start gap-4 shadow min-h-[80px]"
               initial={{ opacity: 0, x: -30 }}
@@ -292,7 +274,6 @@ export default function PerfilPage() {
                 )}
               </div>
             </motion.div>
-            
             <motion.div 
               className="bg-dark-800 rounded-xl p-5 flex items-start gap-4 shadow min-h-[80px]"
               initial={{ opacity: 0, x: -30 }}
@@ -347,7 +328,6 @@ export default function PerfilPage() {
               </div>
             </motion.div>
           </div>
-          
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -387,8 +367,6 @@ export default function PerfilPage() {
             </div>
           </motion.div>
         </motion.div>
-        
-        
         <motion.div 
           className="w-full flex justify-center mt-2"
           initial={{ opacity: 0 }}
@@ -401,7 +379,6 @@ export default function PerfilPage() {
         >
           <span className="flex items-center gap-1 text-xs text-gray-500"><ShieldCheck size={14} className="text-gray-500" /> Seus dados estão protegidos e só você pode ver esta página.</span>
         </motion.div>
-        
         <AnimatePresence>
           {(success || error) && (
             <motion.div 

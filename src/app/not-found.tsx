@@ -1,13 +1,10 @@
 'use client'
-
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { House, ArrowLeft, ShoppingBag } from 'phosphor-react'
-
 const FloatingParticles = () => {
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; delay: number }>>([])
-
   useEffect(() => {
     const newParticles = Array.from({ length: 50 }, (_, i) => ({
       id: i,
@@ -18,7 +15,6 @@ const FloatingParticles = () => {
     }))
     setParticles(newParticles)
   }, [])
-
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {particles.map((particle) => (
@@ -47,22 +43,13 @@ const FloatingParticles = () => {
     </div>
   )
 }
-
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] relative flex flex-col items-center justify-center overflow-hidden pt-48 md:pt-64 pb-12">
-      
       <FloatingParticles />
-      
-      
       <div className="absolute inset-0 bg-gradient-to-br from-[#261E10] via-[#0D0D0D] to-black opacity-80" />
-      
-      
       <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#F2C063]/10 rounded-full blur-3xl" />
-      
-      
       <div className="relative z-10 text-center px-4 max-w-2xl">
-        
         <motion.div
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
@@ -71,7 +58,6 @@ export default function NotFound() {
         >
           <div className="relative p-6 bg-[#261E10] border border-[#594725]/50 rounded-full">
             <ShoppingBag size={64} className="text-[#F2C063]" weight="duotone" />
-            
             <motion.div
               className="absolute inset-0 rounded-full border border-[#F2C063]/30"
               animate={{
@@ -86,8 +72,6 @@ export default function NotFound() {
             />
           </div>
         </motion.div>
-
-        
         <motion.h1
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -96,8 +80,6 @@ export default function NotFound() {
         >
           404
         </motion.h1>
-
-        
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -106,8 +88,6 @@ export default function NotFound() {
         >
           Esta página está fora de moda
         </motion.h2>
-
-        
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -117,15 +97,12 @@ export default function NotFound() {
           Parece que você se perdeu na coleção! A página que você procura não existe ou foi movida. 
           Que tal explorar nossas <span className="text-[#F2C063] font-medium">peças exclusivas</span> e encontrar algo especial?
         </motion.p>
-
-        
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
-          
           <Link
             href="/"
             className="group relative inline-flex items-center gap-3 bg-transparent border border-[#F2C063] text-[#F2C063] font-light uppercase tracking-wider px-8 py-4 rounded-sm overflow-hidden transition-all duration-300"
@@ -136,8 +113,6 @@ export default function NotFound() {
               Voltar ao Início
             </span>
           </Link>
-
-          
           <button
             onClick={() => window.history.back()}
             className="group relative inline-flex items-center gap-3 bg-transparent border border-[#594725]/50 text-gray-400 font-light uppercase tracking-wider px-8 py-4 rounded-sm overflow-hidden transition-all duration-300"
@@ -149,8 +124,6 @@ export default function NotFound() {
             </span>
           </button>
         </motion.div>
-
-        
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -173,15 +146,11 @@ export default function NotFound() {
           </div>
         </motion.div>
       </div>
-
-      
       <motion.div
         className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-[#F2C063]/50 to-transparent"
         animate={{ x: ["-100%", "100%"] }}
         transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
       />
-
-      
       <div className="absolute inset-0 pointer-events-none">
         {[...Array(8)].map((_, i) => (
           <motion.div

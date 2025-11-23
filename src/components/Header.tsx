@@ -1,5 +1,4 @@
 'use client'
-
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ShoppingCart, User, List, X, MagnifyingGlass, Truck, UserPlus, EnvelopeSimple, SignOut, AddressBook, UserCircle, Receipt } from 'phosphor-react'
@@ -7,7 +6,6 @@ import Image from 'next/image'
 import { useCart } from '@/contexts/CartContext'
 import SidebarCart from './SidebarCart'
 import { useAuth } from '@/contexts/AuthContext';
-
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -16,12 +14,9 @@ export function Header() {
   const userMenuRef = useRef<HTMLDivElement>(null)
   const { state: cartState, isCartSidebarOpen, setIsCartSidebarOpen } = useCart()
   const { user, authenticated, logout } = useAuth();
-
   const [isSearching, setIsSearching] = useState(false)
   const [isSearchFocused, setIsSearchFocused] = useState(false)
-
   const [isScrolled, setIsScrolled] = useState(false)
-
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
@@ -29,7 +24,6 @@ export function Header() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     if (searchQuery.trim()) {
@@ -37,11 +31,9 @@ export function Header() {
       window.location.href = `/pesquisa?q=${encodeURIComponent(searchQuery.trim())}`
     }
   }
-
   const clearSearch = () => {
     setSearchQuery('')
   }
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
@@ -57,7 +49,6 @@ export function Header() {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [userMenuOpen])
-
   const menuItems = [
     { label: 'Início', href: '/' },
     { label: 'Coleção', href: '/produtos' },
@@ -65,14 +56,11 @@ export function Header() {
     { label: 'Acessórios', href: '/produtos?categoria=acessorios' },
     { label: 'Sobre', href: '/sobre' },
   ]
-
   return (
     <header className="fixed top-0 w-full z-50">
-      
       <div className="bg-[#0D0D0D] transition-all duration-300">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="relative flex items-center justify-between h-20">
-            
             <motion.a
               href="/"
               initial={{ opacity: 0, x: -20 }}
@@ -92,8 +80,6 @@ export function Header() {
                 />
               </div>
             </motion.a>
-
-            
             <div className="hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg z-10">
               <motion.form
                 onSubmit={handleSearch}
@@ -134,10 +120,7 @@ export function Header() {
                 </div>
               </motion.form>
             </div>
-
-            
             <div className="flex items-center gap-3 relative">
-              
               <motion.button
                 whileHover={{ scale: 1.08, y: -2 }}
                 whileTap={{ scale: 0.95 }}
@@ -149,8 +132,6 @@ export function Header() {
                 <Truck size={20} weight="regular" className="relative z-10" />
                 <div className="absolute inset-0 rounded-2xl border border-transparent group-hover:border-[var(--header-gold-hover,#B8863F)]/40 transition-all duration-300" />
               </motion.button>
-
-              
               <motion.button
                 whileHover={{ scale: 1.1, y: -2 }}
                 whileTap={{ scale: 0.95 }}
@@ -169,8 +150,6 @@ export function Header() {
                   </motion.span>
                 )}
               </motion.button>
-
-              
               <div className="relative ml-4">
                 <motion.button
                   whileHover={{ scale: 1.02, y: -1 }}
@@ -187,7 +166,6 @@ export function Header() {
                   </span>
                   <div className="absolute inset-0 rounded-xl border-2 border-transparent group-hover:border-[#0D0D0D]/20 transition-all duration-300" />
                 </motion.button>
-                
                 <AnimatePresence>
                   {userMenuOpen && (
                     <motion.div
@@ -262,8 +240,6 @@ export function Header() {
                   )}
                 </AnimatePresence>
               </div>
-
-              
               <motion.button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 whileHover={{ scale: 1.08, y: -2 }}
@@ -280,8 +256,6 @@ export function Header() {
               </motion.button>
             </div>
           </div>
-
-          
           <div className="lg:hidden pb-4">
             <form onSubmit={handleSearch} className="relative">
               <div className={`relative flex items-center bg-[var(--header-gold,#A67C52)] rounded-full px-4 py-3 transition-all duration-300 ${
@@ -318,13 +292,10 @@ export function Header() {
           </div>
         </div>
       </div>
-
-      
       <div 
         className="bg-[var(--header-gold,#A67C52)] relative z-40"
       >
         <div className="container mx-auto px-4">
-          
           <nav className="hidden lg:flex items-center justify-center gap-2 py-4">
             {menuItems.map((item, index) => (
               <motion.a
@@ -336,36 +307,27 @@ export function Header() {
                 whileHover={{ y: -2, scale: 1.05 }}
                 className="relative px-6 py-2.5 text-[#0D0D0D] font-medium text-sm uppercase tracking-wide rounded-xl group overflow-hidden"
               >
-                
                 <motion.div
                   className="absolute inset-0 bg-[#0D0D0D]/15 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300"
                   initial={false}
                   whileHover={{ scale: 1.1 }}
                 />
-                
-                
                 <motion.div
                   className="absolute bottom-0 left-0 right-0 h-1 bg-[#0D0D0D] rounded-full opacity-0 group-hover:opacity-100"
                   initial={{ scaleX: 0 }}
                   whileHover={{ scaleX: 1 }}
                   transition={{ duration: 0.3 }}
                 />
-                
-                
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100"
                   initial={{ x: '-100%' }}
                   whileHover={{ x: '100%' }}
                   transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 0.5 }}
                 />
-                
-                
                 <span className="relative z-10 block transition-all duration-300 group-hover:font-semibold">{item.label}</span>
               </motion.a>
             ))}
           </nav>
-
-          
           <AnimatePresence>
             {isMenuOpen && (
               <motion.nav
@@ -385,20 +347,16 @@ export function Header() {
                     className="relative block px-6 py-3 text-[#0D0D0D] transition-all duration-300 rounded-xl font-medium uppercase tracking-wide group overflow-hidden"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    
                     <motion.div
                       className="absolute inset-0 bg-[#0D0D0D]/15 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300"
                       initial={false}
                     />
-                    
-                    
                     <motion.div
                       className="absolute left-0 top-0 bottom-0 w-1 bg-[#0D0D0D] rounded-full opacity-0 group-hover:opacity-100"
                       initial={{ scaleY: 0 }}
                       whileHover={{ scaleY: 1 }}
                       transition={{ duration: 0.3 }}
                     />
-                    
                     <span className="relative z-10 block transition-all duration-300 group-hover:font-semibold">{item.label}</span>
                   </motion.a>
                 ))}
@@ -407,8 +365,6 @@ export function Header() {
           </AnimatePresence>
         </div>
       </div>
-
-      
       <AnimatePresence>
         {showTrackingModal && (
           <motion.div
@@ -452,8 +408,6 @@ export function Header() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      
       <SidebarCart open={isCartSidebarOpen} onClose={() => setIsCartSidebarOpen(false)} />
     </header>
   )

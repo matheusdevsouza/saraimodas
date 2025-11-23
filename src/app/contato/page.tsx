@@ -1,17 +1,13 @@
 'use client'
-
 import { FaInstagram, FaFacebookF, FaTwitter, FaYoutube, FaWhatsapp, FaPhoneAlt, FaEnvelope, FaClock, FaMapMarkerAlt } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-
 interface FAQItemProps {
   faq: { pergunta: string; resposta: string };
   index: number;
 }
-
 const FAQItem = ({ faq, index }: FAQItemProps) => {
   const [open, setOpen] = useState(false);
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -49,11 +45,9 @@ const FAQItem = ({ faq, index }: FAQItemProps) => {
     </motion.div>
   );
 };
-
 const ContatoSkeleton = () => (
   <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
     <div className="max-w-5xl mx-auto flex flex-col gap-10">
-      
       <div className="mb-2">
         <div className="h-12 bg-gray-800 rounded-lg mx-auto max-w-md mb-4 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
@@ -62,8 +56,6 @@ const ContatoSkeleton = () => (
           <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
         </div>
       </div>
-
-      
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-6">
         {[...Array(4)].map((_, i) => (
           <div key={i} className="flex flex-col items-center bg-dark-900 rounded-xl p-6 shadow-sm min-w-[240px]">
@@ -82,8 +74,6 @@ const ContatoSkeleton = () => (
           </div>
         ))}
       </div>
-
-      
       <div className="max-w-3xl mx-auto">
         <div className="h-6 bg-gray-700 rounded w-48 mb-4 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
@@ -104,21 +94,16 @@ const ContatoSkeleton = () => (
         </div>
       </div>
     </div>
-
   </div>
 );
-
 export default function Contato() {
   const [loading, setLoading] = useState(true)
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
-
     return () => clearTimeout(timer);
   }, []);
-
   const faqs = [
     { pergunta: 'Quais são os horários de atendimento?', resposta: 'Nosso atendimento é de segunda a sexta, das 9h às 18h, exceto feriados.' },
     { pergunta: 'Como acompanho meu pedido?', resposta: 'Você pode acompanhar seu pedido acessando sua conta ou pelo link de rastreamento enviado por e-mail.' },
@@ -131,15 +116,12 @@ export default function Contato() {
     { pergunta: 'Posso alterar meu endereço após a compra?', resposta: 'Entre em contato o quanto antes para tentarmos alterar antes do envio.' },
     { pergunta: 'Recebi um produto com defeito, o que faço?', resposta: 'Entre em contato imediatamente para solucionarmos o problema o mais rápido possível.' },
   ]
-
   if (loading) {
     return <ContatoSkeleton />;
   }
-
   return (
     <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
       <div className="max-w-5xl mx-auto flex flex-col gap-10">
-        
         <motion.div 
           className="mb-2"
           initial={{ opacity: 0, y: 20 }}
@@ -149,8 +131,6 @@ export default function Contato() {
           <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-2 text-center">Central de Atendimento</h1>
           <p className="text-gray-400 text-lg mb-8 text-center">Tem alguma dúvida? Entre em contato, estamos aqui para te ajudar!</p>
         </motion.div>
-
-        
         <div className="flex flex-wrap justify-center gap-8 mb-6">
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
@@ -208,8 +188,6 @@ export default function Contato() {
             <span className="text-gray-300 text-base mt-1">CEP 03887-050</span>
           </motion.div>
         </div>
-
-        
         <motion.section 
           initial={{ opacity: 0, y: 30 }} 
           animate={{ opacity: 1, y: 0 }} 
@@ -224,7 +202,6 @@ export default function Contato() {
           </div>
         </motion.section>
       </div>
-      
     </div>
   )
 }

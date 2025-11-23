@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import database from '@/lib/database';
 import { authenticateUser, isAdmin } from '@/lib/auth';
 import { decryptFromDatabase } from '@/lib/transparent-encryption';
-
 export async function GET(request: NextRequest) {
   try {
     const user = await authenticateUser(request);
@@ -12,23 +11,19 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       );
     }
-
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const search = searchParams.get('search') || '';
     const status = searchParams.get('status') || '';
     const paymentStatus = searchParams.get('paymentStatus') || '';
-
     let whereClause = '';
     const params: any[] = [];
-
     if (search) {
       whereClause += ' WHERE (order_number LIKE ? OR customer_name LIKE ? OR customer_email LIKE ?)';
       const searchTerm = `%${search}%`;
       params.push(searchTerm, searchTerm, searchTerm);
     }
-
     if (status && status !== 'all') {
       if (whereClause) {
         whereClause += ' AND status = ?';
@@ -37,7 +32,6 @@ export async function GET(request: NextRequest) {
       }
       params.push(status);
     }
-
     if (paymentStatus && paymentStatus !== 'all') {
       if (whereClause) {
         whereClause += ' AND payment_status = ?';
@@ -46,23 +40,18 @@ export async function GET(request: NextRequest) {
       }
       params.push(paymentStatus);
     }
-
     const offset = (page - 1) * limit;
-    
     const orders = await database.query(`
       SELECT * FROM orders 
       ${whereClause}
       ORDER BY created_at DESC 
       LIMIT ? OFFSET ?
     `, [...params, limit.toString(), offset.toString()]);
-
     const totalResult = await database.query(`
       SELECT COUNT(*) as total FROM orders 
       ${whereClause}
     `, params);
-    
     const totalOrders = totalResult[0].total;
-
     const [statsResult] = await database.query(`
       SELECT 
         COUNT(*) as totalOrders,
@@ -75,14 +64,11 @@ export async function GET(request: NextRequest) {
         COUNT(CASE WHEN payment_status = 'paid' THEN 1 END) as paymentPaidCount
       FROM orders
     `);
-
     const displayData = (value: string | null, fieldName: string = 'campo') => {
       return value || null;
     };
-
     const orderIds = orders.map((order: any) => order.id);
     let orderItems: any[] = [];
-    
     if (orderIds.length > 0) {
       const placeholders = orderIds.map(() => '?').join(',');
       const [items] = await database.query(`
@@ -98,10 +84,8 @@ export async function GET(request: NextRequest) {
         WHERE order_id IN (${placeholders})
         ORDER BY order_id, id
       `, orderIds);
-      
       orderItems = Array.isArray(items) ? items : [];
     }
-
     const itemsByOrder = orderItems.reduce((acc: any, item: any) => {
       if (!acc[item.order_id]) {
         acc[item.order_id] = [];
@@ -117,7 +101,6 @@ export async function GET(request: NextRequest) {
       });
       return acc;
     }, {});
-
     const processedOrders = orders.map((order: any) => {
       const decryptedOrder = decryptFromDatabase('orders', order);
       return {
@@ -141,7 +124,6 @@ export async function GET(request: NextRequest) {
         items: itemsByOrder[decryptedOrder.id] || []
       };
     });
-
     const stats = {
       totalOrders: parseInt(statsResult.totalOrders) || 0,
       totalRevenue: parseFloat(statsResult.totalRevenue) || 0,
@@ -156,7 +138,6 @@ export async function GET(request: NextRequest) {
         paid: parseInt(statsResult.paymentPaidCount) || 0
       }
     };
-
     return NextResponse.json({
       success: true,
       data: {
@@ -170,7 +151,6 @@ export async function GET(request: NextRequest) {
         }
       }
     });
-
   } catch (error) {
     console.error('Erro ao buscar pedidos:', error);
     console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack trace');
@@ -184,7 +164,6 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
 export async function POST(request: NextRequest) {
   try {
     const user = await authenticateUser(request);
@@ -194,12 +173,10 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
-
     return NextResponse.json(
       { success: false, error: 'Método não implementado' },
       { status: 501 }
     );
-
   } catch (error) {
     console.error('Erro ao criar pedido:', error);
     return NextResponse.json(

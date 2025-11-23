@@ -1,11 +1,9 @@
 'use client'
-
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faTruck, faMapMarkerAlt, faClock, faBox, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
-
 interface TrackingResult {
   orderNumber: string
   status: string
@@ -14,27 +12,22 @@ interface TrackingResult {
   location: string
   description: string
 }
-
 export default function RastreioPage() {
   const [trackingCode, setTrackingCode] = useState('')
   const [isSearching, setIsSearching] = useState(false)
   const [trackingResult, setTrackingResult] = useState<TrackingResult | null>(null)
   const [error, setError] = useState('')
-
   const handleSearch = async () => {
     if (!trackingCode.trim()) {
       setError('Por favor, digite um código de rastreio')
       return
     }
-
     setIsSearching(true)
     setError('')
     setTrackingResult(null)
-
     try {
       const response = await fetch(`/api/tracking/search?code=${encodeURIComponent(trackingCode)}`)
       const data = await response.json()
-
       if (data.success) {
         const result: TrackingResult = {
           orderNumber: data.data.orderNumber,
@@ -54,23 +47,19 @@ export default function RastreioPage() {
       setIsSearching(false)
     }
   }
-
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSearch()
     }
   }
-
   const open17Track = () => {
     if (trackingCode) {
       const url = `https://17track.net/en/track?nums=${trackingCode}`
       window.open(url, '_blank')
     }
   }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950">
-      
       <div className="pt-32 pb-20">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <motion.div
@@ -84,19 +73,15 @@ export default function RastreioPage() {
                 className="text-white text-3xl" 
               />
             </div>
-            
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Rastreio de Pedidos
             </h1>
-            
             <p className="text-xl text-gray-300 leading-relaxed max-w-2xl mx-auto">
               Acompanhe o status do seu pedido em tempo real usando o código de rastreio
             </p>
           </motion.div>
         </div>
       </div>
-
-      
       <div className="max-w-2xl mx-auto px-4 mb-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -107,7 +92,6 @@ export default function RastreioPage() {
           <h2 className="text-2xl font-bold text-white mb-6 text-center">
             Digite seu código de rastreio
           </h2>
-          
           <div className="space-y-4">
             <div>
               <label className="block text-gray-300 text-sm font-medium mb-2">
@@ -128,7 +112,6 @@ export default function RastreioPage() {
                 />
               </div>
             </div>
-
             {error && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -138,7 +121,6 @@ export default function RastreioPage() {
                 {error}
               </motion.div>
             )}
-
             <button
               onClick={handleSearch}
               disabled={isSearching}
@@ -159,8 +141,6 @@ export default function RastreioPage() {
           </div>
         </motion.div>
       </div>
-
-      
       {trackingResult && (
         <div className="max-w-4xl mx-auto px-4 mb-16">
           <motion.div
@@ -180,7 +160,6 @@ export default function RastreioPage() {
                 Acompanhe o status do seu pedido
               </p>
             </div>
-
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="bg-dark-700/50 rounded-2xl p-6">
                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
@@ -193,7 +172,6 @@ export default function RastreioPage() {
                   <p><strong>Status:</strong> <span className="text-green-400">{trackingResult.status}</span></p>
                 </div>
               </div>
-
               <div className="bg-dark-700/50 rounded-2xl p-6">
                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                   <FontAwesomeIcon icon={faMapMarkerAlt} className="text-primary-400" />
@@ -206,7 +184,6 @@ export default function RastreioPage() {
                 </div>
               </div>
             </div>
-
             <div className="text-center space-y-4">
               <button
                 onClick={open17Track}
@@ -215,7 +192,6 @@ export default function RastreioPage() {
                 <FontAwesomeIcon icon={faTruck} />
                 Rastrear no 17Track
               </button>
-              
               <p className="text-sm text-gray-400">
                 Para mais detalhes, acesse o 17Track ou entre em contato conosco
               </p>
@@ -223,8 +199,6 @@ export default function RastreioPage() {
           </motion.div>
         </div>
       )}
-
-      
       <div className="max-w-4xl mx-auto px-4 pb-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -235,7 +209,6 @@ export default function RastreioPage() {
           <h2 className="text-2xl font-bold text-white mb-6 text-center">
             Como rastrear seu pedido
           </h2>
-          
           <div className="grid md:grid-cols-3 gap-6 mb-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-primary-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -246,7 +219,6 @@ export default function RastreioPage() {
                 Cole o código de rastreio que você recebeu por e-mail
               </p>
             </div>
-            
             <div className="text-center">
               <div className="w-16 h-16 bg-primary-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-primary-400 text-2xl font-bold">2</span>
@@ -256,7 +228,6 @@ export default function RastreioPage() {
                 Clique no botão para buscar informações atualizadas
               </p>
             </div>
-            
             <div className="text-center">
               <div className="w-16 h-16 bg-primary-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-primary-400 text-2xl font-bold">3</span>
@@ -267,7 +238,6 @@ export default function RastreioPage() {
               </p>
             </div>
           </div>
-
           <div className="text-center">
             <p className="text-gray-400 mb-4">
               Precisa de ajuda? Entre em contato conosco

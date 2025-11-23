@@ -1,18 +1,17 @@
 import { NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
-
+import database from '@/lib/database'
 export async function GET() {
   try {
-    const categories = await prisma.category.findMany({
-      where: { is_active: true },
-      orderBy: { name: 'asc' }
-    })
-
+    const categories = await database.query(
+      `SELECT * FROM categories WHERE is_active = TRUE ORDER BY name ASC`
+    )
+    const mappedCategories = categories.map((cat: any) => ({
+      ...cat,
+      is_active: Boolean(cat.is_active)
+    }))
     return NextResponse.json({
       success: true,
-      data: categories || []
+      data: mappedCategories || []
     })
   } catch (error) {
     console.error('Erro ao buscar categorias:', error)
@@ -21,7 +20,5 @@ export async function GET() {
       error: 'Erro interno do servidor',
       data: []
     }, { status: 500 })
-  } finally {
-    await prisma.$disconnect();
   }
 }

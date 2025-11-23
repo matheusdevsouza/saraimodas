@@ -1,5 +1,4 @@
 "use client"
-
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
@@ -11,7 +10,6 @@ import { useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faShoePrints, faCheck, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons';
 import CustomVideoPlayer from '@/components/CustomVideoPlayer';
-
 export default function ProdutoPage() {
   const { slug } = useParams();
   const [product, setProduct] = useState<any>(null);
@@ -32,22 +30,18 @@ export default function ProdutoPage() {
   const [addedToCart, setAddedToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
-
   const preloadImages = useCallback((images: any[]) => {
     images.forEach((img) => {
       const imageElement = new window.Image();
       imageElement.src = img.url;
     });
   }, []);
-
   const handleImageChange = useCallback((index: number) => {
     setSelectedImage(index);
     setCurrentImageIndex(index);
   }, []);
-
   const images = useMemo(() => product?.images || [], [product?.images]);
   const videos = useMemo(() => product?.videos || [], [product?.videos]);
-  
   const allMedia = useMemo(() => [
     ...images.map((img: any) => ({ ...img, type: 'image' })),
     ...videos.map((vid: any) => ({ ...vid, type: 'video', url: vid.url }))
@@ -56,7 +50,6 @@ export default function ProdutoPage() {
     if (!a.isPrimary && b.isPrimary) return 1;
     return 0;
   }), [images, videos]);
-
   const handleAddToCart = useCallback(() => {
     if (!product) return;
     const image = product.primary_image || product.image || (allMedia && allMedia[0]?.url) || '/images/Logo.png';
@@ -64,20 +57,16 @@ export default function ProdutoPage() {
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   }, [addItem, product, selectedSize, quantity, allMedia]);
-
   const isCurrentMediaVideo = allMedia[selectedImage]?.type === 'video';
   const effectiveZoomEnabled = zoomEnabled && !isCurrentMediaVideo;
-  
   useEffect(() => {
     if (isCurrentMediaVideo) {
       setZoomPos(null);
     }
   }, [isCurrentMediaVideo]);
-
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
   };
-
   const nextImage = useCallback(() => {
     setCurrentImageIndex(prev => {
       if (!allMedia || allMedia.length === 0) return prev;
@@ -86,7 +75,6 @@ export default function ProdutoPage() {
       return next;
     });
   }, [allMedia]);
-
   const prevImage = useCallback(() => {
     setCurrentImageIndex(prev => {
       if (!allMedia || allMedia.length === 0) return prev;
@@ -95,7 +83,6 @@ export default function ProdutoPage() {
       return newPrev;
     });
   }, [allMedia]);
-
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") nextImage();
@@ -104,7 +91,6 @@ export default function ProdutoPage() {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [nextImage, prevImage]);
-
   const shareProduct = async () => {
     if (!product) return;
     if (navigator.share) {
@@ -121,19 +107,15 @@ export default function ProdutoPage() {
       setShowShareModal(true);
     }
   };
-
-
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
       const res = await fetch(`/api/products/${slug}`);
       const data = await res.json();
       setProduct(data);
-      
       if (data && data.images && data.images.length > 0) {
         preloadImages(data.images);
       }
-      
       if (data && data.videos && data.videos.length > 0) {
         data.videos.forEach((video: any) => {
           const videoElement = document.createElement('video');
@@ -141,7 +123,6 @@ export default function ProdutoPage() {
           videoElement.preload = 'metadata';
         });
       }
-      
       setLoading(false);
       if (data && data.id) {
         const sug = await fetch(`/api/products/by-model/${data.slug}`);
@@ -154,7 +135,6 @@ export default function ProdutoPage() {
     };
     if (slug) fetchProduct();
   }, [slug, preloadImages]);
-
   function handleCalcularFrete() {
     if (!cep || cep.length < 8) {
       setFreteMsg("Digite um CEP válido.");
@@ -162,7 +142,6 @@ export default function ProdutoPage() {
     }
     setFreteMsg("Frete grátis para todo o Brasil!");
   }
-
   if (loading || !product) {
     return (
       <section className="min-h-screen bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950 py-8 md:py-16">
@@ -193,14 +172,11 @@ export default function ProdutoPage() {
       </section>
     );
   }
-
   const sizes = Array.from(new Set(product.sizes || [])) as string[];
   const care = product.care_instructions || `Evite lavar na máquina para preservar a estrutura.\nLimpe com pano úmido e sabão neutro.\nSeque à sombra para evitar desbotamento.\nGuarde em local arejado.`;
-
   const discount = product?.originalPrice && product?.price && product.originalPrice > product.price 
     ? ((product.originalPrice - product.price) / product.originalPrice) * 100 
     : 0;
-
   return (
     <section className="min-h-screen bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950 py-8 md:py-16">
       <div className="container mx-auto px-4">
@@ -219,7 +195,6 @@ export default function ProdutoPage() {
           <span className="text-gray-600">/</span>
           <span className="text-white font-semibold truncate max-w-xs">{product?.name || 'Produto'}</span>
         </motion.nav>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <motion.div 
             initial={{ opacity: 0, x: -50 }}
@@ -245,7 +220,6 @@ export default function ProdutoPage() {
                   </button>
                   </>
                 )}
-
                 <div
                   ref={zoomRef}
                   className={`relative w-full aspect-square rounded-2xl overflow-hidden bg-dark-800 border border-dark-700/50 shadow-2xl transition-all duration-300 ${
@@ -257,10 +231,8 @@ export default function ProdutoPage() {
                     const rect = e.currentTarget.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
-                    
                     const clampedX = Math.max(0, Math.min(x, rect.width));
                     const clampedY = Math.max(0, Math.min(y, rect.height));
-                    
                     setZoomPos({ x: clampedX, y: clampedY });
                   } : undefined}
                   onMouseLeave={() => setZoomPos(null)}
@@ -285,7 +257,6 @@ export default function ProdutoPage() {
                       )}
                     </>
                   )}
-
                   <AnimatePresence>
                   {effectiveZoomEnabled && zoomPos && allMedia[selectedImage] && allMedia[selectedImage].type === 'image' && zoomRef.current && (
                       <motion.div
@@ -305,9 +276,6 @@ export default function ProdutoPage() {
                       />
                     )}
                   </AnimatePresence>
-
-
-
                   <div className="absolute top-4 right-4 flex gap-2">
                     <button
                       onClick={() => setZoomEnabled(!zoomEnabled)}
@@ -333,7 +301,6 @@ export default function ProdutoPage() {
                     </button>
                   </div>
                 </div>
-
                 <div className="text-center mt-4">
                   <span className="text-xs text-gray-500 flex items-center justify-center gap-2 bg-dark-800/50 px-3 py-2 rounded-full">
                     {isCurrentMediaVideo ? (
@@ -353,7 +320,6 @@ export default function ProdutoPage() {
                   </span>
                 </div>
               </div>
-
               {allMedia.length > 1 && (
                 <div className="flex gap-3 mt-6 overflow-x-auto pb-2">
                   {allMedia.map((media: any, idx: number) => (
@@ -400,7 +366,6 @@ export default function ProdutoPage() {
                 </div>
               )}
             </div>
-
             <div className="hidden lg:block bg-dark-900/50 backdrop-blur-sm rounded-3xl border border-dark-700/50 overflow-hidden">
               <div className="flex border-b border-dark-700">
                 {['description', 'care'].map((tab) => (
@@ -418,7 +383,6 @@ export default function ProdutoPage() {
                   </button>
                 ))}
               </div>
-              
               <div className="p-6">
                 <AnimatePresence mode="wait">
                   {activeTab === 'description' && (
@@ -432,7 +396,6 @@ export default function ProdutoPage() {
                       {product?.description || 'Descrição não disponível.'}
                     </motion.div>
                   )}
-                  
                   {activeTab === 'care' && (
                     <motion.div
                       key="care"
@@ -449,13 +412,10 @@ export default function ProdutoPage() {
                       ))}
                     </motion.div>
                   )}
-                  
-
                 </AnimatePresence>
               </div>
             </div>
           </motion.div>
-
           <motion.div 
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -493,9 +453,6 @@ export default function ProdutoPage() {
                   </button>
                 </div>
               </div>
-
-
-
               <div className="mb-8">
                 <div className="flex items-baseline gap-3 mb-3">
                   <span className="text-4xl lg:text-5xl font-bold text-primary-400">
@@ -507,21 +464,17 @@ export default function ProdutoPage() {
                     </span>
                   )}
                 </div>
-                
                 <div className="text-gray-300 mb-4">
                   <span className="text-lg">
                     ou em até <strong>12x de R$ {product?.price ? (product.price / 12).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0,00'}</strong>
                   </span>
                 </div>
-
                 {discount > 0 && (
                   <div className="inline-block bg-primary-500/20 border border-primary-500/30 text-primary-400 px-4 py-2 rounded-full text-sm font-bold">
                     <FontAwesomeIcon icon={faMoneyBillWave} className="mr-2" /> {Math.round(discount)}% de desconto
                   </div>
                 )}
               </div>
-
-              
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-lg font-semibold text-white">Tamanho</span>
@@ -536,7 +489,6 @@ export default function ProdutoPage() {
                     }
                   </span>
                 </div>
-                
                 {sizes.length > 0 ? (
                   <div className="grid grid-cols-4 gap-3">
                     {sizes.map((sizeData: any) => {
@@ -545,7 +497,6 @@ export default function ProdutoPage() {
                       const available = typeof sizeData === 'object' ? sizeData.available : true;
                       const isSelected = selectedSize === size;
                       const isOutOfStock = !available || stock <= 0;
-                      
                       return (
                         <motion.button
                           key={size}
@@ -572,7 +523,6 @@ export default function ProdutoPage() {
                     <p>Nenhum tamanho disponível no momento</p>
                   </div>
                 )}
-                
                 {selectedSize && (
                   <div className="mt-4 p-3 bg-dark-800 rounded-lg border border-dark-700">
                     <p className="text-sm text-gray-300">
@@ -581,8 +531,6 @@ export default function ProdutoPage() {
                   </div>
                 )}
               </div>
-
-              
               <div className="mb-8">
                 <span className="block text-lg font-semibold text-white mb-3">Quantidade</span>
                 <div className="flex items-center gap-3">
@@ -607,8 +555,6 @@ export default function ProdutoPage() {
                   </span>
                 </div>
               </div>
-
-              
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -640,8 +586,6 @@ export default function ProdutoPage() {
                   )}
                 </AnimatePresence>
               </motion.button>
-
-              
               <div className="mt-6 space-y-3">
                 <div className="flex items-center gap-3 text-sm text-gray-400">
                   <Truck size={18} />
@@ -653,10 +597,7 @@ export default function ProdutoPage() {
                 </div>
               </div>
             </div>
-
-            
             <div className="bg-dark-900/50 backdrop-blur-sm rounded-3xl border border-dark-700/50">
-              
               <div className="hidden md:block p-6">
                 <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                   <Truck size={20} className="text-primary-400" />
@@ -688,8 +629,6 @@ export default function ProdutoPage() {
                   </motion.div>
                 )}
               </div>
-
-              
               <div className="md:hidden p-4">
                 <h3 className="text-xl font-bold text-white mb-4 flex items-center justify-center gap-3">
                   <div className="w-10 h-10 bg-primary-500/20 rounded-full flex items-center justify-center">
@@ -697,7 +636,6 @@ export default function ProdutoPage() {
                   </div>
                   Calcular Frete
                 </h3>
-                
                 <div className="space-y-4">
                   <div className="relative">
                     <input
@@ -712,7 +650,6 @@ export default function ProdutoPage() {
                       <div className="w-2 h-2 bg-primary-400 rounded-full"></div>
                     </div>
                   </div>
-                  
                   <button
                     onClick={handleCalcularFrete}
                     className="w-full bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-bold py-4 px-6 rounded-2xl text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
@@ -720,7 +657,6 @@ export default function ProdutoPage() {
                     Calcular Frete
                 </button>
                 </div>
-
                 {freteMsg && (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
@@ -736,8 +672,6 @@ export default function ProdutoPage() {
                 )}
               </div>
             </div>
-
-            
             <div className="lg:hidden bg-dark-900/50 backdrop-blur-sm rounded-3xl border border-dark-700/50 overflow-hidden mt-6">
               <div className="flex border-b border-dark-700">
                 {['description', 'care'].map((tab) => (
@@ -755,7 +689,6 @@ export default function ProdutoPage() {
                   </button>
                 ))}
               </div>
-              
               <div className="p-6">
                 <AnimatePresence mode="wait">
                   {activeTab === 'description' && (
@@ -769,7 +702,6 @@ export default function ProdutoPage() {
                       {product?.description || 'Descrição não disponível.'}
                     </motion.div>
                   )}
-                  
                   {activeTab === 'care' && (
                     <motion.div
                       key="care"
@@ -791,8 +723,6 @@ export default function ProdutoPage() {
             </div>
           </motion.div>
         </div>
-
-        
       {suggested.length > 0 && (
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
@@ -843,8 +773,6 @@ export default function ProdutoPage() {
         </div>
           </motion.div>
       )}
-
-        
       {similar.length > 0 && (
           <motion.div 
             initial={{ opacity: 0, y: 50 }}
@@ -896,8 +824,6 @@ export default function ProdutoPage() {
           </motion.div>
         )}
       </div>
-
-      
       <AnimatePresence>
         {showShareModal && (
           <motion.div
@@ -942,5 +868,4 @@ export default function ProdutoPage() {
     </section>
   );
 }
-
  

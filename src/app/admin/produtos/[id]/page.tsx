@@ -1,11 +1,9 @@
 "use client"
-
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { FaSpinner, FaSave, FaArrowLeft, FaCheckCircle } from 'react-icons/fa'
 import MediaManager from '@/components/admin/MediaManager'
 import ProductSizesManager from '@/components/admin/ProductSizesManager'
-
 interface Product {
   id: number
   name: string
@@ -16,22 +14,18 @@ interface Product {
   brand_id?: number
   model_id?: number
 }
-
 interface Brand {
   id: number;
   name: string;
 }
-
 interface Model {
   id: number;
   name: string;
 }
-
 export default function ProductDetailPage() {
   const router = useRouter()
   const params = useParams()
   const id = Number(params?.id)
-
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -39,30 +33,23 @@ export default function ProductDetailPage() {
   const [saved, setSaved] = useState(false)
   const [brands, setBrands] = useState<Brand[]>([])
   const [models, setModels] = useState<Model[]>([])
-
   useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true)
-        
         const [productRes, brandsRes, modelsRes] = await Promise.all([
           fetch(`/api/admin/products/${id}`),
           fetch('/api/brands'),
           fetch('/api/models')
         ])
-        
         if (!productRes.ok) throw new Error('Falha ao carregar produto')
-        
         const productData = await productRes.json()
         const brandsData = await brandsRes.json()
         const modelsData = await modelsRes.json()
-        
         const data = productData.product
-        
         if (!data || !data.id) {
           throw new Error('Dados do produto inválidos')
         }
-        
         setProduct({
           id: data.id,
           name: data.name || '',
@@ -73,10 +60,8 @@ export default function ProductDetailPage() {
           brand_id: data.brand_id ? Number(data.brand_id) : undefined,
           model_id: data.model_id ? Number(data.model_id) : undefined
         })
-        
         if (brandsData.success) setBrands(brandsData.data || [])
         if (modelsData.success) setModels(modelsData.data || [])
-        
       } catch (e: any) {
         setError(e.message || 'Erro inesperado')
       } finally {
@@ -85,7 +70,6 @@ export default function ProductDetailPage() {
     }
     if (id) fetchData()
   }, [id])
-
   async function handleSave() {
     if (!product) return
     try {
@@ -113,7 +97,6 @@ export default function ProductDetailPage() {
       setSaving(false)
     }
   }
-
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
@@ -121,7 +104,6 @@ export default function ProductDetailPage() {
       </div>
     )
   }
-
   if (error) {
     return (
       <div className="p-6">
@@ -131,13 +113,10 @@ export default function ProductDetailPage() {
       </div>
     )
   }
-
   if (!product) return null
-
   return (
     <div className="admin-product-page min-h-screen bg-dark-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
-        
         <div className="mb-4 sm:mb-6">
           <button 
             onClick={() => router.back()} 
@@ -147,9 +126,7 @@ export default function ProductDetailPage() {
             <span className="hidden xs:inline">Voltar</span>
           </button>
         </div>
-
         <div className="bg-dark-800/60 border border-dark-700/60 rounded-xl sm:rounded-2xl overflow-hidden">
-          
           <div className="p-4 sm:p-6 border-b border-dark-700/60">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
@@ -160,7 +137,6 @@ export default function ProductDetailPage() {
                   Gerencie as informações e configurações do produto
                 </p>
               </div>
-              
               <button
                 onClick={handleSave}
                 disabled={saving}
@@ -182,20 +158,15 @@ export default function ProductDetailPage() {
               </button>
             </div>
           </div>
-
           <div className="p-4 sm:p-6">
-            
             {saved && (
               <div className="flex items-center gap-2 text-green-400 mb-6 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
                 <FaCheckCircle size={16} />
                 <span className="text-sm">Alterações salvas com sucesso!</span>
               </div>
             )}
-
             <div className="space-y-6">
-              
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                
                 <div className="lg:col-span-2">
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Nome do Produto
@@ -207,7 +178,6 @@ export default function ProductDetailPage() {
                     placeholder="Digite o nome do produto"
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Marca
@@ -223,7 +193,6 @@ export default function ProductDetailPage() {
                     ))}
                   </select>
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Modelo
@@ -239,7 +208,6 @@ export default function ProductDetailPage() {
                     ))}
                   </select>
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Preço (R$)
@@ -253,7 +221,6 @@ export default function ProductDetailPage() {
                     placeholder="0.00"
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Estoque Total
@@ -266,7 +233,6 @@ export default function ProductDetailPage() {
                     placeholder="0"
                   />
                 </div>
-
                 <div className="lg:col-span-2">
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Status do Produto
@@ -280,7 +246,6 @@ export default function ProductDetailPage() {
                     <option value="false">❌ Inativo</option>
                   </select>
                 </div>
-
                 <div className="lg:col-span-2">
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Descrição
@@ -297,16 +262,13 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
-
         <div className="mt-6 sm:mt-8 space-y-6 sm:space-y-8">
-          
           <div className="hidden sm:block">
             <ProductSizesManager 
               productId={product.id} 
               productName={product.name}
             />
           </div>
-
           <div className="block sm:hidden">
             <div className="bg-dark-800/60 border border-dark-700/60 rounded-xl overflow-hidden">
               <div className="p-4 border-b border-dark-700/60">
@@ -339,7 +301,6 @@ export default function ProductDetailPage() {
               </div>
             </div>
           </div>
-
           <div className="bg-dark-800/60 border border-dark-700/60 rounded-xl sm:rounded-2xl overflow-hidden">
             <div className="p-4 sm:p-6 border-b border-dark-700/60">
               <h2 className="text-lg sm:text-xl font-semibold text-white">
@@ -359,7 +320,6 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
-
         <div className="fixed bottom-4 right-4 sm:hidden z-50">
           <button
             onClick={handleSave}

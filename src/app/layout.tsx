@@ -5,24 +5,20 @@ import { LayoutShell } from '@/components/LayoutShell'
 import { CartProvider } from '@/contexts/CartContext'
 import { AuthProvider } from '@/contexts/AuthContext'
 import Link from 'next/link'
-
 const montserrat = Montserrat({ 
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700'],
   variable: '--font-montserrat',
 })
-
 const inter = Inter({ 
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700'],
   variable: '--font-inter',
 })
-
 export const metadata: Metadata = {
   title: 'Sarai Modas - Moda Feminina de Alta Sofisticação',
   description: 'Elegância em cada detalhe. Descubra a nova coleção Sarai Modas.',
 }
-
 export default function RootLayout({
   children,
 }: {

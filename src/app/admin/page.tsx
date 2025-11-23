@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -14,7 +13,6 @@ import {
   FaRedo,
   FaCheckCircle
 } from 'react-icons/fa';
-
 interface DashboardStats {
   products: {
     total: number;
@@ -58,22 +56,18 @@ interface DashboardStats {
     }>;
   };
 }
-
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [period, setPeriod] = useState('month');
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
-
   const fetchDashboardStats = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
       const response = await fetch(`/api/admin/dashboard?period=${period}`);
       const result = await response.json();
-      
       if (result.success) {
         setStats(result.data);
         setLastUpdate(new Date());
@@ -87,15 +81,12 @@ export default function AdminDashboard() {
       setLoading(false);
     }
   }, [period]);
-
   useEffect(() => {
     fetchDashboardStats();
   }, [fetchDashboardStats]);
-
   const refreshStats = () => {
     fetchDashboardStats();
   };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'text-yellow-400';
@@ -106,7 +97,6 @@ export default function AdminDashboard() {
       default: return 'text-gray-400';
     }
   };
-
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'pending': return 'Pendente';
@@ -117,7 +107,6 @@ export default function AdminDashboard() {
       default: return status;
     }
   };
-
   if (loading) {
     return (
       <div className="space-y-6">
@@ -132,7 +121,6 @@ export default function AdminDashboard() {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className="space-y-6">
@@ -150,7 +138,6 @@ export default function AdminDashboard() {
       </div>
     );
   }
-
   if (!stats) {
     return (
       <div className="space-y-6">
@@ -160,7 +147,6 @@ export default function AdminDashboard() {
       </div>
     );
   }
-
   const statsCards = [
     {
       title: 'Total de Produtos',
@@ -203,7 +189,6 @@ export default function AdminDashboard() {
       borderColor: 'border-primary-500/30'
     }
   ];
-
   const alerts = [
     ...((stats?.products?.lowStockCount || 0) > 0 ? [{
       type: 'warning',
@@ -228,9 +213,6 @@ export default function AdminDashboard() {
       iconBg: 'bg-primary-500/20'
     }] : [])
   ];
-
-
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -240,15 +222,12 @@ export default function AdminDashboard() {
       }
     }
   };
-
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 }
   };
-
   return (
     <div className="space-y-6">
-      
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -285,8 +264,6 @@ export default function AdminDashboard() {
           </div>
         </div>
       </motion.div>
-
-      
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -308,21 +285,15 @@ export default function AdminDashboard() {
                 {stat.change}
               </div>
             </div>
-            
             <div className="mb-2">
               <div className="text-xl font-bold text-white">{stat.value}</div>
               <div className="text-xs text-gray-400">{stat.title}</div>
             </div>
-
-            
             <div className={`absolute inset-0 rounded-xl bg-gradient-to-r ${stat.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300 -z-10`}></div>
           </motion.div>
         ))}
       </motion.div>
-
-      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -366,11 +337,7 @@ export default function AdminDashboard() {
             </motion.div>
           )}
         </motion.div>
-
-
       </div>
-
-      
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -383,7 +350,6 @@ export default function AdminDashboard() {
             Ver todas
           </button>
         </div>
-        
         <div className="space-y-3">
           {stats?.recentActivity?.orders?.map((order, index) => (
             <motion.div
@@ -405,7 +371,6 @@ export default function AdminDashboard() {
               </div>
             </motion.div>
           ))}
-          
           {stats?.recentActivity?.products?.map((product, index) => (
             <motion.div
               key={`product-${product.id}`}

@@ -4,17 +4,14 @@ import database from "@/lib/database";
 export async function GET(request: NextRequest) {
   try {
     const userPayload = await authenticateUser(request);
-    
     if (!userPayload) {
       return NextResponse.json({ message: "Não autorizado" }, { status: 401 });
     }
-
     const addresses = await database.query(`
       SELECT * FROM addresses 
       WHERE user_id = ? 
       ORDER BY is_default DESC, created_at DESC
     `, [userPayload.userId]);
-
     return NextResponse.json(addresses);
   } catch (error) {
     console.error("Erro ao buscar endereços:", error);
@@ -24,39 +21,30 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
 export async function POST(request: NextRequest) {
   try {
     const userPayload = await authenticateUser(request);
-    
     if (!userPayload) {
       return NextResponse.json({ message: "Não autorizado" }, { status: 401 });
     }
-
     const user = await database.query(`SELECT * FROM users WHERE id = ? AND is_active = 1`, [userPayload.userId]);
-
     if (!user || user.length === 0) {
       return NextResponse.json({ message: "Usuário não encontrado" }, { status: 404 });
     }
-
     const body = await request.json();
     const { name, street, number, complement, neighborhood, city, state, zip_code } = body;
-
     if (!street || !number || !neighborhood || !city || !state || !zip_code) {
       return NextResponse.json(
         { message: "Todos os campos obrigatórios devem ser preenchidos" },
         { status: 400 }
       );
     }
-
     const existingAddresses = await database.query(`SELECT COUNT(*) as count FROM addresses WHERE user_id = ?`, [userPayload.userId]);
     const isDefault = existingAddresses[0].count === 0;
-
     const address = await database.query(`
       INSERT INTO addresses (user_id, name, street, number, complement, neighborhood, city, state, zip_code, is_default, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
     `, [userPayload.userId, name || null, street, number, complement || null, neighborhood, city, state.toUpperCase(), zip_code, isDefault]);
-
     const newAddress = await database.query(`SELECT * FROM addresses WHERE id = LAST_INSERT_ID()`);
     return NextResponse.json(newAddress[0], { status: 201 });
   } catch (error) {

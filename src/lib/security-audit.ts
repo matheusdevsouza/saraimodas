@@ -1,8 +1,5 @@
 import crypto from 'crypto';
 import database from './database';
-
-
-
 interface SecurityAuditResult {
   timestamp: string;
   testName: string;
@@ -10,21 +7,17 @@ interface SecurityAuditResult {
   details: string;
   recommendation?: string;
 }
-
 interface SecurityReport {
   overallStatus: 'SECURE' | 'VULNERABLE' | 'NEEDS_ATTENTION';
   score: number;
   tests: SecurityAuditResult[];
   timestamp: string;
 }
-
-
 export async function testEncryption(): Promise<SecurityAuditResult> {
   try {
     const testData = 'test-sensitive-data-123';
     const encrypted = encrypt(testData);
     const decrypted = decrypt(encrypted);
-    
     if (decrypted === testData) {
       return {
         timestamp: new Date().toISOString(),
@@ -51,8 +44,6 @@ export async function testEncryption(): Promise<SecurityAuditResult> {
     };
   }
 }
-
-
 export async function checkUnencryptedSensitiveData(): Promise<SecurityAuditResult> {
   try {
     const sensitiveData = await database.query(`
@@ -61,9 +52,7 @@ export async function checkUnencryptedSensitiveData(): Promise<SecurityAuditResu
       WHERE customer_cpf IS NOT NULL 
       AND customer_cpf REGEXP '^[0-9]{11}$'
     `);
-    
     const unencryptedCount = sensitiveData[0]?.count || 0;
-    
     if (unencryptedCount === 0) {
       return {
         timestamp: new Date().toISOString(),
@@ -90,17 +79,13 @@ export async function checkUnencryptedSensitiveData(): Promise<SecurityAuditResu
     };
   }
 }
-
-
 export async function testSQLInjectionProtection(): Promise<SecurityAuditResult> {
   try {
     const maliciousInput = "'; DROP TABLE orders; --";
-    
     const result = await database.query(
       'SELECT COUNT(*) as count FROM orders WHERE id = ?',
       [maliciousInput]
     );
-    
     return {
       timestamp: new Date().toISOString(),
       testName: 'SQL Injection Protection',
@@ -117,12 +102,9 @@ export async function testSQLInjectionProtection(): Promise<SecurityAuditResult>
     };
   }
 }
-
-
 export async function checkAuditLogging(): Promise<SecurityAuditResult> {
   try {
     const hasRecentLogs = true; 
-    
     if (hasRecentLogs) {
       return {
         timestamp: new Date().toISOString(),
@@ -149,8 +131,6 @@ export async function checkAuditLogging(): Promise<SecurityAuditResult> {
     };
   }
 }
-
-
 export async function checkPasswordSecurity(): Promise<SecurityAuditResult> {
   try {
     const users = await database.query(`
@@ -159,9 +139,7 @@ export async function checkPasswordSecurity(): Promise<SecurityAuditResult> {
       WHERE password IS NOT NULL 
       AND LENGTH(password) < 60
     `);
-    
     const weakPasswords = users[0]?.count || 0;
-    
     if (weakPasswords === 0) {
       return {
         timestamp: new Date().toISOString(),
@@ -188,8 +166,6 @@ export async function checkPasswordSecurity(): Promise<SecurityAuditResult> {
     };
   }
 }
-
-
 export async function checkTestDataInProduction(): Promise<SecurityAuditResult> {
   try {
     const testData = await database.query(`
@@ -199,9 +175,7 @@ export async function checkTestDataInProduction(): Promise<SecurityAuditResult> 
       OR customer_email LIKE '%@example.com'
       OR order_number LIKE 'TEST%'
     `);
-    
     const testCount = testData[0]?.count || 0;
-    
     if (testCount === 0) {
       return {
         timestamp: new Date().toISOString(),
@@ -228,11 +202,8 @@ export async function checkTestDataInProduction(): Promise<SecurityAuditResult> 
     };
   }
 }
-
-
 export async function runSecurityAudit(): Promise<SecurityReport> {
   console.log('🔍 Iniciando auditoria de segurança...');
-  
   const tests = [
     testEncryption(),
     checkUnencryptedSensitiveData(),
@@ -241,15 +212,11 @@ export async function runSecurityAudit(): Promise<SecurityReport> {
     checkPasswordSecurity(),
     checkTestDataInProduction()
   ];
-  
   const results = await Promise.all(tests);
-  
   const passCount = results.filter(r => r.status === 'PASS').length;
   const failCount = results.filter(r => r.status === 'FAIL').length;
   const warningCount = results.filter(r => r.status === 'WARNING').length;
-  
   const score = Math.round((passCount / results.length) * 100);
-  
   let overallStatus: 'SECURE' | 'VULNERABLE' | 'NEEDS_ATTENTION';
   if (failCount > 0) {
     overallStatus = 'VULNERABLE';
@@ -258,23 +225,18 @@ export async function runSecurityAudit(): Promise<SecurityReport> {
   } else {
     overallStatus = 'SECURE';
   }
-  
   const report: SecurityReport = {
     overallStatus,
     score,
     tests: results,
     timestamp: new Date().toISOString()
   };
-  
   console.log(`✅ Auditoria concluída: ${overallStatus} (Score: ${score}%)`);
-  
   return report;
 }
-
 function encrypt(text: string): string {
   return Buffer.from(text).toString('base64');
 }
-
 function decrypt(text: string): string {
   return Buffer.from(text, 'base64').toString('utf-8');
 }

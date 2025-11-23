@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import database from '@/lib/database';
 import { authenticateUser, isAdmin } from '@/lib/auth';
-
 export async function GET(request: NextRequest) {
   try {
     const user = await authenticateUser(request);
@@ -11,13 +10,10 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       );
     }
-
     const { searchParams } = new URL(request.url);
     const period = searchParams.get('period') || 'month';
-
     const now = new Date();
     let startDate: Date;
-    
     switch (period) {
       case 'week':
         startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -31,7 +27,6 @@ export async function GET(request: NextRequest) {
       default:
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
     }
-
     const [
       productsStats,
       ordersStats,
@@ -48,7 +43,6 @@ export async function GET(request: NextRequest) {
           COUNT(CASE WHEN stock_quantity <= min_stock_level THEN 1 END) as lowStockCount
         FROM products
       `),
-      
       database.query(`
         SELECT 
           COUNT(*) as total,
@@ -59,21 +53,18 @@ export async function GET(request: NextRequest) {
           COUNT(CASE WHEN status = 'delivered' THEN 1 END) as delivered
         FROM orders
       `),
-      
       database.query(`
         SELECT 
           COUNT(*) as total,
           COUNT(CASE WHEN created_at >= ? THEN 1 END) as newThisPeriod
         FROM users
       `, [startDate]),
-      
       database.query(`
         SELECT 
           SUM(CASE WHEN created_at >= ? THEN total_amount ELSE 0 END) as current,
           SUM(CASE WHEN created_at < ? AND created_at >= ? THEN total_amount ELSE 0 END) as previous
         FROM orders
       `, [startDate, startDate, new Date(startDate.getTime() - (now.getTime() - startDate.getTime()))]),
-      
       database.query(`
         SELECT 
           o.id,
@@ -86,7 +77,6 @@ export async function GET(request: NextRequest) {
         ORDER BY o.created_at DESC
         LIMIT 5
       `),
-      
       database.query(`
         SELECT 
           p.id,
@@ -102,11 +92,9 @@ export async function GET(request: NextRequest) {
         LIMIT 5
       `)
     ]);
-
     const currentRevenue = parseFloat(revenueStats[0].current) || 0;
     const previousRevenue = parseFloat(revenueStats[0].previous) || 0;
     const revenueChange = previousRevenue > 0 ? ((currentRevenue - previousRevenue) / previousRevenue) * 100 : 0;
-
     const processedRecentOrders = recentOrders.map((order: any) => ({
       id: order.id,
       orderNumber: order.order_number,
@@ -115,7 +103,6 @@ export async function GET(request: NextRequest) {
       status: order.status,
       createdAt: order.created_at
     }));
-
     const processedRecentProducts = recentProducts.map((product: any) => ({
       id: product.id,
       name: product.name,
@@ -125,7 +112,6 @@ export async function GET(request: NextRequest) {
       status: product.status,
       createdAt: product.created_at
     }));
-
     const dashboardData = {
       products: {
         total: parseInt(productsStats[0].total) || 0,
@@ -156,12 +142,10 @@ export async function GET(request: NextRequest) {
         products: processedRecentProducts
       }
     };
-
     return NextResponse.json({
       success: true,
       data: dashboardData
     });
-
   } catch (error) {
     console.error('Erro ao buscar dashboard:', error);
     return NextResponse.json(

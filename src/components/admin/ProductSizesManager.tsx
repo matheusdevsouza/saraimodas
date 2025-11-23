@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -13,7 +12,6 @@ import {
   FaExclamationTriangle,
   FaRuler
 } from 'react-icons/fa';
-
 interface ProductSize {
   id: number;
   product_id: number;
@@ -23,24 +21,20 @@ interface ProductSize {
   created_at: string;
   updated_at: string;
 }
-
 interface ProductSizesManagerProps {
   productId: number;
   productName: string;
 }
-
 export default function ProductSizesManager({ productId, productName }: ProductSizesManagerProps) {
   const [sizes, setSizes] = useState<ProductSize[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingSize, setEditingSize] = useState<string | null>(null);
   const [newSize, setNewSize] = useState('');
   const [newStock, setNewStock] = useState(0);
-  
   const [showEditForm, setShowEditForm] = useState(false);
   const [editSizeData, setEditSizeData] = useState<{
     id?: number;
@@ -49,15 +43,12 @@ export default function ProductSizesManager({ productId, productName }: ProductS
     stock: number;
     isActive: boolean;
   } | null>(null);
-
   const fetchSizes = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
       const response = await fetch(`/api/admin/products/${productId}/sizes`);
       const data = await response.json();
-      
       if (data.success) {
         setSizes(data.data.sizes || []);
       } else {
@@ -69,22 +60,18 @@ export default function ProductSizesManager({ productId, productName }: ProductS
       setLoading(false);
     }
   }, [productId]);
-
   const handleAddSize = async () => {
     if (!newSize.trim()) {
       setError('Tamanho é obrigatório');
       return;
     }
-
     if (newStock < 0) {
       setError('Estoque deve ser maior ou igual a zero');
       return;
     }
-
     try {
       setSaving(true);
       setError(null);
-
       const response = await fetch(`/api/admin/products/${productId}/sizes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -93,9 +80,7 @@ export default function ProductSizesManager({ productId, productName }: ProductS
           stock_quantity: newStock
         })
       });
-
       const data = await response.json();
-
       if (data.success) {
         setSuccess('Tamanho adicionado com sucesso!');
         setNewSize('');
@@ -112,15 +97,12 @@ export default function ProductSizesManager({ productId, productName }: ProductS
       setSaving(false);
     }
   };
-
   const handleUpdateStock = async (size: string, stock: number) => {
     try {
       setSaving(true);
       setError(null);
-
       const current = sizes.find(s => s.size === size);
       const isActive = current ? current.is_active : true;
-
       const response = await fetch(`/api/admin/products/${productId}/sizes`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -130,9 +112,7 @@ export default function ProductSizesManager({ productId, productName }: ProductS
           is_active: isActive
         })
       });
-
       const data = await response.json();
-
       if (data.success) {
         setSuccess('Estoque atualizado com sucesso!');
         await fetchSizes();
@@ -146,7 +126,6 @@ export default function ProductSizesManager({ productId, productName }: ProductS
       setSaving(false);
     }
   };
-
   const handleEditSize = (size: ProductSize) => {
     setEditSizeData({
       id: size.id,
@@ -158,16 +137,12 @@ export default function ProductSizesManager({ productId, productName }: ProductS
     setShowEditForm(true);
     setEditingSize(null); 
   };
-
   const handleSaveEdit = async () => {
     if (!editSizeData) return;
-
     try {
       setSaving(true);
       setError(null);
-
       const finalIsActive = editSizeData.stock === 0 ? false : editSizeData.isActive;
-
       const response = await fetch(`/api/admin/products/${productId}/sizes`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -179,9 +154,7 @@ export default function ProductSizesManager({ productId, productName }: ProductS
           is_active: finalIsActive
         })
       });
-
       const data = await response.json();
-
       if (data.success) {
         setSuccess('Tamanho atualizado com sucesso!');
         setShowEditForm(false);
@@ -197,29 +170,23 @@ export default function ProductSizesManager({ productId, productName }: ProductS
       setSaving(false);
     }
   };
-
   const handleCancelEdit = () => {
     setShowEditForm(false);
     setEditSizeData(null);
     setEditingSize(null);
     setError(null);
   };
-
   const handleRemoveSize = async (size: string) => {
     if (!confirm(`Tem certeza que deseja remover o tamanho ${size}?`)) {
       return;
     }
-
     try {
       setSaving(true);
       setError(null);
-
       const response = await fetch(`/api/admin/products/${productId}/sizes?size=${encodeURIComponent(size)}`, {
         method: 'DELETE'
       });
-
       const data = await response.json();
-
       if (data.success) {
         setSuccess('Tamanho removido com sucesso!');
         await fetchSizes();
@@ -233,15 +200,12 @@ export default function ProductSizesManager({ productId, productName }: ProductS
       setSaving(false);
     }
   };
-
   const totalStock = sizes.reduce((sum, size) => sum + size.stock_quantity, 0);
-
   useEffect(() => {
     if (productId) {
       fetchSizes();
     }
   }, [productId, fetchSizes]);
-
   if (loading) {
     return (
       <div className="bg-dark-800/60 border border-dark-700/60 rounded-xl p-6">
@@ -252,10 +216,8 @@ export default function ProductSizesManager({ productId, productName }: ProductS
       </div>
     );
   }
-
   return (
     <div className="bg-dark-800/60 border border-dark-700/60 rounded-xl p-6 space-y-6">
-      
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-primary-500/20 rounded-lg">
@@ -275,8 +237,6 @@ export default function ProductSizesManager({ productId, productName }: ProductS
           Adicionar Tamanho
         </button>
       </div>
-
-      
       <AnimatePresence>
         {error && (
           <motion.div
@@ -289,7 +249,6 @@ export default function ProductSizesManager({ productId, productName }: ProductS
             {error}
           </motion.div>
         )}
-        
         {success && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -302,8 +261,6 @@ export default function ProductSizesManager({ productId, productName }: ProductS
           </motion.div>
         )}
       </AnimatePresence>
-
-      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-dark-700/30 rounded-lg p-4">
           <div className="text-2xl font-bold text-white">{sizes.length}</div>
@@ -320,8 +277,6 @@ export default function ProductSizesManager({ productId, productName }: ProductS
           <div className="text-sm text-gray-400">Tamanhos com Estoque</div>
         </div>
       </div>
-
-      
       <AnimatePresence>
         {showAddForm && (
           <motion.div
@@ -380,8 +335,6 @@ export default function ProductSizesManager({ productId, productName }: ProductS
           </motion.div>
         )}
       </AnimatePresence>
-
-      
       {sizes.length === 0 ? (
         <div className="text-center py-8 text-gray-400">
           <FaRuler size={48} className="mx-auto mb-3 opacity-50" />
@@ -484,8 +437,6 @@ export default function ProductSizesManager({ productId, productName }: ProductS
           </div>
         </div>
       )}
-
-      
       <AnimatePresence>
         {showEditForm && editSizeData && (
           <motion.div
@@ -502,7 +453,6 @@ export default function ProductSizesManager({ productId, productName }: ProductS
               className="bg-dark-900/50 backdrop-blur-sm rounded-3xl w-full max-w-md border border-dark-700/50 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              
               <div className="flex items-center justify-between p-6 border-b border-dark-700/50">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-primary-500/20 rounded-lg">
@@ -518,8 +468,6 @@ export default function ProductSizesManager({ productId, productName }: ProductS
                   <FaTimes size={20} />
                 </button>
               </div>
-
-              
               <div className="p-6 space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-3">
@@ -534,7 +482,6 @@ export default function ProductSizesManager({ productId, productName }: ProductS
                     maxLength={10}
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-3">
                     Quantidade em Estoque
@@ -555,7 +502,6 @@ export default function ProductSizesManager({ productId, productName }: ProductS
                     placeholder="0"
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-3">
                     Status do Tamanho
@@ -587,8 +533,6 @@ export default function ProductSizesManager({ productId, productName }: ProductS
                   </div>
                 </div>
               </div>
-
-              
               <div className="flex items-center justify-end gap-4 p-6 border-t border-dark-700/50">
                 <button
                   onClick={handleCancelEdit}

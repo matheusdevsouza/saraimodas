@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
@@ -20,7 +19,6 @@ import {
   FaVolumeMute
 } from 'react-icons/fa';
 import CustomVideoPlayer from '../CustomVideoPlayer';
-
 interface MediaItem {
   id: number;
   url: string;
@@ -33,12 +31,10 @@ interface MediaItem {
   thumbnailUrl?: string;
   type: 'image' | 'video';
 }
-
 interface MediaManagerProps {
   productId: number;
   onMediaUpdate?: () => void;
 }
-
 export default function MediaManager({ productId, onMediaUpdate }: MediaManagerProps) {
   const [images, setImages] = useState<MediaItem[]>([]);
   const [videos, setVideos] = useState<MediaItem[]>([]);
@@ -52,16 +48,13 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
   const [uploadType, setUploadType] = useState<'image' | 'video'>('image');
   const [altText, setAltText] = useState('');
   const [isPrimary, setIsPrimary] = useState(false);
-  
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRefs = useRef<{ [key: number]: HTMLVideoElement | null }>({});
-
   const fetchMedia = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/admin/products/${productId}/media`);
       const result = await response.json();
-      
       if (result.success) {
         setImages(result.data.images.map((img: any) => ({
           id: img.id,
@@ -94,26 +87,21 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
       setLoading(false);
     }
   }, [productId]);
-
   useEffect(() => {
     fetchMedia();
   }, [productId, fetchMedia]);
-
   const handleUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
-
     try {
       setUploading(true);
       setUploadProgress(0);
       setError(null);
-
       console.log('🔍 Debug upload:', {
         uploadType,
         fileCount: files.length,
         firstFile: files[0]?.name,
         firstFileType: files[0]?.type
       });
-
       const formData = new FormData();
       for (let i = 0; i < files.length; i++) {
         formData.append('files', files[i]);
@@ -121,14 +109,11 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
       formData.append('type', uploadType);
       formData.append('altText', altText);
       formData.append('isPrimary', isPrimary.toString());
-
       const response = await fetch(`/api/admin/products/${productId}/media`, {
         method: 'POST',
         body: formData
       });
-
       const result = await response.json();
-
       if (result.success) {
         setSuccess(`${files.length} arquivo(s) enviado(s) com sucesso!`);
         setAltText('');
@@ -145,18 +130,14 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
       setUploadProgress(0);
     }
   };
-
   const handleDelete = async (mediaId: number, type: 'image' | 'video') => {
     if (!confirm('Tem certeza que deseja remover este arquivo?')) return;
-
     try {
       const response = await fetch(
         `/api/admin/products/${productId}/media?mediaId=${mediaId}&type=${type}`,
         { method: 'DELETE' }
       );
-
       const result = await response.json();
-
       if (result.success) {
         setSuccess('Arquivo removido com sucesso!');
         await fetchMedia();
@@ -168,7 +149,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
       setError('Erro ao conectar com o servidor');
     }
   };
-
   const handleTogglePrimary = async (mediaId: number, type: 'image' | 'video') => {
     try {
       const response = await fetch(`/api/admin/products/${productId}/media`, {
@@ -176,7 +156,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mediaId, type, isPrimary: true })
       });
-
       if (response.ok) {
         await fetchMedia();
         onMediaUpdate?.();
@@ -185,7 +164,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
       setError('Erro ao atualizar arquivo primário');
     }
   };
-
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -193,13 +171,11 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
-
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
-
   const MediaCard = ({ item }: { item: MediaItem }) => (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -211,7 +187,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
           : 'border-dark-700/60 hover:border-primary-500/40'
       }`}
     >
-      
       <div className="relative aspect-square bg-dark-900 overflow-hidden">
         {item.type === 'image' ? (
           <>
@@ -239,7 +214,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
               }
             }}
             />
-            
             <div className="absolute inset-0 bg-dark-800 flex items-center justify-center" style={{ display: 'none' }}>
               <div className="text-center p-4">
                 <div className="w-16 h-16 bg-gray-600/30 rounded-lg flex items-center justify-center mb-3 mx-auto">
@@ -260,8 +234,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
             />
           </div>
         )}
-        
-        
         <div className="absolute top-2 left-2 right-2 sm:top-3 sm:left-3 sm:right-3 flex items-start justify-between pointer-events-none">
           <div className={`px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs font-semibold flex items-center gap-1 sm:gap-1.5 backdrop-blur-sm pointer-events-auto ${
             item.type === 'image' ? 'bg-blue-500/90 text-white shadow-lg' : 'bg-red-500/90 text-white shadow-lg'
@@ -276,8 +248,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
             </div>
           )}
         </div>
-
-        
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 sm:from-black/80 via-black/20 to-transparent opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300 flex items-end justify-center pb-2 sm:pb-4">
           <div className="flex items-center gap-2 sm:gap-2">
             <button
@@ -290,7 +260,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
             >
               <FaEye size={14} className="sm:w-4 sm:h-4" />
             </button>
-            
             {!item.isPrimary && (
               <button
                 onClick={() => handleTogglePrimary(item.id, item.type)}
@@ -300,7 +269,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
                 <FaStar size={14} className="sm:w-4 sm:h-4" />
               </button>
             )}
-            
             <button
               onClick={() => handleDelete(item.id, item.type)}
               className="bg-red-500/80 hover:bg-red-500 backdrop-blur-sm text-white rounded-full transition-all duration-200 hover:scale-110 touch-manipulation flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10"
@@ -311,8 +279,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
           </div>
         </div>
       </div>
-
-      
       <div className="p-3 sm:p-4 bg-dark-800/80 backdrop-blur-sm">
         <h4 className="text-white font-medium text-xs sm:text-sm truncate mb-2" title={item.fileName}>
           {item.fileName}
@@ -335,7 +301,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
       </div>
     </motion.div>
   );
-
   const PreviewModal = () => (
     <AnimatePresence>
       {showPreview && selectedMedia && (
@@ -362,7 +327,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
                 <FaTimes size={18} className="sm:w-5 sm:h-5" />
               </button>
             </div>
-            
             <div className="p-2 sm:p-4 max-h-[calc(95vh-80px)] sm:max-h-[calc(90vh-80px)] overflow-auto">
               {selectedMedia.type === 'image' ? (
                 <Image
@@ -387,7 +351,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
       )}
     </AnimatePresence>
   );
-
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
@@ -404,10 +367,8 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
       </div>
     );
   }
-
   return (
     <div className="space-y-6">
-      
       {error && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -418,7 +379,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
           <span className="font-medium">{error}</span>
         </motion.div>
       )}
-      
       {success && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -429,8 +389,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
           <span className="font-medium">{success}</span>
         </motion.div>
       )}
-
-      
       <div className="bg-gradient-to-br from-dark-800/80 to-dark-900/80 border border-dark-700/60 rounded-xl p-6 backdrop-blur-sm">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 bg-primary-500/20 rounded-lg">
@@ -438,9 +396,7 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
           </div>
           <h3 className="text-white font-semibold text-lg">Upload de Mídia</h3>
         </div>
-        
         <div className="space-y-6">
-          
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <label className={`flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-lg border-2 transition-all cursor-pointer ${
               uploadType === 'image' 
@@ -481,8 +437,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
               <span className="font-medium text-sm sm:text-base">Vídeos</span>
             </label>
           </div>
-
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-gray-400 mb-2 font-medium">Texto alternativo</label>
@@ -513,8 +467,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
               </label>
             </div>
           </div>
-
-          
           <div className="border-2 border-dashed border-dark-700 rounded-xl p-4 sm:p-6 lg:p-8 text-center hover:border-primary-500/50 transition-all duration-300 bg-dark-900/30 hidden sm:block">
             <input
               ref={fileInputRef}
@@ -524,7 +476,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
               onChange={(e) => handleUpload(e.target.files)}
               className="hidden"
             />
-            
             <div className="flex flex-col items-center gap-3 sm:gap-4">
               <div className="p-3 sm:p-4 bg-primary-500/10 rounded-full">
                 {uploadType === 'image' ? (
@@ -533,7 +484,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
                   <FaVideo className="text-primary-400" size={24} />
                 )}
               </div>
-              
               <div>
                 <button
                   onClick={() => fileInputRef.current?.click()}
@@ -555,7 +505,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
                   )}
                 </button>
               </div>
-              
               <div className="text-gray-400 text-xs sm:text-sm max-w-md">
                 <p className="mb-1">
                   {uploadType === 'image' 
@@ -567,8 +516,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
               </div>
             </div>
           </div>
-
-          
           <div className="border-2 border-dashed border-dark-700 rounded-xl p-4 text-center hover:border-primary-500/50 transition-all duration-300 bg-dark-900/30 sm:hidden">
             <input
               ref={fileInputRef}
@@ -578,7 +525,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
               onChange={(e) => handleUpload(e.target.files)}
               className="hidden"
             />
-            
             <div className="flex flex-col items-center gap-3">
               <div className="p-3 bg-primary-500/10 rounded-full">
                 {uploadType === 'image' ? (
@@ -587,7 +533,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
                   <FaVideo className="text-primary-400" size={20} />
                 )}
               </div>
-              
               <div className="text-gray-400 text-xs text-center">
                 <p className="mb-1">
                   {uploadType === 'image' 
@@ -597,7 +542,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
                 </p>
                 <p className="text-gray-500">Máx: 50MB por arquivo</p>
               </div>
-              
               {uploading && (
                 <div className="w-full">
                   <div className="w-full bg-dark-700 rounded-full h-2">
@@ -613,8 +557,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
           </div>
         </div>
       </div>
-
-      
       {images.length > 0 && (
         <div className="bg-gradient-to-br from-dark-800/60 to-dark-900/60 border border-dark-700/60 rounded-xl p-6">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -637,8 +579,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
           </div>
         </div>
       )}
-
-      
       {videos.length > 0 && (
         <div className="bg-gradient-to-br from-dark-800/60 to-dark-900/60 border border-dark-700/60 rounded-xl p-6">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -661,8 +601,6 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
           </div>
         </div>
       )}
-
-      
       {images.length === 0 && videos.length === 0 && (
         <div className="text-center py-16">
           <div className="bg-dark-800/60 border border-dark-700/60 rounded-xl p-6 sm:p-8 max-w-md mx-auto">
@@ -688,10 +626,7 @@ export default function MediaManager({ productId, onMediaUpdate }: MediaManagerP
           </div>
         </div>
       )}
-
       <PreviewModal />
-
-      
       <div className="fixed bottom-4 right-4 sm:hidden z-50">
         <button
           onClick={() => fileInputRef.current?.click()}

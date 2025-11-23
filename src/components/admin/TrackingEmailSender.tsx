@@ -1,9 +1,7 @@
 'use client'
-
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope, faTruck, faCheckCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-
 interface TrackingEmailSenderProps {
   orderId: number
   orderNumber: string
@@ -12,7 +10,6 @@ interface TrackingEmailSenderProps {
   currentTrackingCode?: string
   onEmailSent?: () => void
 }
-
 export default function TrackingEmailSender({
   orderId,
   orderNumber,
@@ -25,18 +22,15 @@ export default function TrackingEmailSender({
   const [isSending, setIsSending] = useState(false)
   const [message, setMessage] = useState('')
   const [messageType, setMessageType] = useState<'success' | 'error' | ''>('')
-
   const handleSendEmail = async () => {
     if (!trackingCode.trim()) {
       setMessage('Por favor, digite um código de rastreio')
       setMessageType('error')
       return
     }
-
     setIsSending(true)
     setMessage('')
     setMessageType('')
-
     try {
       const response = await fetch('/api/admin/orders/send-tracking-email', {
         method: 'POST',
@@ -48,9 +42,7 @@ export default function TrackingEmailSender({
           trackingCode: trackingCode.trim()
         })
       })
-
       const data = await response.json()
-
       if (data.success) {
         setMessage('E-mail de rastreio enviado com sucesso!')
         setMessageType('success')
@@ -66,14 +58,12 @@ export default function TrackingEmailSender({
       setIsSending(false)
     }
   }
-
   const open17Track = () => {
     if (trackingCode) {
       const url = `https://17track.net/en/track?nums=${trackingCode}`
       window.open(url, '_blank')
     }
   }
-
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
       <div className="flex items-center gap-3 mb-4">
@@ -89,9 +79,7 @@ export default function TrackingEmailSender({
           </p>
         </div>
       </div>
-
       <div className="space-y-4">
-        
         <div className="bg-gray-50 rounded-lg p-4">
           <h4 className="font-medium text-gray-900 mb-2">Informações do Pedido</h4>
           <div className="grid grid-cols-2 gap-4 text-sm">
@@ -109,8 +97,6 @@ export default function TrackingEmailSender({
             </div>
           </div>
         </div>
-
-        
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Código de Rastreio
@@ -134,8 +120,6 @@ export default function TrackingEmailSender({
             </button>
           </div>
         </div>
-
-        
         {message && (
           <div className={`p-3 rounded-md ${
             messageType === 'success' 
@@ -151,8 +135,6 @@ export default function TrackingEmailSender({
             </div>
           </div>
         )}
-
-        
         <button
           onClick={handleSendEmail}
           disabled={isSending || !trackingCode.trim()}
@@ -170,8 +152,6 @@ export default function TrackingEmailSender({
             </>
           )}
         </button>
-
-        
         <div className="text-xs text-gray-500 text-center">
           <p>O cliente receberá um e-mail com:</p>
           <ul className="list-disc list-inside mt-1 space-y-1">
@@ -185,4 +165,3 @@ export default function TrackingEmailSender({
     </div>
   )
 }
-

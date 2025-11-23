@@ -5,19 +5,16 @@ import {
   markVerificationTokenAsUsed, 
   updateUserEmailVerification 
 } from '@/lib/database';
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { token } = body;
-
     if (!token) {
       return NextResponse.json(
         { success: false, message: 'Token de verificação é obrigatório' },
         { status: 400 }
       );
     }
-
     const verificationData = await getVerificationToken(token);
     if (!verificationData) {
       return NextResponse.json(
@@ -25,23 +22,17 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
     await markVerificationTokenAsUsed(token);
-
     await updateUserEmailVerification(verificationData.user_id);
-
     const tokenPayload = {
       userId: verificationData.user_id,
       email: verificationData.email,
       name: verificationData.name,
       emailVerified: true,
     };
-
     console.log('Token payload:', tokenPayload);
     console.log('Verification data:', verificationData);
-
     const authToken = generateToken(tokenPayload);
-
     const response = NextResponse.json(
       { 
         success: true, 
@@ -55,9 +46,7 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
-
     return setAuthCookie(response, authToken);
-
   } catch (error) {
     console.error('Erro na verificação de e-mail:', error);
     return NextResponse.json(

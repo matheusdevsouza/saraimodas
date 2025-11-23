@@ -1,5 +1,4 @@
 'use client'
-
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -8,11 +7,9 @@ import { useState, useEffect, useRef } from 'react'
 import { formatPrice } from '@/lib/utils'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
 }
-
 const collections = [
   {
     id: 1,
@@ -36,10 +33,8 @@ const collections = [
     link: '/produtos?colecao=noite'
   }
 ]
-
 function CollectionCard({ collection, index }: { collection: typeof collections[0], index: number }) {
   const [isHovered, setIsHovered] = useState(false)
-  
   const containerVariants = {
     hidden: { opacity: 0, y: 60, scale: 0.95 },
     visible: {
@@ -53,7 +48,6 @@ function CollectionCard({ collection, index }: { collection: typeof collections[
       },
     },
   }
-
   const imageVariants = {
     rest: { 
       scale: 1,
@@ -67,7 +61,6 @@ function CollectionCard({ collection, index }: { collection: typeof collections[
       },
     },
   }
-
   const overlayVariants = {
     rest: { 
       opacity: 0.7,
@@ -81,7 +74,6 @@ function CollectionCard({ collection, index }: { collection: typeof collections[
       },
     },
   }
-
   const contentVariants = {
     rest: { 
       y: 0, opacity: 1,
@@ -96,7 +88,6 @@ function CollectionCard({ collection, index }: { collection: typeof collections[
       },
     },
   }
-
   const buttonVariants = {
     rest: { 
       x: 0,
@@ -114,7 +105,6 @@ function CollectionCard({ collection, index }: { collection: typeof collections[
       },
     },
   }
-
   const titleVariants = {
     rest: { 
       x: 0,
@@ -128,7 +118,6 @@ function CollectionCard({ collection, index }: { collection: typeof collections[
       },
     },
   }
-
   return (
     <motion.div
       variants={containerVariants}
@@ -148,7 +137,6 @@ function CollectionCard({ collection, index }: { collection: typeof collections[
       className="group relative h-[500px] md:h-[550px] overflow-hidden bg-[#261E10] rounded-xl cursor-pointer shadow-lg hover:shadow-2xl hover:shadow-[var(--logo-gold,#D4A574)]/20 transition-shadow duration-700"
     >
       <Link href={collection.link} className="block w-full h-full">
-        
         <motion.div
           className="relative w-full h-full"
           variants={imageVariants}
@@ -163,16 +151,12 @@ function CollectionCard({ collection, index }: { collection: typeof collections[
             className="object-cover"
             priority={index === 0}
           />
-          
-          
           <motion.div
             variants={overlayVariants}
             initial="rest"
             animate={isHovered ? 'hover' : 'rest'}
             className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D]/95 via-[#0D0D0D]/50 to-transparent"
           />
-          
-          
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ 
@@ -185,15 +169,12 @@ function CollectionCard({ collection, index }: { collection: typeof collections[
             }}
           />
         </motion.div>
-        
-        
         <motion.div
           variants={contentVariants}
           initial="rest"
           animate={isHovered ? 'hover' : 'rest'}
           className="absolute bottom-0 left-0 right-0 p-6 md:p-8 z-10"
         >
-          
           <motion.h3
             variants={titleVariants}
             initial="rest"
@@ -202,8 +183,6 @@ function CollectionCard({ collection, index }: { collection: typeof collections[
           >
             {collection.name}
           </motion.h3>
-          
-          
           <motion.p
             initial={{ opacity: 0.8 }}
             animate={{ 
@@ -214,8 +193,6 @@ function CollectionCard({ collection, index }: { collection: typeof collections[
           >
             {collection.description}
           </motion.p>
-          
-          
           <motion.div
             variants={buttonVariants}
             initial="rest"
@@ -241,7 +218,6 @@ function CollectionCard({ collection, index }: { collection: typeof collections[
     </motion.div>
   )
 }
-
 const looks = [
   {
     id: 1,
@@ -265,10 +241,8 @@ const looks = [
     products: ['Blazer Premium', 'Saia Midi', 'Bolsa Clutch']
   }
 ]
-
 function LookCard({ look, index }: { look: typeof looks[0], index: number }) {
   const [isHovered, setIsHovered] = useState(false)
-
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: { 
@@ -281,7 +255,6 @@ function LookCard({ look, index }: { look: typeof looks[0], index: number }) {
       }
     }
   }
-
   const imageVariants = {
     rest: { 
       scale: 1,
@@ -295,7 +268,6 @@ function LookCard({ look, index }: { look: typeof looks[0], index: number }) {
       },
     },
   }
-
   const overlayVariants = {
     rest: { 
       opacity: 0.7,
@@ -309,7 +281,6 @@ function LookCard({ look, index }: { look: typeof looks[0], index: number }) {
       },
     },
   }
-
   const titleVariants = {
     rest: { 
       x: 0,
@@ -323,7 +294,6 @@ function LookCard({ look, index }: { look: typeof looks[0], index: number }) {
       },
     },
   }
-
   const buttonVariants = {
     rest: { 
       x: 0,
@@ -341,7 +311,6 @@ function LookCard({ look, index }: { look: typeof looks[0], index: number }) {
       },
     },
   }
-
   return (
     <motion.div
       variants={containerVariants}
@@ -353,7 +322,6 @@ function LookCard({ look, index }: { look: typeof looks[0], index: number }) {
       className="group relative h-[500px] rounded-xl overflow-hidden cursor-pointer shadow-lg border border-[#261E10] hover:border-[var(--logo-gold,#D4A574)]/20 transition-colors duration-500"
     >
       <Link href="/produtos" className="block h-full w-full relative">
-          
           <div className="absolute inset-0 overflow-hidden">
             <motion.div className="relative w-full h-full" variants={imageVariants} initial="rest" animate={isHovered ? 'hover' : 'rest'}>
               <Image
@@ -365,11 +333,7 @@ function LookCard({ look, index }: { look: typeof looks[0], index: number }) {
               />
             </motion.div>
           </div>
-          
-          
           <motion.div className="absolute inset-0 bg-[#0D0D0D]" variants={overlayVariants} initial="rest" animate={isHovered ? 'hover' : 'rest'} />
-          
-          
           <div className="absolute inset-0 flex flex-col justify-end p-8 z-10">
              <motion.div>
                 <motion.h3 
@@ -382,7 +346,6 @@ function LookCard({ look, index }: { look: typeof looks[0], index: number }) {
                 <p className="text-gray-300 mb-4 font-light">
                   {look.description}
                 </p>
-                
                 <ul className="space-y-2 mb-6">
                   {look.products.map((product, i) => (
                     <li key={i} className="text-sm text-gray-300 flex items-center gap-2">
@@ -391,7 +354,6 @@ function LookCard({ look, index }: { look: typeof looks[0], index: number }) {
                     </li>
                   ))}
                 </ul>
-
                 <motion.div 
                   variants={buttonVariants}
                   initial="rest" animate={isHovered ? 'hover' : 'rest'}
@@ -417,11 +379,9 @@ function LookCard({ look, index }: { look: typeof looks[0], index: number }) {
     </motion.div>
   )
 }
-
 function FlickeringGrid() {
   const [mounted, setMounted] = useState(false)
   const [squares, setSquares] = useState<{id: number, x: number, y: number, delay: number, duration: number, repeatDelay: number}[]>([])
-
   useEffect(() => {
     setMounted(true)
     const width = window.innerWidth
@@ -438,9 +398,7 @@ function FlickeringGrid() {
     }))
     setSquares(newSquares)
   }, [])
-
   if (!mounted) return null
-
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
       {squares.map((sq) => (
@@ -469,7 +427,6 @@ function FlickeringGrid() {
     </div>
   )
 }
-
 interface Testimonial {
   id: number
   name: string
@@ -480,7 +437,6 @@ interface Testimonial {
   created_at: string
   updated_at: string
 }
-
 export function FeaturedCollectionsSection() {
   const [products, setProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -491,13 +447,11 @@ export function FeaturedCollectionsSection() {
   const [isPaused, setIsPaused] = useState(false)
   const sliderRef = useRef<HTMLDivElement>(null)
   const testimonialsRef = useRef<HTMLDivElement>(null)
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch('/api/products?limit=3&featured=true')
         const data = await response.json()
-        
         if (data.success) {
           setProducts(data.data)
         }
@@ -507,17 +461,14 @@ export function FeaturedCollectionsSection() {
         setLoading(false)
       }
     }
-    
     fetchData()
   }, [])
-
   useEffect(() => {
     const fetchTestimonials = async () => {
       try {
         setLoadingTestimonials(true)
         const response = await fetch('/api/testimonials')
         const data = await response.json()
-        
         if (data.success) {
           setTestimonials(data.data)
         }
@@ -527,32 +478,25 @@ export function FeaturedCollectionsSection() {
         setLoadingTestimonials(false)
       }
     }
-
     fetchTestimonials()
   }, [])
-
   useEffect(() => {
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth < 768)
     }
-    
     checkIsMobile()
     window.addEventListener('resize', checkIsMobile)
-    
     return () => window.removeEventListener('resize', checkIsMobile)
   }, [])
-
   useEffect(() => {
     const slider = sliderRef.current
     const slides = slider?.children
     if (!slider || !slides || loadingTestimonials) return
-
     gsap.set(slides, {
       opacity: 0,
       scale: 0.8,
       y: 50
     })
-
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: testimonialsRef.current,
@@ -560,7 +504,6 @@ export function FeaturedCollectionsSection() {
         once: true
       }
     })
-
     tl.to(slides, {
       opacity: 1,
       scale: 1,
@@ -569,38 +512,29 @@ export function FeaturedCollectionsSection() {
       stagger: 0.1,
       ease: "back.out(1.2)"
     })
-
     return () => {
       if (tl.scrollTrigger) {
         tl.scrollTrigger.kill()
       }
     }
   }, [loadingTestimonials])
-
   const getTestimonialPages = () => {
     const pages = []
     const itemsPerPage = isMobile ? 1 : 1
-    
     for (let i = 0; i < testimonials.length; i += itemsPerPage) {
       const page = testimonials.slice(i, i + itemsPerPage)
       pages.push(page)
     }
-    
     return pages
   }
-
   const testimonialPages = getTestimonialPages()
   const totalTestimonialPages = testimonialPages.length
-
   useEffect(() => {
     setCurrentTestimonialIndex(0)
   }, [isMobile])
-
   return (
     <section className="pt-24 md:pt-32 pb-0 bg-[#0D0D0D] relative overflow-hidden">
-      
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        
         <motion.div
           animate={{
             scale: [1, 1.2, 1],
@@ -625,8 +559,6 @@ export function FeaturedCollectionsSection() {
           }}
           className="absolute bottom-0 left-1/4 w-96 h-96 bg-[var(--logo-gold,#D4A574)]/5 rounded-full blur-3xl"
         />
-        
-        
         <div
           className="absolute inset-0 opacity-[0.02]"
           style={{
@@ -637,14 +569,9 @@ export function FeaturedCollectionsSection() {
             backgroundSize: '60px 60px',
           }}
         />
-        
-        
         <FlickeringGrid />
       </div>
-
-      
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -664,7 +591,6 @@ export function FeaturedCollectionsSection() {
           >
             Nossas Coleções
           </motion.span>
-          
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -677,7 +603,6 @@ export function FeaturedCollectionsSection() {
               Elegância
             </span>
           </motion.h2>
-          
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -688,8 +613,6 @@ export function FeaturedCollectionsSection() {
             Curadoria especial de peças que refletem sofisticação e estilo único
           </motion.p>
         </motion.div>
-
-        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-32">
           {collections.map((collection, index) => (
             <CollectionCard
@@ -699,8 +622,6 @@ export function FeaturedCollectionsSection() {
             />
           ))}
         </div>
-
-        
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -720,7 +641,6 @@ export function FeaturedCollectionsSection() {
           >
             Lookbook
           </motion.span>
-          
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -733,7 +653,6 @@ export function FeaturedCollectionsSection() {
               Completos
             </span>
           </motion.h2>
-          
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -744,16 +663,12 @@ export function FeaturedCollectionsSection() {
             Inspire-se com combinações perfeitas criadas pela nossa equipe de estilo
           </motion.p>
         </motion.div>
-
-        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-24">
           {looks.map((look, index) => (
             <LookCard key={look.id} look={look} index={index} />
           ))}
         </div>
       </div>
-
-      
       <div className="relative w-full h-12 md:h-24 z-20 mt-0 mb-[-1px]">
         <svg
           className="absolute bottom-0 left-0 w-full h-full"
@@ -762,12 +677,10 @@ export function FeaturedCollectionsSection() {
           xmlns="http://www.w3.org/2000/svg"
           style={{ transform: 'rotate(180deg)' }}
         >
-          
           <path
             d="M0 0v100S0 4 500 4s500 96 500 96V0H0Z"
             fill="#0D0D0D"
           />
-          
           <path
             d="M0 0v100S0 4 500 4s500 96 500 96V0H0Z"
             fill="#261E10"
@@ -775,14 +688,9 @@ export function FeaturedCollectionsSection() {
           />
         </svg>
       </div>
-
-      
       <div className="relative z-20 pb-24 md:pb-32 bg-[#0D0D0D]">
-        
         <div className="absolute inset-0 bg-gradient-to-b from-[#261E10]/30 to-transparent pointer-events-none" />
-        
         <div className="container mx-auto px-4 relative z-20 pt-12">
-          
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -805,14 +713,11 @@ export function FeaturedCollectionsSection() {
               Seleção especial de peças especiais com condições exclusivas
             </p>
           </motion.div>
-
-          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {products.map((product, index) => {
               const discount = product.originalPrice && parseFloat(product.originalPrice) > parseFloat(product.price)
                 ? Math.round(((parseFloat(product.originalPrice) - parseFloat(product.price)) / parseFloat(product.originalPrice)) * 100)
                 : 0
-
               return (
                 <motion.div
                   key={product.id}
@@ -866,8 +771,6 @@ export function FeaturedCollectionsSection() {
               )
             })}
           </div>
-
-          
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -883,8 +786,6 @@ export function FeaturedCollectionsSection() {
               <ArrowRight size={16} weight="thin" />
             </Link>
           </motion.div>
-
-          
           <div ref={testimonialsRef} className="mt-20 pt-20 border-t border-[#261E10]/50">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -920,7 +821,6 @@ export function FeaturedCollectionsSection() {
                 Veja os depoimentos de quem já comprou conosco
               </motion.p>
             </motion.div>
-
             {loadingTestimonials ? (
               <div className="text-center text-gray-400">
                 <div className="animate-spin rounded-sm h-12 w-12 border-b border-[var(--logo-gold,#D4A574)] mx-auto"></div>
@@ -992,7 +892,6 @@ export function FeaturedCollectionsSection() {
                     ))}
                   </div>
                 </div>
-
                 {totalTestimonialPages > 1 && (
                   <div className="flex justify-center gap-2 mt-6">
                     {[...Array(totalTestimonialPages)].map((_, index) => (
@@ -1018,7 +917,6 @@ export function FeaturedCollectionsSection() {
                     ))}
                   </div>
                 )}
-
                 <div className="text-center mt-8">
                   <Link
                     href="/contato"

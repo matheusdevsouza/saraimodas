@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getProducts, getProductImages, getProductVariants, getProductSizes, getBrands } from '@/lib/database'
-
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    
     const filters = {
       brand_id: searchParams.get('brand_id') ? parseInt(searchParams.get('brand_id')!) : undefined,
       category_id: searchParams.get('category_id') ? parseInt(searchParams.get('category_id')!) : undefined,
@@ -17,23 +15,18 @@ export async function GET(request: NextRequest) {
       unique: searchParams.get('unique') === 'true' ? true : undefined,
       color_ids: searchParams.get('color_ids') ? searchParams.get('color_ids')!.split(',').map(Number) : undefined
     }
-    
     Object.keys(filters).forEach(key => {
       if (filters[key as keyof typeof filters] === undefined) {
         delete filters[key as keyof typeof filters]
       }
     })
-    
     const products = await getProducts(filters)
-    
     const productsWithDetails = []
     for (const product of products) {
       const images = await getProductImages(product.id)
       const primaryImage = images.find((img: any) => img.is_primary) || images[0]
-      
       const productSizes = await getProductSizes(product.id)
       let sizes = productSizes.map((size: any) => size.size).filter(Boolean)
-      
       const defaultSizes = ['38', '39', '40', '41', '42', '43']
       if (sizes.length === 0) {
         sizes = defaultSizes
@@ -81,13 +74,11 @@ export async function GET(request: NextRequest) {
         updatedAt: new Date(product.updated_at)
       })
     }
-    
     return NextResponse.json({
       success: true,
       data: productsWithDetails,
       total: productsWithDetails.length
     })
-    
   } catch (error) {
     console.error('Erro ao buscar produtos:', error)
     return NextResponse.json(

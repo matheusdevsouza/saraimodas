@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,7 +14,6 @@ import {
   House,
   User
 } from "phosphor-react";
-
 interface Address {
   id: number;
   name: string;
@@ -30,7 +28,6 @@ interface Address {
   created_at: string;
   updated_at: string;
 }
-
 interface AddressForm {
   name: string;
   street: string;
@@ -41,11 +38,9 @@ interface AddressForm {
   state: string;
   zip_code: string;
 }
-
 export default function EnderecosPage() {
   const { user, authenticated, loading } = useAuth();
   const router = useRouter();
-  
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loadingAddresses, setLoadingAddresses] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -64,19 +59,16 @@ export default function EnderecosPage() {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [tempMessage, setTempMessage] = useState("");
-
   useEffect(() => {
     if (!loading && !authenticated) {
       router.replace("/login");
     }
   }, [authenticated, loading, router]);
-
   useEffect(() => {
     if (authenticated) {
       fetchAddresses();
     }
   }, [authenticated]);
-
   async function fetchAddresses() {
     try {
       const res = await fetch("/api/addresses");
@@ -92,11 +84,9 @@ export default function EnderecosPage() {
       setLoadingAddresses(false);
     }
   }
-
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
-
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (editingAddress) {
@@ -105,19 +95,16 @@ export default function EnderecosPage() {
       createAddress();
     }
   }
-
   async function createAddress() {
     setSaving(true);
     setError("");
     setSuccess("");
-    
     try {
       const res = await fetch("/api/addresses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form)
       });
-
       if (res.ok) {
         setSuccess("Endereço adicionado com sucesso!");
         setForm({
@@ -142,21 +129,17 @@ export default function EnderecosPage() {
       setSaving(false);
     }
   }
-
   async function updateAddress() {
     if (!editingAddress) return;
-    
     setSaving(true);
     setError("");
     setSuccess("");
-    
     try {
       const res = await fetch(`/api/addresses/${editingAddress.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form)
       });
-
       if (res.ok) {
         setSuccess("Endereço atualizado com sucesso!");
         setForm({
@@ -182,13 +165,11 @@ export default function EnderecosPage() {
       setSaving(false);
     }
   }
-
   async function deleteAddress(id: number) {
     try {
       const res = await fetch(`/api/addresses/${id}`, {
         method: "DELETE"
       });
-
       if (res.ok) {
         setTempMessage("Endereço excluído com sucesso!");
         setTimeout(() => setTempMessage(""), 2000); 
@@ -201,16 +182,13 @@ export default function EnderecosPage() {
       setError("Erro ao excluir endereço");
     }
   }
-
   async function setDefaultAddress(id: number) {
     try {
       const currentAddress = addresses.find(addr => addr.id === id);
       const isCurrentlyDefault = currentAddress?.is_default;
-
       const res = await fetch(`/api/addresses/${id}/default`, {
         method: "PUT"
       });
-
       if (res.ok) {
         if (!isCurrentlyDefault) {
           setTempMessage("Endereço definido como padrão!");
@@ -228,7 +206,6 @@ export default function EnderecosPage() {
       setError("Erro ao alterar endereço padrão");
     }
   }
-
   function editAddress(address: Address) {
     setEditingAddress(address);
     setForm({
@@ -243,7 +220,6 @@ export default function EnderecosPage() {
     });
     setShowForm(true);
   }
-
   function cancelEdit() {
     setEditingAddress(null);
     setForm({
@@ -258,17 +234,14 @@ export default function EnderecosPage() {
     });
     setShowForm(false);
   }
-
   if (loading || !user) {
     return (
       <section className="min-h-screen flex items-center justify-center bg-dark-950">
         <div className="w-full max-w-4xl bg-dark-900 border border-dark-800 rounded-3xl shadow-2xl p-0 md:p-10 flex flex-col gap-8 animate-pulse">
-          
           <div className="flex flex-col items-center justify-center gap-2 bg-dark-900 rounded-t-3xl p-8 border-b border-dark-800">
             <div className="h-8 w-48 bg-dark-800 rounded mb-3" />
             <div className="h-5 w-40 bg-dark-800 rounded" />
           </div>
-          
           <div className="w-full flex flex-col gap-6 p-4 md:p-0">
             {Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="bg-dark-800 rounded-xl p-5 h-32 flex flex-col gap-3 shadow">
@@ -285,7 +258,6 @@ export default function EnderecosPage() {
       </section>
     );
   }
-
   return (
     <section className="min-h-screen w-full flex flex-col items-center justify-center bg-dark-950 py-12 px-2 md:px-8">
       <motion.div 
@@ -298,7 +270,6 @@ export default function EnderecosPage() {
           delay: 0.1
         }}
       >
-        
         <motion.div 
           className="flex flex-col items-center justify-center gap-2 bg-dark-900 rounded-t-3xl p-8 border-b border-dark-800"
           initial={{ opacity: 0, y: -20 }}
@@ -317,10 +288,6 @@ export default function EnderecosPage() {
             Gerencie seus endereços de entrega
           </p>
         </motion.div>
-
-
-
-        
         <AnimatePresence>
           {showForm && (
             <motion.div
@@ -341,7 +308,6 @@ export default function EnderecosPage() {
                   <X size={24} />
                 </button>
               </div>
-
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -373,7 +339,6 @@ export default function EnderecosPage() {
                     />
                   </div>
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Rua
@@ -388,7 +353,6 @@ export default function EnderecosPage() {
                     required
                   />
                 </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -418,7 +382,6 @@ export default function EnderecosPage() {
                     />
                   </div>
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Bairro
@@ -433,7 +396,6 @@ export default function EnderecosPage() {
                     required
                   />
                 </div>
-
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -465,7 +427,6 @@ export default function EnderecosPage() {
                     />
                   </div>
                 </div>
-
                 <div className="flex gap-3 pt-4">
                   <button
                     type="submit"
@@ -496,8 +457,6 @@ export default function EnderecosPage() {
             </motion.div>
           )}
         </AnimatePresence>
-
-        
         <motion.div
           className="w-full flex flex-col gap-6"
           initial={{ opacity: 0 }}
@@ -595,7 +554,6 @@ export default function EnderecosPage() {
                       </button>
                     </div>
                   </div>
-                  
                   <div className="text-gray-300 space-y-1">
                     <p>
                       {address.street}, {address.number}
@@ -610,8 +568,6 @@ export default function EnderecosPage() {
             </div>
           )}
         </motion.div>
-
-        
         {addresses.length > 0 && (
           <motion.div
             className="w-full flex justify-center mt-8"
@@ -632,8 +588,6 @@ export default function EnderecosPage() {
             </button>
           </motion.div>
         )}
-
-        
         <AnimatePresence>
           {tempMessage && (
             <motion.div 
@@ -649,8 +603,6 @@ export default function EnderecosPage() {
             </motion.div>
           )}
         </AnimatePresence>
-
-        
         <AnimatePresence>
           {(success || error) && (
             <motion.div 

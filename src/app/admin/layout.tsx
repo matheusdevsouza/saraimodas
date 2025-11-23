@@ -1,5 +1,4 @@
 "use client";
-
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -19,7 +18,6 @@ import {
   FaHome,
   FaLayerGroup
 } from 'react-icons/fa';
-
 export default function AdminLayout({
   children,
 }: {
@@ -28,13 +26,11 @@ export default function AdminLayout({
   const { user, authenticated, loading, logout } = useAuth();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   useEffect(() => {
     if (!loading && !authenticated) {
       router.push('/login');
     }
   }, [authenticated, loading, router]);
-
   if (loading) {
     return (
       <div className="min-h-screen bg-dark-950 flex items-center justify-center">
@@ -42,16 +38,13 @@ export default function AdminLayout({
       </div>
     );
   }
-
   if (!authenticated) {
     return null;
   }
-
   const handleLogout = async () => {
     await logout();
     router.push('/login');
   };
-
   const menuItems = [
     { href: '/admin', icon: FaTachometerAlt, label: 'Dashboard', color: 'from-primary-500 to-primary-600' },
     { href: '/admin/produtos', icon: FaBox, label: 'Produtos', color: 'from-primary-500 to-primary-600' },
@@ -59,20 +52,16 @@ export default function AdminLayout({
     { href: '/admin/pedidos', icon: FaShoppingCart, label: 'Pedidos', color: 'from-primary-500 to-primary-600' },
     { href: '/admin/usuarios', icon: FaUsers, label: 'Usuários', color: 'from-primary-500 to-primary-600' },
   ];
-
   const sidebarVariants = {
     open: { x: 0, opacity: 1 },
     closed: { x: '-100%', opacity: 0 }
   };
-
   const overlayVariants = {
     open: { opacity: 1, visibility: 'visible' as const },
     closed: { opacity: 0, visibility: 'hidden' as const }
   };
-
   return (
     <div className="min-h-screen bg-dark-950 flex">
-      
       <AnimatePresence>
         {sidebarOpen && (
           <motion.div
@@ -86,10 +75,7 @@ export default function AdminLayout({
           />
         )}
       </AnimatePresence>
-
-      
       <div className="hidden lg:flex lg:flex-col lg:w-64 xl:w-72 bg-dark-900/95 backdrop-blur-md border-r border-dark-700/50 shadow-2xl">
-        
         <div className="flex items-center justify-between h-16 px-4 lg:px-6 bg-gradient-to-r from-primary-600 to-primary-700 border-b border-primary-500/30">
           <div className="flex items-center gap-2 lg:gap-3">
             <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
@@ -101,13 +87,10 @@ export default function AdminLayout({
             </div>
           </div>
         </div>
-
-        
         <nav className="flex-1 px-4 py-4 space-y-2">
           <div className="px-3 mb-4">
             <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Menu Principal</div>
           </div>
-
           {menuItems.map((item, index) => (
             <motion.div
               key={item.href}
@@ -127,13 +110,10 @@ export default function AdminLayout({
             </motion.div>
           ))}
         </nav>
-
-        
         <div className="px-4 py-4 border-t border-dark-700/50">
           <div className="px-3 mb-3">
             <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Usuário</div>
           </div>
-          
           <div className="px-3 py-2.5 bg-dark-800/50 rounded-lg border border-dark-700/30">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
@@ -147,7 +127,6 @@ export default function AdminLayout({
               </div>
             </div>
           </div>
-
           <button
             onClick={handleLogout}
             className="w-full mt-2 flex items-center px-3 py-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-300 rounded-lg border border-transparent hover:border-red-500/20"
@@ -157,8 +136,6 @@ export default function AdminLayout({
           </button>
         </div>
       </div>
-
-      
       <motion.div
         initial="closed"
         animate={sidebarOpen ? "open" : "closed"}
@@ -166,7 +143,6 @@ export default function AdminLayout({
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="fixed inset-y-0 left-0 z-50 w-72 bg-dark-900/95 backdrop-blur-md border-r border-dark-700/50 shadow-2xl lg:hidden flex flex-col"
       >
-        
         <div className="flex items-center justify-between h-16 px-6 bg-gradient-to-r from-primary-600 to-primary-700 border-b border-primary-500/30">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
@@ -184,13 +160,10 @@ export default function AdminLayout({
             <FaTimes size={18} />
           </button>
         </div>
-
-        
         <nav className="flex-1 px-4 py-4 space-y-2">
           <div className="px-3 mb-4">
             <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Menu Principal</div>
           </div>
-
           {menuItems.map((item, index) => (
             <motion.div
               key={item.href}
@@ -211,13 +184,10 @@ export default function AdminLayout({
             </motion.div>
           ))}
         </nav>
-
-        
         <div className="px-4 py-4 border-t border-dark-700/50">
           <div className="px-3 mb-3">
             <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Usuário</div>
           </div>
-          
           <div className="px-3 py-2.5 bg-dark-800/50 rounded-lg border border-dark-700/30">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center">
@@ -231,7 +201,6 @@ export default function AdminLayout({
               </div>
             </div>
           </div>
-
           <button
             onClick={handleLogout}
             className="w-full mt-2 flex items-center px-3 py-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-300 rounded-lg border border-transparent hover:border-red-500/20"
@@ -241,10 +210,7 @@ export default function AdminLayout({
           </button>
         </div>
       </motion.div>
-
-      
       <div className="flex-1 flex flex-col">
-        
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -258,13 +224,10 @@ export default function AdminLayout({
             >
               <FaBars size={18} />
             </button>
-
             <div className="hidden md:flex items-center gap-3">
               <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
               <span className="text-gray-300 text-sm">Painel Administrativo</span>
             </div>
-
-            
             <Link
               href="/"
               className="flex items-center gap-2 px-3 py-2 text-primary-400 hover:text-primary-300 hover:bg-primary-500/10 transition-all duration-300 rounded-lg border border-primary-500/20 hover:border-primary-500/40"
@@ -273,9 +236,7 @@ export default function AdminLayout({
               <span className="text-sm font-medium">Voltar ao Site</span>
             </Link>
           </div>
-
           <div className="flex items-center gap-4">
-            
             <div className="relative hidden md:block">
               <input
                 type="text"
@@ -284,14 +245,10 @@ export default function AdminLayout({
               />
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={14} />
             </div>
-
-            
             <button className="relative p-2 text-gray-300 hover:text-white transition-colors rounded-lg hover:bg-dark-800/80">
               <FaBell size={16} />
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
-
-            
             <div className="flex items-center gap-3">
               <div className="text-right hidden sm:block">
                 <div className="text-sm font-medium text-white">Bem-vindo, {user?.name?.split(' ')[0]}</div>
@@ -305,8 +262,6 @@ export default function AdminLayout({
             </div>
           </div>
         </motion.div>
-
-        
         <motion.main
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

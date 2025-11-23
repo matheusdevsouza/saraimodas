@@ -1,11 +1,9 @@
 'use client'
-
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-
 interface Model {
   id: number
   name: string
@@ -13,7 +11,6 @@ interface Model {
   description: string
   image_url: string
 }
-
 interface Product {
   id: number
   name: string
@@ -30,7 +27,6 @@ interface Product {
   original_price: number
   stock_quantity: number
 }
-
 export default function ModelPage() {
   const params = useParams()
   const slug = params.slug as string
@@ -41,7 +37,6 @@ export default function ModelPage() {
   const [filters, setFilters] = useState({ cor: '', preco: [0, 9999], order: '' })
   const [precoMin, setPrecoMin] = useState(0)
   const [precoMax, setPrecoMax] = useState(9999)
-
   useEffect(() => {
     async function fetchData() {
       setLoading(true)
@@ -63,7 +58,6 @@ export default function ModelPage() {
     }
     if (slug) fetchData()
   }, [slug])
-
   useEffect(() => {
     let result = [...products]
     if (filters.cor) result = result.filter(p => p.color === filters.cor)
@@ -72,13 +66,10 @@ export default function ModelPage() {
     if (filters.order === 'price_desc') result = result.sort((a, b) => b.price - a.price)
     setFiltered(result)
   }, [filters, products])
-
   const cores = Array.from(new Set(products.map(p => p.color))).filter(Boolean)
-
   return (
     <div className="min-h-screen bg-dark-900 py-8 sm:py-12">
       <div className="container mx-auto px-4 sm:px-6">
-        
         <nav className="mb-6 sm:mb-8">
           <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-400">
             <Link href="/" className="hover:text-white transition-colors">Início</Link>
@@ -88,8 +79,6 @@ export default function ModelPage() {
             <span className="text-white">{model?.name}</span>
           </div>
         </nav>
-
-        
         {model && (
           <motion.div 
             initial={{ opacity: 0, y: 30 }} 
@@ -111,7 +100,6 @@ export default function ModelPage() {
                   if (fallback) fallback.style.display = 'flex'
                 }}
               />
-              
               <div className="fallback hidden absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary-500/20 to-primary-600/20">
                 <div className="text-center">
                   <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-primary-400 mb-2">
@@ -133,10 +121,7 @@ export default function ModelPage() {
             </div>
           </motion.div>
         )}
-
-        
         <motion.aside initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="bg-dark-800/80 border border-dark-700 rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8 shadow-xl flex flex-wrap gap-4 items-end">
-          
           <div>
             <label className="block text-gray-300 font-semibold mb-2">Cor</label>
             <select className="w-32 rounded-lg border border-dark-700 bg-dark-900 text-gray-200 px-3 py-2" value={filters.cor} onChange={e => setFilters(f => ({ ...f, cor: e.target.value }))}>
@@ -144,8 +129,6 @@ export default function ModelPage() {
               {cores.map(cor => <option key={cor} value={cor}>{cor}</option>)}
             </select>
           </div>
-
-          
           <div>
             <label className="block text-gray-300 font-semibold mb-2">Preço</label>
             <div className="flex items-center gap-2">
@@ -155,7 +138,6 @@ export default function ModelPage() {
             </div>
             <div className="text-xs text-gray-400 mt-1">Até <b className="text-primary-400">R$ {filters.preco[1]}</b></div>
           </div>
-          
           <div>
             <label className="block text-gray-300 font-semibold mb-2">Ordenar por</label>
             <select className="w-36 rounded-lg border border-dark-700 bg-dark-900 text-gray-200 px-3 py-2" value={filters.order} onChange={e => setFilters(f => ({ ...f, order: e.target.value }))}>
@@ -165,8 +147,6 @@ export default function ModelPage() {
             </select>
           </div>
         </motion.aside>
-
-        
         {!loading && (
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
@@ -182,8 +162,6 @@ export default function ModelPage() {
             </p>
           </motion.div>
         )}
-
-        
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {loading ? (
             Array.from({ length: 8 }).map((_, i) => (
@@ -204,23 +182,16 @@ export default function ModelPage() {
               <Link key={prod.id} href={`/produto/${prod.slug}`} className="group bg-dark-800/80 rounded-2xl overflow-hidden border border-dark-700/50 hover:border-primary-500/30 transition-all duration-500 flex flex-col items-center p-3 sm:p-4 shadow-lg hover:shadow-primary-500/10">
                                   <div className="relative w-full aspect-square rounded-xl overflow-hidden mb-2 sm:mb-3 bg-dark-900">
                   <Image src={prod.primary_image || '/images/Logo.png'} alt={prod.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" sizes="(max-width: 768px) 100vw, 220px" />
-                  
-
                 </div>
-                
                 <div className="text-center w-full">
                   <h3 className="text-base font-semibold text-white text-center group-hover:text-primary-400 transition-colors duration-300 mb-1 leading-tight h-12 flex flex-col items-center justify-center">
                     {prod.name}
                   </h3>
-                  
-                  
                   {prod.color && (
                     <div className="text-gray-400 text-xs mb-1 sm:mb-2">
                       <span className="block capitalize">{prod.color}</span>
                     </div>
                   )}
-                  
-                  
                   <div className="mb-2 sm:mb-3">
                     {prod.original_price && prod.original_price > prod.price ? (
                       <div className="flex items-center justify-center gap-2">
@@ -237,9 +208,6 @@ export default function ModelPage() {
                       </span>
                     )}
                   </div>
-                  
-
-                  
                   <button className="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm transition-all duration-200 mt-auto">
                     Ver detalhes
                   </button>

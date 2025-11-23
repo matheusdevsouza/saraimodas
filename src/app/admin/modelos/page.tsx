@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -24,7 +23,6 @@ import {
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import CreateModelModal from '@/components/admin/CreateModelModal';
-
 interface Model {
   id: number;
   name: string;
@@ -37,14 +35,12 @@ interface Model {
   created_at: string;
   updated_at: string;
 }
-
 interface ModelStats {
   total: number;
   active: number;
   inactive: number;
   withProducts: number;
 }
-
 export default function AdminModels() {
   const [models, setModels] = useState<Model[]>([]);
   const [stats, setStats] = useState<ModelStats | null>(null);
@@ -58,19 +54,15 @@ export default function AdminModels() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalModels, setTotalModels] = useState(0);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
-
   const router = useRouter();
-
   const fetchModels = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
       const params = new URLSearchParams({
         page: page.toString(),
         limit: '10',
@@ -79,15 +71,12 @@ export default function AdminModels() {
         sortBy,
         sortOrder
       });
-
       const response = await fetch(`/api/admin/models?${params}`);
       const result = await response.json();
-      
       if (result.success) {
         setModels(result.data.models);
         setTotalPages(result.data.pagination.pages);
         setTotalModels(result.data.pagination.total);
-        
         const stats: ModelStats = {
           total: result.data.pagination.total,
           active: result.data.models.filter((m: Model) => m.is_active).length,
@@ -105,50 +94,40 @@ export default function AdminModels() {
       setLoading(false);
     }
   }, [page, searchTerm, statusFilter, sortBy, sortOrder]);
-
   useEffect(() => {
     const checkScreenSize = () => {
       const width = window.innerWidth;
       setIsMobile(width < 768);
       setIsTablet(width >= 768 && width < 1024);
-      
       if (width < 768) {
         setViewMode('grid');
       }
     };
-
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
-
   useEffect(() => {
     fetchModels();
   }, [fetchModels]);
-
   const refreshModels = () => {
     setPage(1);
     fetchModels();
   };
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
     fetchModels();
   };
-
   const handleDelete = async (modelId: number, modelName: string) => {
     if (!confirm(`Tem certeza que deseja excluir o modelo "${modelName}"?`)) {
       return;
     }
-
     try {
       const response = await fetch(`/api/admin/models/${modelId}`, {
         method: 'DELETE'
       });
-
       const result = await response.json();
-
       if (result.success) {
         alert('Modelo excluído com sucesso!');
         fetchModels();
@@ -160,7 +139,6 @@ export default function AdminModels() {
       alert('Erro ao conectar com o servidor');
     }
   };
-
   const handleToggleStatus = async (modelId: number, currentStatus: boolean) => {
     try {
       const response = await fetch(`/api/admin/models/${modelId}`, {
@@ -172,9 +150,7 @@ export default function AdminModels() {
           is_active: !currentStatus
         })
       });
-
       const result = await response.json();
-
       if (result.success) {
         fetchModels();
       } else {
@@ -185,7 +161,6 @@ export default function AdminModels() {
       alert('Erro ao conectar com o servidor');
     }
   };
-
   const getModelImage = (model: Model) => {
     if (model.image_url) {
       if (model.image_url.startsWith('/api/models/images/')) {
@@ -195,7 +170,6 @@ export default function AdminModels() {
     }
     return null;
   };
-
   if (loading && models.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -206,7 +180,6 @@ export default function AdminModels() {
       </div>
     );
   }
-
   if (error && models.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -223,10 +196,8 @@ export default function AdminModels() {
       </div>
     );
   }
-
   return (
     <div className="space-y-6 max-w-full overflow-hidden">
-      
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -237,10 +208,7 @@ export default function AdminModels() {
           <h1 className="text-xl md:text-2xl font-bold text-white mb-1">Gestão de Modelos</h1>
           <p className="text-gray-400 text-xs md:text-sm">Gerencie todos os modelos da sua loja</p>
         </div>
-        
-        
         <div className="flex flex-col sm:flex-row gap-3">
-          
           {!isMobile && (
             <div className="flex bg-dark-800/50 rounded-xl p-1">
               <button
@@ -267,7 +235,6 @@ export default function AdminModels() {
               </button>
             </div>
           )}
-          
           <button
             onClick={refreshModels}
             disabled={loading}
@@ -276,7 +243,6 @@ export default function AdminModels() {
             <FaRedo className={loading ? 'animate-spin' : ''} size={12} />
             <span className="hidden sm:inline">Atualizar</span>
           </button>
-          
           <button
             onClick={() => setShowCreateModal(true)}
             className="px-4 py-2 bg-primary-500 text-white rounded-xl hover:bg-primary-600 transition-all duration-300 flex items-center gap-2 text-sm font-medium"
@@ -286,8 +252,6 @@ export default function AdminModels() {
           </button>
         </div>
       </motion.div>
-
-      
       {stats && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -308,7 +272,6 @@ export default function AdminModels() {
               </div>
             </div>
           </div>
-
           <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-700/50 rounded-xl p-3 lg:p-4 border-l-4 border-primary-500">
             <div className="flex items-center justify-between">
               <div>
@@ -322,7 +285,6 @@ export default function AdminModels() {
               </div>
             </div>
           </div>
-
           <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-700/50 rounded-xl p-3 lg:p-4 border-l-4 border-primary-500">
             <div className="flex items-center justify-between">
               <div>
@@ -336,7 +298,6 @@ export default function AdminModels() {
               </div>
             </div>
           </div>
-
           <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-700/50 rounded-xl p-3 lg:p-4 border-l-4 border-primary-500">
             <div className="flex items-center justify-between">
               <div>
@@ -352,15 +313,12 @@ export default function AdminModels() {
           </div>
         </motion.div>
       )}
-
-      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
         className="bg-dark-800/50 rounded-xl p-4 border border-dark-700/50"
       >
-        
         {isMobile && (
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -373,9 +331,7 @@ export default function AdminModels() {
             {showFilters ? <FaChevronUp /> : <FaChevronDown />}
           </button>
         )}
-
         <div className={`space-y-4 ${isMobile && !showFilters ? 'hidden' : ''}`}>
-          
           <form onSubmit={handleSearch} className="flex gap-3">
             <div className="flex-1 relative">
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
@@ -395,8 +351,6 @@ export default function AdminModels() {
               Buscar
             </button>
           </form>
-
-          
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <select
               value={statusFilter}
@@ -407,7 +361,6 @@ export default function AdminModels() {
               <option value="active">Ativos</option>
               <option value="inactive">Inativos</option>
             </select>
-
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
@@ -418,7 +371,6 @@ export default function AdminModels() {
               <option value="updated_at">Última Atualização</option>
               <option value="sort_order">Ordem de Exibição</option>
             </select>
-
             <button
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
               className="px-3 py-2 bg-dark-700/50 border border-dark-600/50 rounded-lg text-white text-sm hover:bg-dark-600/50 transition-colors flex items-center justify-center gap-2"
@@ -426,7 +378,6 @@ export default function AdminModels() {
               {sortOrder === 'asc' ? <FaSortAmountUp /> : <FaSortAmountDown />}
               {sortOrder === 'asc' ? 'Crescente' : 'Decrescente'}
             </button>
-
             <button
               onClick={() => {
                 setSearchTerm('');
@@ -442,8 +393,6 @@ export default function AdminModels() {
           </div>
         </div>
       </motion.div>
-
-      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -573,7 +522,6 @@ export default function AdminModels() {
                 transition={{ duration: 0.3, delay: index * 0.05 }}
                 className="bg-dark-800/50 rounded-xl border border-dark-700/50 overflow-hidden hover:border-primary-500/50 transition-all duration-300"
               >
-                
                 <div className="aspect-video relative bg-dark-700/50">
                   {getModelImage(model) ? (
                     <Image
@@ -587,8 +535,6 @@ export default function AdminModels() {
                       <FaImage className="text-gray-400 text-3xl" />
                     </div>
                   )}
-                  
-                  
                   <div className="absolute top-2 right-2">
                     <button
                       onClick={() => handleToggleStatus(model.id, model.is_active)}
@@ -602,8 +548,6 @@ export default function AdminModels() {
                     </button>
                   </div>
                 </div>
-
-                
                 <div className="p-4">
                   <div className="mb-3">
                     <h3 className="text-white font-medium text-sm mb-1">{model.name}</h3>
@@ -612,8 +556,6 @@ export default function AdminModels() {
                       <p className="text-gray-400 text-xs mt-1 line-clamp-2">{model.description}</p>
                     )}
                   </div>
-
-                  
                   <div className="flex items-center justify-between mb-3">
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-500/15 text-primary-300 border border-primary-500/30">
                       {model.product_count} produto{model.product_count !== 1 ? 's' : ''}
@@ -622,13 +564,9 @@ export default function AdminModels() {
                       Ordem: {model.sort_order}
                     </span>
                   </div>
-
-                  
                   <p className="text-gray-400 text-xs mb-3">
                     Criado em {new Date(model.created_at).toLocaleDateString('pt-BR')}
                   </p>
-
-                  
                   <div className="flex items-center justify-between">
                     <button
                       onClick={() => router.push(`/admin/modelos/${model.id}`)}
@@ -637,7 +575,6 @@ export default function AdminModels() {
                       <FaEye size={12} />
                       Ver
                     </button>
-                    
                     <div className="flex items-center space-x-1">
                       <button
                         onClick={() => router.push(`/admin/modelos/${model.id}/editar`)}
@@ -660,8 +597,6 @@ export default function AdminModels() {
             ))}
           </div>
         )}
-
-        
         {models.length === 0 && !loading && (
           <div className="text-center py-12">
             <FaBox className="text-4xl text-gray-400 mx-auto mb-4" />
@@ -675,8 +610,6 @@ export default function AdminModels() {
           </div>
         )}
       </motion.div>
-
-      
       {totalPages > 1 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -687,7 +620,6 @@ export default function AdminModels() {
           <p className="text-gray-400 text-sm">
             Mostrando {models.length} de {totalModels} modelos
           </p>
-          
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setPage(Math.max(1, page - 1))}
@@ -696,11 +628,9 @@ export default function AdminModels() {
             >
               Anterior
             </button>
-            
             <span className="px-3 py-2 bg-primary-500 text-white rounded-lg text-sm">
               {page}
             </span>
-            
             <button
               onClick={() => setPage(Math.min(totalPages, page + 1))}
               disabled={page === totalPages}
@@ -711,8 +641,6 @@ export default function AdminModels() {
           </div>
         </motion.div>
       )}
-
-      
       <CreateModelModal
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}

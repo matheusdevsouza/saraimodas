@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -25,7 +24,6 @@ import {
 } from 'react-icons/fa';
 import Link from 'next/link'
 import CreateProductModal from '@/components/admin/CreateProductModal'
-
 interface Product {
   id: number;
   name: string;
@@ -49,7 +47,6 @@ interface Product {
     is_primary: boolean;
   }>;
 }
-
 interface Model {
   id: number;
   name: string;
@@ -58,16 +55,13 @@ interface Model {
   image_url?: string;
   is_active?: boolean;
 }
-
 interface Brand {
   id: number;
   name: string;
 }
-
 const getProductBrand = (product: Product): string => {
   return product.brand_name || getProductBrand(product);
 };
-
 const getProductImage = (product: Product): string | null => {
   if (product.primary_image) {
     return product.primary_image;
@@ -78,7 +72,6 @@ const getProductImage = (product: Product): string | null => {
   }
   return null;
 };
-
 export default function ProdutosPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -95,17 +88,14 @@ export default function ProdutosPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
-
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
       const params = new URLSearchParams({
         page: page.toString(),
         limit: '10',
@@ -116,10 +106,8 @@ export default function ProdutosPage() {
         sortBy,
         sortOrder
       });
-
       const response = await fetch(`/api/admin/products?${params}`);
       const result = await response.json();
-      
       if (result.success && result.data) {
         setProducts(result.data.products || []);
         setTotalPages(result.data.pagination?.pages || 1);
@@ -136,13 +124,10 @@ export default function ProdutosPage() {
       setLoading(false);
     }
   }, [page, searchTerm, selectedBrand, selectedModel, newProducts, sortBy, sortOrder]);
-
-
   const fetchBrands = useCallback(async () => {
     try {
       const response = await fetch('/api/brands');
       const result = await response.json();
-      
       if (result.success && result.data) {
         setBrands(result.data || []);
       }
@@ -150,12 +135,10 @@ export default function ProdutosPage() {
       console.error('Erro ao buscar marcas:', error);
     }
   }, []);
-
   const fetchModels = useCallback(async () => {
     try {
       const response = await fetch('/api/models');
       const result = await response.json();
-      
       if (result.success && result.data) {
         setModels(result.data || []);
       }
@@ -163,13 +146,11 @@ export default function ProdutosPage() {
       console.error('Erro ao buscar modelos:', error);
     }
   }, []);
-
   useEffect(() => {
     const checkScreenSize = () => {
       const width = window.innerWidth;
       setIsMobile(width < 768);
       setIsTablet(width >= 768 && width < 1024);
-      
       if (width < 768) {
         setViewMode('grid');
       } else if (width >= 768 && width < 1024) {
@@ -180,19 +161,15 @@ export default function ProdutosPage() {
         setViewMode('table');
       }
     };
-
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
-    
     return () => window.removeEventListener('resize', checkScreenSize);
   }, [viewMode]);
-
   useEffect(() => {
     fetchProducts();
     fetchBrands();
     fetchModels();
   }, [fetchProducts, fetchBrands, fetchModels]);
-
   const handleSort = (field: string) => {
     if (sortBy === field) {
       setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -202,22 +179,17 @@ export default function ProdutosPage() {
     }
     setPage(1);
   };
-
   const getSortIcon = (field: string) => {
     if (sortBy !== field) return <FaSort className="text-gray-400" />;
     return sortOrder === 'asc' ? <FaSortUp className="text-primary-500" /> : <FaSortDown className="text-primary-500" />;
   };
-
   const handleDeleteProduct = async (productId: number) => {
     if (!confirm('Tem certeza que deseja remover este produto? Esta ação não pode ser desfeita.')) return;
-
     try {
       const response = await fetch(`/api/admin/products/${productId}`, {
         method: 'DELETE'
       });
-      
       const result = await response.json();
-      
       if (result.success) {
         fetchProducts();
       } else {
@@ -228,7 +200,6 @@ export default function ProdutosPage() {
       alert('Erro ao conectar com o servidor');
     }
   };
-
   const clearFilters = () => {
     setSearchTerm('');
     setSelectedBrand('all');
@@ -238,7 +209,6 @@ export default function ProdutosPage() {
     setSortOrder('desc');
     setPage(1);
   };
-
   const ProductCard = ({ product }: { product: Product }) => (
     <motion.div
       variants={itemVariants}
@@ -271,7 +241,6 @@ export default function ProdutosPage() {
           </div>
         </div>
       </div>
-      
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${
@@ -293,12 +262,10 @@ export default function ProdutosPage() {
           {product.is_active ? 'Ativo' : 'Inativo'}
         </span>
       </div>
-      
       <div className="flex items-center justify-between text-xs text-gray-400 mb-3">
         <span>ID: {product.id}</span>
         {product.sku && <span>SKU: {product.sku}</span>}
       </div>
-      
       <div className="flex items-center gap-2">
         <Link 
           href={`/admin/produtos/${product.id}`} 
@@ -324,7 +291,6 @@ export default function ProdutosPage() {
       </div>
     </motion.div>
   );
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -334,12 +300,10 @@ export default function ProdutosPage() {
       }
     }
   };
-
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 }
   };
-
   if (loading && products.length === 0) {
     return (
       <div className="space-y-6">
@@ -355,7 +319,6 @@ export default function ProdutosPage() {
       </div>
     );
   }
-
   if (error && products.length === 0) {
     return (
       <div className="space-y-6">
@@ -373,7 +336,6 @@ export default function ProdutosPage() {
       </div>
     );
   }
-
   return (
     <div className="space-y-6 max-w-full overflow-hidden">
       <motion.div
@@ -386,7 +348,6 @@ export default function ProdutosPage() {
           <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Gerenciar Produtos</h1>
           <p className="text-gray-400 text-sm md:text-base">Gerencie o catálogo de produtos da sua loja</p>
         </div>
-        
         <div className="flex flex-col sm:flex-row gap-3">
           {!isMobile && (
             <div className="flex bg-dark-800/50 rounded-xl p-1">
@@ -414,7 +375,6 @@ export default function ProdutosPage() {
               </button>
             </div>
           )}
-          
           <button 
             onClick={() => setShowCreateModal(true)}
             className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-4 lg:px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-primary-500/25 flex items-center justify-center gap-2 text-sm lg:text-base whitespace-nowrap"
@@ -425,7 +385,6 @@ export default function ProdutosPage() {
           </button>
         </div>
       </motion.div>
-
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -446,7 +405,6 @@ export default function ProdutosPage() {
             </button>
           </div>
         )}
-
         <div className={`${isMobile && !showFilters ? 'hidden' : ''} space-y-4`}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="relative md:col-span-2 lg:col-span-1">
@@ -459,7 +417,6 @@ export default function ProdutosPage() {
                 className="w-full bg-dark-700/50 border border-dark-600/50 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:bg-dark-700 transition-all duration-300 text-sm lg:text-base"
               />
             </div>
-
             <div className="relative">
               <select
                 value={selectedBrand}
@@ -473,7 +430,6 @@ export default function ProdutosPage() {
               </select>
               <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
             </div>
-
             <div className="relative">
               <select
                 value={selectedModel}
@@ -487,7 +443,6 @@ export default function ProdutosPage() {
               </select>
               <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
             </div>
-
             <div className="flex items-center">
               <button
                 onClick={() => setNewProducts(!newProducts)}
@@ -502,7 +457,6 @@ export default function ProdutosPage() {
                 <span className="sm:hidden">Novos</span>
               </button>
             </div>
-
             <div className="flex items-center">
               <button
                 onClick={clearFilters}
@@ -514,7 +468,6 @@ export default function ProdutosPage() {
               </button>
             </div>
           </div>
-
           {isMobile && (
             <div className="bg-dark-700/30 rounded-xl p-3">
               <div className="text-center text-gray-400 text-sm">
@@ -524,7 +477,6 @@ export default function ProdutosPage() {
           )}
         </div>
       </motion.div>
-
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -705,7 +657,6 @@ export default function ProdutosPage() {
             )}
           </div>
         )}
-
         {loading && products.length > 0 && (
           <div className="flex items-center justify-center py-8">
             <FaSpinner className="animate-spin text-primary-500 mr-2" size={20} />
@@ -713,7 +664,6 @@ export default function ProdutosPage() {
           </div>
         )}
       </motion.div>
-
       {totalPages > 1 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -724,7 +674,6 @@ export default function ProdutosPage() {
           <div className="text-gray-400 text-sm text-center md:text-left">
             Mostrando {products.length} de {totalProducts} produtos
           </div>
-          
           <div className="flex items-center justify-center gap-2">
             <button 
               onClick={() => setPage(Math.max(1, page - 1))}
@@ -734,16 +683,13 @@ export default function ProdutosPage() {
               <span className="hidden md:inline">Anterior</span>
               <span className="md:hidden">‹</span>
             </button>
-            
             <div className="flex items-center gap-1">
               {(() => {
                 const maxVisible = isMobile ? 3 : 5;
                 const startPage = Math.max(1, page - Math.floor(maxVisible / 2));
                 const endPage = Math.min(totalPages, startPage + maxVisible - 1);
                 const actualStartPage = Math.max(1, endPage - maxVisible + 1);
-                
                 const pages = [];
-                
                 if (actualStartPage > 1) {
                   pages.push(
                     <button
@@ -760,7 +706,6 @@ export default function ProdutosPage() {
                     );
                   }
                 }
-                
                 for (let i = actualStartPage; i <= endPage; i++) {
                   pages.push(
                     <button
@@ -776,7 +721,6 @@ export default function ProdutosPage() {
                     </button>
                   );
                 }
-                
                 if (endPage < totalPages) {
                   if (endPage < totalPages - 1) {
                     pages.push(
@@ -793,11 +737,9 @@ export default function ProdutosPage() {
                     </button>
                   );
                 }
-                
                 return pages;
               })()}
             </div>
-            
             <button 
               onClick={() => setPage(Math.min(totalPages, page + 1))}
               disabled={page === totalPages}
@@ -809,7 +751,6 @@ export default function ProdutosPage() {
           </div>
         </motion.div>
       )}
-
       <CreateProductModal
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}

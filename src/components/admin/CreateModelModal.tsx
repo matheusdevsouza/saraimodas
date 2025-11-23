@@ -1,5 +1,4 @@
 'use client';
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -10,13 +9,11 @@ import {
   FaUpload
 } from 'react-icons/fa';
 import Image from 'next/image';
-
 interface CreateModelModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
 }
-
 interface FormData {
   name: string;
   description: string;
@@ -24,7 +21,6 @@ interface FormData {
   sort_order: number;
   is_active: boolean;
 }
-
 export default function CreateModelModal({ isOpen, onClose, onSuccess }: CreateModelModalProps) {
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -35,31 +31,25 @@ export default function CreateModelModal({ isOpen, onClose, onSuccess }: CreateM
   });
   const [saving, setSaving] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
-    
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : 
               type === 'number' ? parseInt(value) || 0 : value
     }));
   };
-
   const handleImageUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value;
     setFormData(prev => ({ ...prev, image_url: url }));
     setImagePreview(url || null);
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!formData.name.trim()) {
       alert('Nome do modelo é obrigatório');
       return;
     }
-
     setSaving(true);
     try {
       const response = await fetch('/api/admin/models', {
@@ -69,9 +59,7 @@ export default function CreateModelModal({ isOpen, onClose, onSuccess }: CreateM
         },
         body: JSON.stringify(formData)
       });
-
       const result = await response.json();
-
       if (result.success) {
         alert('Modelo criado com sucesso!');
         handleClose();
@@ -86,7 +74,6 @@ export default function CreateModelModal({ isOpen, onClose, onSuccess }: CreateM
       setSaving(false);
     }
   };
-
   const handleClose = () => {
     setFormData({
       name: '',
@@ -98,9 +85,7 @@ export default function CreateModelModal({ isOpen, onClose, onSuccess }: CreateM
     setImagePreview(null);
     onClose();
   };
-
   if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <motion.div
@@ -109,7 +94,6 @@ export default function CreateModelModal({ isOpen, onClose, onSuccess }: CreateM
         exit={{ opacity: 0, scale: 0.9 }}
         className="bg-dark-800 rounded-xl border border-dark-700 w-full max-w-4xl max-h-[90vh] overflow-hidden"
       >
-        
         <div className="p-6 border-b border-dark-700">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-white">Criar Novo Modelo</h2>
@@ -121,16 +105,11 @@ export default function CreateModelModal({ isOpen, onClose, onSuccess }: CreateM
             </button>
           </div>
         </div>
-
-        
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-white mb-4">Informações Básicas</h3>
-
-                
                 <div>
                   <label htmlFor="name" className="block text-gray-400 text-sm font-medium mb-2">
                     Nome do Modelo *
@@ -146,8 +125,6 @@ export default function CreateModelModal({ isOpen, onClose, onSuccess }: CreateM
                     placeholder="Ex: Air Max 95"
                   />
                 </div>
-
-                
                 <div>
                   <label htmlFor="description" className="block text-gray-400 text-sm font-medium mb-2">
                     Descrição
@@ -162,8 +139,6 @@ export default function CreateModelModal({ isOpen, onClose, onSuccess }: CreateM
                     placeholder="Descrição do modelo..."
                   />
                 </div>
-
-                
                 <div>
                   <label htmlFor="sort_order" className="block text-gray-400 text-sm font-medium mb-2">
                     Ordem de Exibição
@@ -182,8 +157,6 @@ export default function CreateModelModal({ isOpen, onClose, onSuccess }: CreateM
                     Menor número aparece primeiro no carrossel
                   </p>
                 </div>
-
-                
                 <div>
                   <label className="flex items-center space-x-3">
                     <input
@@ -200,12 +173,8 @@ export default function CreateModelModal({ isOpen, onClose, onSuccess }: CreateM
                   </p>
                 </div>
               </div>
-
-              
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-white mb-4">Imagem do Modelo</h3>
-
-                
                 <div className="aspect-video bg-dark-700/50 rounded-lg overflow-hidden border border-dark-600/50">
                   {imagePreview ? (
                     <div className="relative w-full h-full">
@@ -236,8 +205,6 @@ export default function CreateModelModal({ isOpen, onClose, onSuccess }: CreateM
                     </div>
                   )}
                 </div>
-
-                
                 <div className="space-y-2">
                   <label className="block text-gray-400 text-sm font-medium">Upload da Imagem</label>
                   <div className="border-2 border-dashed border-dark-600/70 rounded-xl p-6 bg-dark-700/30">
@@ -269,8 +236,6 @@ export default function CreateModelModal({ isOpen, onClose, onSuccess }: CreateM
                     </div>
                   </div>
                 </div>
-
-                
                 <div>
                   <label htmlFor="image_url" className="block text-gray-400 text-sm font-medium mb-2">
                     URL da Imagem (opcional)
@@ -289,8 +254,6 @@ export default function CreateModelModal({ isOpen, onClose, onSuccess }: CreateM
             </div>
           </form>
         </div>
-
-        
         <div className="p-6 border-t border-dark-700">
           <div className="flex items-center justify-end space-x-4">
             <button

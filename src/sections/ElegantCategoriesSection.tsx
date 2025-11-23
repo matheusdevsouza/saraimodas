@@ -1,10 +1,8 @@
 'use client'
-
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { Dress, TShirt, Bag, Sparkle, Heart, Crown } from 'phosphor-react'
-
+import { Tag, TShirt, Bag, Sparkle, Heart, Crown } from 'phosphor-react'
 interface Category {
   id: number
   name: string
@@ -12,35 +10,30 @@ interface Category {
   description: string
   productCount: number
 }
-
 const categoryIcons: { [key: string]: any } = {
-  'vestidos': Dress,
+  'vestidos': Tag,
   'blusas': TShirt,
   'acessorios': Bag,
-  'saias': Dress,
+  'saias': Tag,
   'casacos': TShirt,
   'default': Sparkle
 }
-
 const defaultCategories = [
-  { name: 'Vestidos', slug: 'vestidos', icon: Dress, description: 'Peças elegantes para todos os momentos' },
+  { name: 'Vestidos', slug: 'vestidos', icon: Tag, description: 'Peças elegantes para todos os momentos' },
   { name: 'Blusas', slug: 'blusas', icon: TShirt, description: 'Conforto e sofisticação' },
   { name: 'Acessórios', slug: 'acessorios', icon: Bag, description: 'Detalhes que fazem a diferença' },
-  { name: 'Saias', slug: 'saias', icon: Dress, description: 'Versatilidade e estilo' },
+  { name: 'Saias', slug: 'saias', icon: Tag, description: 'Versatilidade e estilo' },
   { name: 'Casacos', slug: 'casacos', icon: TShirt, description: 'Elegância para o inverno' },
   { name: 'Coleção Premium', slug: 'premium', icon: Crown, description: 'Peças exclusivas e sofisticadas' }
 ]
-
 export function ElegantCategoriesSection() {
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
-
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await fetch('/api/categories')
         const data = await response.json()
-        
         if (data.success && data.data.length > 0) {
           setCategories(data.data.slice(0, 6))
         } else {
@@ -65,10 +58,8 @@ export function ElegantCategoriesSection() {
         setLoading(false)
       }
     }
-
     fetchCategories()
   }, [])
-
   if (loading) {
     return (
       <section className="py-24 bg-[#261E10]">
@@ -80,11 +71,9 @@ export function ElegantCategoriesSection() {
       </section>
     )
   }
-
   return (
     <section className="py-24 bg-[#261E10]">
       <div className="container mx-auto px-4">
-        
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -102,12 +91,9 @@ export function ElegantCategoriesSection() {
             Encontre peças perfeitas para cada momento do seu dia
           </p>
         </motion.div>
-
-        
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
           {categories.map((category, index) => {
             const IconComponent = categoryIcons[category.slug.toLowerCase()] || categoryIcons.default || Sparkle
-            
             return (
               <motion.div
                 key={category.id}
@@ -122,7 +108,6 @@ export function ElegantCategoriesSection() {
                   href={`/produtos?categoria=${category.slug}`}
                   className="flex flex-col items-center p-6 bg-[#0D0D0D] rounded-lg hover:bg-[#261E10] transition-all duration-300 shadow-md hover:shadow-lg"
                 >
-                  
                   <div className="mb-4 p-4 bg-[#261E10] rounded-lg group-hover:bg-[var(--logo-gold,#D4AF37)] transition-all duration-300">
                     <IconComponent 
                       size={32} 
@@ -130,13 +115,9 @@ export function ElegantCategoriesSection() {
                       weight="regular" 
                     />
                   </div>
-
-                  
                   <h3 className="text-center font-semibold text-white mb-2 group-hover:text-[var(--logo-gold,#D4AF37)] transition-colors duration-300">
                     {category.name}
                   </h3>
-
-                  
                   <p className="text-sm text-gray-500">
                     {category.productCount} peças
                   </p>
@@ -149,4 +130,3 @@ export function ElegantCategoriesSection() {
     </section>
   )
 }
-

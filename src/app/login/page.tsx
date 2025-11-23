@@ -1,11 +1,9 @@
 'use client';
-
 import Link from 'next/link';
 import { useState } from 'react';
 import Image from 'next/image';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-
 export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: '',
@@ -15,26 +13,21 @@ export default function LoginPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showResendVerification, setShowResendVerification] = useState(false);
   const [resendEmail, setResendEmail] = useState('');
-  
   const { login, resendVerification } = useAuth();
   const router = useRouter();
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
     setShowResendVerification(false);
-
     try {
       const result = await login(formData.email, formData.password);
-      
       if (result.success) {
         setMessage({ type: 'success', text: result.message });
         setTimeout(() => {
@@ -57,10 +50,8 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-
   const handleResendVerification = async () => {
     if (!resendEmail) return;
-    
     setLoading(true);
     try {
       const result = await resendVerification(resendEmail);
@@ -74,7 +65,6 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-
   return (
     <section className="min-h-screen flex items-center justify-center bg-[#0D0D0D] py-12 px-4">
       <div className="w-full max-w-md bg-[#261E10] rounded-xl shadow-2xl p-8 flex flex-col gap-8">
@@ -85,7 +75,6 @@ export default function LoginPage() {
           <h1 className="text-2xl font-semibold text-white mb-2 text-center">Entrar na sua conta</h1>
           <p className="text-gray-400 text-center text-sm">Bem-vindo de volta! Faça login para continuar.</p>
         </div>
-
         {message && (
           <div className={`p-4 rounded-lg text-sm ${
             message.type === 'success' 
@@ -95,7 +84,6 @@ export default function LoginPage() {
             {message.text}
           </div>
         )}
-
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <label htmlFor="email" className="text-gray-300 font-medium text-sm">E-mail</label>
@@ -137,7 +125,6 @@ export default function LoginPage() {
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
-
         {showResendVerification && (
           <div className="mt-4 p-4 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
             <p className="text-yellow-400 text-sm mb-3">

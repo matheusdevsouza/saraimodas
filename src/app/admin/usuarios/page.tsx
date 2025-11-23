@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { 
@@ -23,7 +22,6 @@ import {
   FaRedo
 } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
-
 interface User {
   id: number;
   name: string;
@@ -37,7 +35,6 @@ interface User {
   orderCount: number;
   totalSpent: number;
 }
-
 export default function AdminUsers() {
   const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState(true)
@@ -48,19 +45,15 @@ export default function AdminUsers() {
   const [totalPages, setTotalPages] = useState(1)
   const [totalUsers, setTotalUsers] = useState(0)
   const [error, setError] = useState<string | null>(null)
-  
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
-
   const router = useRouter();
-
   const fetchUsers = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
-      
       const params = new URLSearchParams({
         page: currentPage.toString(),
         take: '10',
@@ -68,10 +61,8 @@ export default function AdminUsers() {
         ...(statusFilter && { status: statusFilter }),
         ...(roleFilter && { role: roleFilter })
       })
-
       const res = await fetch(`/api/admin/users?${params}`)
       if (!res.ok) throw new Error('Falha ao carregar usuários')
-      
       const data = await res.json()
       setUsers(data.data.users)
       setTotalPages(data.data.pagination.pages)
@@ -83,13 +74,11 @@ export default function AdminUsers() {
       setLoading(false)
     }
   }, [currentPage, searchTerm, statusFilter, roleFilter])
-
   useEffect(() => {
     const checkScreenSize = () => {
       const width = window.innerWidth;
       setIsMobile(width < 768);
       setIsTablet(width >= 768 && width < 1024);
-      
       if (width < 768) {
         setViewMode('grid');
       } else if (width >= 768 && width < 1024) {
@@ -100,49 +89,39 @@ export default function AdminUsers() {
         setViewMode('table');
       }
     };
-
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
-    
     return () => window.removeEventListener('resize', checkScreenSize);
   }, [viewMode]);
-
   useEffect(() => {
     fetchUsers()
   }, [currentPage, searchTerm, statusFilter, roleFilter, fetchUsers])
-
   const handleSearch = (value: string) => {
     setSearchTerm(value)
     setCurrentPage(1) 
   }
-
   const handleStatusFilter = (value: string) => {
     setStatusFilter(value)
     setCurrentPage(1)
   }
-
   const handleRoleFilter = (value: string) => {
     setRoleFilter(value)
     setCurrentPage(1)
   }
-
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
   }
-
   const handleDeleteUser = async (id: number) => {
     if (confirm('Tem certeza que deseja excluir este usuário?')) {
       try {
         const res = await fetch(`/api/admin/users/${id}`, {
           method: 'DELETE'
         })
-        
         if (!res.ok) {
           const errorData = await res.json()
           alert(`Erro ao excluir usuário: ${errorData.error}`)
           return
         }
-        
         fetchUsers()
       } catch (error) {
         console.error('Erro ao excluir usuário:', error)
@@ -150,26 +129,21 @@ export default function AdminUsers() {
       }
     }
   };
-
   const handleViewUser = (id: number) => {
     router.push(`/admin/usuarios/${id}`)
   };
-
   const handleEditUser = (id: number) => {
     router.push(`/admin/usuarios/${id}`)
   };
-
   const refreshUsers = () => {
     fetchUsers();
   };
-
   const clearFilters = () => {
     setSearchTerm('');
     setStatusFilter('');
     setRoleFilter('');
     setCurrentPage(1);
   };
-
   const UserCard = ({ user }: { user: User }) => {
     return (
       <motion.div
@@ -209,7 +183,6 @@ export default function AdminUsers() {
             </div>
           </div>
         </div>
-        
         <div className="space-y-2 mb-3">
           <div className="flex items-center justify-between">
             <span className="text-gray-400 text-xs">Pedidos:</span>
@@ -226,7 +199,6 @@ export default function AdminUsers() {
             <span className="text-white text-xs">{user.lastLogin || 'Nunca'}</span>
           </div>
         </div>
-        
         <div className="flex items-center gap-2">
           <button 
             onClick={() => handleViewUser(user.id)} 
@@ -253,7 +225,6 @@ export default function AdminUsers() {
       </motion.div>
     );
   };
-
   if (loading) {
     return (
       <div className="space-y-6">
@@ -269,7 +240,6 @@ export default function AdminUsers() {
       </div>
     );
   }
-
   return (
     <div className="space-y-6 max-w-full overflow-hidden">
       <motion.div
@@ -282,7 +252,6 @@ export default function AdminUsers() {
           <h1 className="text-xl md:text-2xl font-bold text-white mb-1">Gestão de Usuários</h1>
           <p className="text-gray-400 text-xs md:text-sm">Gerencie todos os usuários da sua loja</p>
         </div>
-        
         <div className="flex flex-col sm:flex-row gap-3">
           {!isMobile && (
             <div className="flex bg-dark-800/50 rounded-xl p-1">
@@ -310,7 +279,6 @@ export default function AdminUsers() {
               </button>
             </div>
           )}
-          
           <button
             onClick={refreshUsers}
             className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-3 lg:px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:shadow-primary-500/25 flex items-center justify-center gap-1 text-xs lg:text-sm whitespace-nowrap"
@@ -322,7 +290,6 @@ export default function AdminUsers() {
           </button>
         </div>
       </motion.div>
-
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -340,7 +307,6 @@ export default function AdminUsers() {
             </div>
           </div>
         </div>
-
         <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-700/50 rounded-xl p-3 lg:p-4 border-l-4 border-primary-500">
           <div className="flex items-center justify-between">
             <div>
@@ -354,7 +320,6 @@ export default function AdminUsers() {
             </div>
           </div>
         </div>
-
         <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-700/50 rounded-xl p-3 lg:p-4 border-l-4 border-primary-500">
           <div className="flex items-center justify-between">
             <div>
@@ -368,7 +333,6 @@ export default function AdminUsers() {
             </div>
           </div>
         </div>
-
         <div className="bg-dark-800/50 backdrop-blur-sm border border-dark-700/50 rounded-xl p-3 lg:p-4 border-l-4 border-primary-500">
           <div className="flex items-center justify-between">
             <div>
@@ -383,7 +347,6 @@ export default function AdminUsers() {
           </div>
         </div>
       </motion.div>
-
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -404,7 +367,6 @@ export default function AdminUsers() {
             </button>
           </div>
         )}
-
         <div className={`${isMobile && !showFilters ? 'hidden' : ''} space-y-4`}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="relative sm:col-span-2 lg:col-span-1">
@@ -417,7 +379,6 @@ export default function AdminUsers() {
                 className="w-full bg-dark-700/50 border border-dark-600/50 rounded-xl px-4 py-3 pl-10 text-white placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:bg-dark-700 transition-all duration-300 text-sm md:text-base"
               />
             </div>
-
             <div className="relative">
               <select
                 value={roleFilter}
@@ -430,7 +391,6 @@ export default function AdminUsers() {
               </select>
               <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
             </div>
-
             <div className="relative">
               <select
                 value={statusFilter}
@@ -444,7 +404,6 @@ export default function AdminUsers() {
               <FaChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
             </div>
           </div>
-
           <div className="flex justify-center sm:justify-start">
             <button
               onClick={clearFilters}
@@ -455,7 +414,6 @@ export default function AdminUsers() {
               <span className="sm:hidden">Limpar</span>
             </button>
           </div>
-
           {isMobile && (
             <div className="bg-dark-700/30 rounded-xl p-3">
               <div className="text-center text-gray-400 text-sm">
@@ -465,7 +423,6 @@ export default function AdminUsers() {
           )}
         </div>
       </motion.div>
-
       {error && (
         <div className="bg-red-500/10 border border-red-500/30 text-red-300 p-4 rounded-lg mb-6">
           <div className="flex items-center gap-2">
@@ -480,7 +437,6 @@ export default function AdminUsers() {
           </button>
         </div>
       )}
-
       {loading ? (
         <div className="bg-gray-800 rounded-lg p-6">
           <div className="flex items-center justify-center py-12">
@@ -637,7 +593,6 @@ export default function AdminUsers() {
                 )}
               </div>
             )}
-
             {users.length === 0 && !loading && (
               <div className="text-center py-12">
                 <div className="text-gray-400">
@@ -660,7 +615,6 @@ export default function AdminUsers() {
           </motion.div>
         </>
       )}
-
       {totalPages > 1 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -671,7 +625,6 @@ export default function AdminUsers() {
           <div className="text-gray-400 text-sm text-center md:text-left">
             Mostrando {users.length} de {totalUsers} usuários
           </div>
-          
           <div className="flex items-center justify-center gap-2">
             <button 
               onClick={() => handlePageChange(currentPage - 1)}
@@ -681,16 +634,13 @@ export default function AdminUsers() {
               <span className="hidden md:inline">Anterior</span>
               <span className="md:hidden">‹</span>
             </button>
-            
             <div className="flex items-center gap-1">
               {(() => {
                 const maxVisible = isMobile ? 3 : 5;
                 const startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
                 const endPage = Math.min(totalPages, startPage + maxVisible - 1);
                 const actualStartPage = Math.max(1, endPage - maxVisible + 1);
-                
                 const pages = [];
-                
                 if (actualStartPage > 1) {
                   pages.push(
                     <button
@@ -707,7 +657,6 @@ export default function AdminUsers() {
                     );
                   }
                 }
-                
                 for (let i = actualStartPage; i <= endPage; i++) {
                   pages.push(
                     <button
@@ -723,7 +672,6 @@ export default function AdminUsers() {
                     </button>
                   );
                 }
-                
                 if (endPage < totalPages) {
                   if (endPage < totalPages - 1) {
                     pages.push(
@@ -740,11 +688,9 @@ export default function AdminUsers() {
                     </button>
                   );
                 }
-                
                 return pages;
               })()}
             </div>
-            
             <button 
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}

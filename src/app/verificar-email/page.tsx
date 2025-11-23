@@ -1,34 +1,27 @@
 'use client';
-
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
 import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-
-export default function VerificarEmailPage() {
+function VerificarEmailContent() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('');
   const searchParams = useSearchParams();
   const router = useRouter();
   const { verifyEmail } = useAuth();
   const alreadyChecked = useRef(false);
-
   useEffect(() => {
     if (alreadyChecked.current) return;
     alreadyChecked.current = true;
-
     const token = searchParams.get('token');
-    
     if (!token) {
       setStatus('error');
       setMessage('Token de verificação não encontrado.');
       return;
     }
-
     const verifyToken = async () => {
       try {
         const result = await verifyEmail(token);
-        
         if (result.success) {
           setStatus('success');
           setMessage(result.message);
@@ -44,10 +37,8 @@ export default function VerificarEmailPage() {
         setMessage('Erro interno do servidor.');
       }
     };
-
     verifyToken();
   }, [searchParams, verifyEmail, router]);
-
   return (
     <section className="min-h-screen flex items-center justify-center bg-dark-950 py-12 px-4">
       <div className="w-full max-w-md bg-dark-900 border border-dark-800 rounded-3xl shadow-2xl p-8 flex flex-col gap-8">
@@ -57,7 +48,6 @@ export default function VerificarEmailPage() {
           </div>
           <h1 className="text-2xl font-extrabold text-white mb-2 text-center">Verificação de E-mail</h1>
         </div>
-
         <div className="text-center">
           {status === 'loading' && (
             <div className="flex flex-col items-center gap-4">
@@ -65,7 +55,6 @@ export default function VerificarEmailPage() {
               <p className="text-gray-400">Verificando seu e-mail...</p>
             </div>
           )}
-
           {status === 'success' && (
             <div className="flex flex-col items-center gap-4">
               <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
@@ -77,7 +66,6 @@ export default function VerificarEmailPage() {
               <p className="text-gray-400 text-sm">Redirecionando para a página inicial...</p>
             </div>
           )}
-
           {status === 'error' && (
             <div className="flex flex-col items-center gap-4">
               <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center">
@@ -98,11 +86,15 @@ export default function VerificarEmailPage() {
       </div>
     </section>
   );
+}
+export default function VerificarEmailPage() {
+  return (
+    <Suspense fallback={
+      <section className="min-h-screen flex items-center justify-center bg-dark-950 py-12 px-4">
+        <div className="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+      </section>
+    }>
+      <VerificarEmailContent />
+    </Suspense>
+  );
 } 
-
-
-
-
-
-
-

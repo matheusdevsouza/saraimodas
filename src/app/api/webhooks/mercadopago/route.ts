@@ -1,39 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import database from '@/lib/database';
 import { sendPaymentConfirmationEmail } from '@/lib/email';
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    
-    console.log('=== WEBHOOK MERCADO PAGO RECEBIDO ===');
-    console.log('Timestamp:', new Date().toISOString());
-    console.log('Body completo:', JSON.stringify(body, null, 2));
-    
     if (body.type === 'payment') {
       const paymentId = body.data.id;
-      
       const mpResponse = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
         headers: {
           'Authorization': `Bearer ${process.env.MERCADOPAGO_ACCESS_TOKEN}`,
           'Content-Type': 'application/json'
         }
       });
-      
       if (!mpResponse.ok) {
         throw new Error('Erro ao buscar pagamento no Mercado Pago');
       }
-      
       const payment = await mpResponse.json();
       const orderNumber = payment.external_reference;
-      
       if (!orderNumber) {
         throw new Error('External reference não encontrada');
       }
-      
       let orderStatus = 'pending';
       let paymentStatus = 'pending';
-      
       switch (payment.status) {
         case 'approved':
           orderStatus = 'paid';
@@ -63,7 +51,6 @@ export async function POST(request: NextRequest) {
           orderStatus = 'pending';
           paymentStatus = 'pending';
       }
-      
       await database.query(`
         UPDATE orders 
         SET 
@@ -80,15 +67,6 @@ export async function POST(request: NextRequest) {
         payment.payment_method?.type || 'mercadopago',
         orderNumber
       ]);
-      
-      console.log('=== PEDIDO ATUALIZADO COM SUCESSO ===');
-      console.log(`Pedido ${orderNumber} atualizado:`, {
-        order_status: orderStatus,
-        payment_status: paymentStatus,
-        payment_id: paymentId,
-        timestamp: new Date().toISOString()
-      });
-
       if (paymentStatus === 'paid') {
         const orderRows = await database.query(
           'SELECT id FROM orders WHERE order_number = ? LIMIT 1',
@@ -100,24 +78,22 @@ export async function POST(request: NextRequest) {
             'SELECT product_id, size, quantity FROM order_items WHERE order_id = ?',
             [orderId]
           );
-
           for (const it of items) {
             if (it.size) {
               await database.query(
                 `UPDATE product_sizes 
                  SET stock_quantity = GREATEST(stock_quantity - ?, 0), 
-                     is_active = CASE WHEN (stock_quantity - ?) <= 0 THEN 0 ELSE is_active END,
+                     is_active = CASE WHEN (stock_quantity - ?) <= 0 THEN FALSE ELSE is_active END,
                      updated_at = NOW()
                  WHERE product_id = ? AND size = ?`,
                 [it.quantity, it.quantity, it.product_id, it.size]
               );
             }
           }
-
           const affectedProducts = Array.from(new Set(items.map((i: any) => i.product_id)));
           for (const pid of affectedProducts) {
             const totalRows = await database.query(
-              'SELECT COALESCE(SUM(stock_quantity),0) AS total FROM product_sizes WHERE product_id = ? AND is_active = 1',
+              'SELECT COALESCE(SUM(stock_quantity),0) AS total FROM product_sizes WHERE product_id = ? AND is_active = TRUE',
               [pid]
             );
             const total = (totalRows?.[0]?.total) || 0;
@@ -125,7 +101,6 @@ export async function POST(request: NextRequest) {
           }
         }
       }
-      
       if (paymentStatus === "paid" && orderStatus === "processing") {
         try {
           const orderData = await database.query(`
@@ -134,7 +109,6 @@ export async function POST(request: NextRequest) {
             LEFT JOIN order_items oi ON o.id = oi.order_id
             WHERE o.order_number = ?
           `, [orderNumber]);
-          
           if (orderData && orderData.length > 0 && orderData[0].customer_email) {
             const order = orderData[0];
             const items = orderData.map((item: any) => ({
@@ -142,7 +116,6 @@ export async function POST(request: NextRequest) {
               quantity: item.quantity,
               price: parseFloat(item.unit_price)
             }));
-            
             await sendPaymentConfirmationEmail({
               email: order.customer_email,
               name: order.customer_name || "Cliente",
@@ -150,18 +123,11 @@ export async function POST(request: NextRequest) {
               totalAmount: parseFloat(order.total_amount),
               items: items
             });
-            
-            console.log(`Email de confirmação enviado para ${order.customer_email}`);
           }
         } catch (emailError) {
-          console.error("Erro ao enviar email de confirmação:", emailError);
         }
       }
-    } else {
-      console.log('=== WEBHOOK IGNORADO ===');
-      console.log('Tipo de notificação não é payment:', body.type);
     }
-    
     return NextResponse.json({ success: true, timestamp: new Date().toISOString() });
   } catch (error) {
     console.error('=== ERRO NO WEBHOOK MERCADO PAGO ===');
@@ -172,7 +138,6 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
 export async function GET() {
   return NextResponse.json({ 
     message: 'Webhook do Mercado Pago está ativo e funcionando',

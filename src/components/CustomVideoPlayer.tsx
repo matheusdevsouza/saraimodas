@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -11,7 +10,6 @@ import {
   FaStepForward,
   FaSpinner
 } from 'react-icons/fa';
-
 interface CustomVideoPlayerProps {
   src: string;
   thumbnail?: string;
@@ -21,7 +19,6 @@ interface CustomVideoPlayerProps {
   muted?: boolean;
   loop?: boolean;
 }
-
 export default function CustomVideoPlayer({ 
   src, 
   thumbnail, 
@@ -39,16 +36,13 @@ export default function CustomVideoPlayer({
   const [isLoading, setIsLoading] = useState(true);
   const [volume, setVolume] = useState(1);
   const [playbackRate, setPlaybackRate] = useState(1);
-  
   const videoRef = useRef<HTMLVideoElement>(null);
   const controlsTimeoutRef = useRef<NodeJS.Timeout>();
-
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
-
   const togglePlay = () => {
     if (videoRef.current) {
       if (isPlaying) {
@@ -59,14 +53,12 @@ export default function CustomVideoPlayer({
       setIsPlaying(!isPlaying);
     }
   };
-
   const toggleMute = () => {
     if (videoRef.current) {
       videoRef.current.muted = !isMuted;
       setIsMuted(!isMuted);
     }
   };
-
   const handleVolumeChange = (newVolume: number) => {
     if (videoRef.current) {
       const clampedVolume = Math.max(0, Math.min(1, newVolume));
@@ -76,7 +68,6 @@ export default function CustomVideoPlayer({
       setIsMuted(clampedVolume === 0);
     }
   };
-
   const handleVolumeClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (videoRef.current && e.currentTarget) {
       const rect = e.currentTarget.getBoundingClientRect();
@@ -86,7 +77,6 @@ export default function CustomVideoPlayer({
       handleVolumeChange(newVolume);
     }
   };
-
   const handleSeek = (newTime: number) => {
     if (videoRef.current) {
       const clampedTime = Math.max(0, Math.min(duration, newTime));
@@ -94,7 +84,6 @@ export default function CustomVideoPlayer({
       setCurrentTime(clampedTime);
     }
   };
-
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (videoRef.current && e.currentTarget && duration > 0) {
       const rect = e.currentTarget.getBoundingClientRect();
@@ -104,14 +93,11 @@ export default function CustomVideoPlayer({
       handleSeek(newTime);
     }
   };
-
   const skipTime = (seconds: number) => {
     if (videoRef.current) {
       videoRef.current.currentTime = Math.max(0, Math.min(duration, currentTime + seconds));
     }
   };
-
-
   const showControlsTemporarily = () => {
     setShowControls(true);
     if (controlsTimeoutRef.current) {
@@ -121,33 +107,27 @@ export default function CustomVideoPlayer({
       setShowControls(false);
     }, 3000);
   };
-
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-
     const handleLoadedMetadata = () => {
       setDuration(video.duration);
       setIsLoading(false);
     };
-
     const handleTimeUpdate = () => {
       setCurrentTime(video.currentTime);
     };
-
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
     const handleVolumeChange = () => {
       setVolume(video.volume);
       setIsMuted(video.muted);
     };
-
     video.addEventListener('loadedmetadata', handleLoadedMetadata);
     video.addEventListener('timeupdate', handleTimeUpdate);
     video.addEventListener('play', handlePlay);
     video.addEventListener('pause', handlePause);
     video.addEventListener('volumechange', handleVolumeChange);
-
     return () => {
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
       video.removeEventListener('timeupdate', handleTimeUpdate);
@@ -156,14 +136,12 @@ export default function CustomVideoPlayer({
       video.removeEventListener('volumechange', handleVolumeChange);
     };
   }, []);
-
   return (
     <div 
       className={`relative group bg-dark-900/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-dark-700/50 shadow-2xl ${className}`}
       onMouseMove={showControlsTemporarily}
       onMouseLeave={() => setShowControls(false)}
     >
-      
       <video
         ref={videoRef}
         src={src}
@@ -177,8 +155,6 @@ export default function CustomVideoPlayer({
       >
         Seu navegador não suporta vídeos.
       </video>
-
-      
       <AnimatePresence>
         {isLoading && (
           <motion.div
@@ -193,8 +169,6 @@ export default function CustomVideoPlayer({
           </motion.div>
         )}
       </AnimatePresence>
-
-      
       <AnimatePresence>
         {!isPlaying && !showControls && !isLoading && (
           <motion.div
@@ -214,8 +188,6 @@ export default function CustomVideoPlayer({
           </motion.div>
         )}
       </AnimatePresence>
-
-      
       <AnimatePresence>
         {showControls && (
           <motion.div
@@ -224,11 +196,8 @@ export default function CustomVideoPlayer({
             exit={{ opacity: 0 }}
             className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"
           >
-
-            
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="flex items-center gap-6">
-                
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -238,8 +207,6 @@ export default function CustomVideoPlayer({
                 >
                   <FaStepBackward size={18} />
                 </motion.button>
-
-                
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -248,8 +215,6 @@ export default function CustomVideoPlayer({
                 >
                   {isPlaying ? <FaPause size={20} /> : <FaPlay size={20} className="ml-1" />}
                 </motion.button>
-
-                
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -261,10 +226,7 @@ export default function CustomVideoPlayer({
                 </motion.button>
               </div>
             </div>
-
-            
             <div className="absolute bottom-4 left-4 right-4">
-              
               <div className="mb-4">
                 <div 
                   className="relative h-2 bg-dark-700/50 rounded-full overflow-hidden cursor-pointer hover:bg-dark-600/50 transition-colors"
@@ -277,16 +239,11 @@ export default function CustomVideoPlayer({
                   <div className="absolute inset-0 w-full h-full" />
                 </div>
               </div>
-
-              
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  
                   <span className="text-white text-sm font-mono">
                     {formatTime(currentTime)} / {formatTime(duration)}
                   </span>
-
-                  
                   <div className="flex items-center gap-2">
                     <motion.button
                       whileHover={{ scale: 1.05 }}
@@ -297,7 +254,6 @@ export default function CustomVideoPlayer({
                     >
                       {isMuted || volume === 0 ? <FaVolumeMute size={14} /> : <FaVolumeUp size={14} />}
                     </motion.button>
-                    
                     <div 
                       className="relative w-20 h-1 bg-dark-700/50 rounded-full overflow-hidden cursor-pointer hover:bg-dark-600/50 transition-colors"
                       onClick={handleVolumeClick}
@@ -310,8 +266,6 @@ export default function CustomVideoPlayer({
                     </div>
                   </div>
                 </div>
-
-                
                 <div className="flex items-center gap-2">
                   <select
                     value={playbackRate}
@@ -334,7 +288,6 @@ export default function CustomVideoPlayer({
                 </div>
               </div>
             </div>
-
           </motion.div>
         )}
       </AnimatePresence>

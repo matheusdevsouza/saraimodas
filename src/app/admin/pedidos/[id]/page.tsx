@@ -1,5 +1,4 @@
 "use client"
-
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { 
@@ -18,14 +17,12 @@ import {
   FaTimes,
   FaExclamationTriangle
 } from 'react-icons/fa'
-
 interface OrderItem {
   id: number
   product_name: string
   quantity: number
   unit_price: number
 }
-
 interface Order {
   id: number
   order_number: string
@@ -65,18 +62,15 @@ interface Order {
   shipping_status?: string
   shipping_notes?: string
 }
-
 export default function OrderDetailPage() {
   const router = useRouter()
   const params = useParams()
   const id = Number(params?.id)
-
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
-  
   const [revealedData, setRevealedData] = useState<{
     email: boolean;
     phone: boolean;
@@ -92,7 +86,6 @@ export default function OrderDetailPage() {
   const [dataToReveal, setDataToReveal] = useState<'email' | 'phone' | 'cpf' | 'address' | null>(null)
   const [adminPassword, setAdminPassword] = useState('')
   const [revealing, setRevealing] = useState(false)
-
   useEffect(() => {
     async function fetchOrder() {
       try {
@@ -101,7 +94,6 @@ export default function OrderDetailPage() {
         if (!res.ok) throw new Error('Falha ao carregar pedido')
         const response = await res.json()
         const data = response.order 
-        
         setOrder(data)
       } catch (e: any) {
         setError(e.message || 'Erro inesperado')
@@ -111,13 +103,11 @@ export default function OrderDetailPage() {
     }
     if (id) fetchOrder()
   }, [id])
-
   async function handleSave() {
     if (!order) return
     try {
       setSaving(true)
       setError(null)
-      
       const requestBody = {
         status: order.status,
         payment_status: order.payment_status,
@@ -127,26 +117,20 @@ export default function OrderDetailPage() {
         shipping_status: order.shipping_status,
         shipping_notes: order.shipping_notes
       };
-      
       console.log('📤 Enviando dados para atualização:', requestBody);
-      
       const res = await fetch(`/api/admin/orders/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
       })
-      
       console.log('📥 Resposta da API:', { status: res.status, ok: res.ok });
-      
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
         console.error('❌ Erro da API:', errorData);
         throw new Error(errorData.error || `Erro ${res.status}: ${res.statusText}`);
       }
-      
       const result = await res.json();
       console.log('✅ Resposta de sucesso:', result);
-      
       if (result.message && result.message.includes('e-mail')) {
         setSaved(true)
         setTimeout(() => setSaved(false), 5000) 
@@ -161,12 +145,10 @@ export default function OrderDetailPage() {
       setSaving(false)
     }
   }
-
   async function handleRevealData(dataType: 'email' | 'phone' | 'cpf' | 'address') {
     try {
       setRevealing(true)
       setError(null)
-      
       const res = await fetch(`/api/admin/orders/${id}/reveal-data`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -175,20 +157,15 @@ export default function OrderDetailPage() {
           password: adminPassword
         })
       })
-      
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
         throw new Error(errorData.error || 'Erro ao revelar dados');
       }
-      
       const result = await res.json()
-      
       if (result.success && result.data) {
         setOrder(prevOrder => {
           if (!prevOrder) return prevOrder;
-          
           const updatedOrder = { ...prevOrder };
-          
           switch (dataType) {
             case 'email':
               updatedOrder.customer_email = result.data.email;
@@ -204,19 +181,15 @@ export default function OrderDetailPage() {
               updatedOrder.formatted_address = result.data.formatted_address;
               break;
           }
-          
           return updatedOrder;
         });
-        
         setRevealedData(prev => ({
           ...prev,
           [dataType]: true
         }));
-        
         setShowRevealModal(false)
         setAdminPassword('')
         setDataToReveal(null)
-        
         console.log(`✅ Dados ${dataType} revelados com sucesso`);
       }
     } catch (e: any) {
@@ -226,13 +199,11 @@ export default function OrderDetailPage() {
       setRevealing(false)
     }
   }
-
   function openRevealModal(dataType: 'email' | 'phone' | 'cpf' | 'address') {
     setDataToReveal(dataType)
     setShowRevealModal(true)
     setAdminPassword('')
   }
-
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
@@ -240,7 +211,6 @@ export default function OrderDetailPage() {
       </div>
     )
   }
-
   if (error) {
     return (
       <div className="p-6">
@@ -250,15 +220,12 @@ export default function OrderDetailPage() {
       </div>
     )
   }
-
   if (!order) return null
-
   return (
     <div className="p-6 space-y-6">
       <button onClick={() => router.back()} className="inline-flex items-center gap-2 text-gray-300 hover:text-white">
         <FaArrowLeft /> Voltar
       </button>
-
       <div className="bg-dark-800/60 border border-dark-700/60 rounded-xl p-6 space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-white">Pedido {order.order_number}</h2>
@@ -270,15 +237,12 @@ export default function OrderDetailPage() {
             {saving ? <FaSpinner className="animate-spin" /> : <FaSave />} Salvar
           </button>
         </div>
-
         {saved && (
           <div className="flex items-center gap-2 text-green-400">
             <FaCheckCircle /> 
             {order?.tracking_code ? 'Alterações salvas e e-mail de rastreio enviado!' : 'Alterações salvas com sucesso'}
           </div>
         )}
-
-        
         <div className="bg-gradient-to-br from-dark-800/80 to-dark-900/80 border border-dark-700/60 rounded-xl p-6 shadow-lg">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -289,9 +253,7 @@ export default function OrderDetailPage() {
               <p className="text-gray-400 text-sm">Dados pessoais e de contato</p>
             </div>
           </div>
-          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
                 <FaUser size={12} className="text-blue-400" />
@@ -305,8 +267,6 @@ export default function OrderDetailPage() {
                 />
               </div>
             </div>
-            
-            
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
                 <FaEnvelope size={12} className="text-green-400" />
@@ -338,8 +298,6 @@ export default function OrderDetailPage() {
                 )}
               </div>
             </div>
-            
-            
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
                 <FaPhone size={12} className="text-purple-400" />
@@ -371,8 +329,6 @@ export default function OrderDetailPage() {
                 )}
               </div>
             </div>
-            
-            
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
                 <FaIdCard size={12} className="text-orange-400" />
@@ -404,8 +360,6 @@ export default function OrderDetailPage() {
                 )}
               </div>
             </div>
-            
-            
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
                 <FaShieldAlt size={12} className="text-emerald-400" />
@@ -421,7 +375,6 @@ export default function OrderDetailPage() {
             </div>
           </div>
           </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm text-gray-400 mb-1">Status do Pedido</label>
@@ -451,8 +404,6 @@ export default function OrderDetailPage() {
             </select>
           </div>
         </div>
-
-        
         <div className="bg-dark-900/60 border border-dark-700/60 rounded-lg p-4">
           <div className="flex items-center justify-between mb-4">
             <h4 className="text-white font-semibold">Endereço de Entrega</h4>
@@ -521,8 +472,6 @@ export default function OrderDetailPage() {
             </div>
           )}
         </div>
-
-        
         <div className="bg-dark-900/60 border border-dark-700/60 rounded-lg p-4">
           <h4 className="text-white font-semibold mb-3">Rastreamento e Envio</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -574,8 +523,6 @@ export default function OrderDetailPage() {
             </div>
           </div>
         </div>
-
-        
         {order.notes && (
           <div>
             <label className="block text-sm text-gray-400 mb-1">Observações</label>
@@ -587,8 +534,6 @@ export default function OrderDetailPage() {
             />
           </div>
         )}
-
-        
         <div className="bg-dark-900/60 border border-dark-700/60 rounded-lg p-4">
           <h4 className="text-white font-semibold mb-3">Detalhes Financeiros</h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -616,8 +561,6 @@ export default function OrderDetailPage() {
             </div>
           </div>
         </div>
-
-        
         <div className="bg-dark-900/60 border border-dark-700/60 rounded-lg p-4">
           <h4 className="text-white font-semibold mb-3">Datas Importantes</h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -651,7 +594,6 @@ export default function OrderDetailPage() {
             )}
           </div>
         </div>
-
         <div>
           <h3 className="text-white font-semibold mb-2">Itens</h3>
           <div className="bg-dark-900/60 border border-dark-700/60 rounded-lg">
@@ -676,12 +618,9 @@ export default function OrderDetailPage() {
           </div>
         </div>
       </div>
-
-      
       {showRevealModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-gradient-to-br from-dark-800/95 to-dark-900/95 border border-dark-700/50 rounded-2xl p-8 w-full max-w-lg shadow-2xl">
-            
             <div className="flex items-start gap-4 mb-6">
               <div className="w-12 h-12 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-xl flex items-center justify-center border border-amber-500/30">
                 <FaLock className="text-amber-400" size={20} />
@@ -707,8 +646,6 @@ export default function OrderDetailPage() {
                 <FaTimes size={14} />
               </button>
             </div>
-            
-            
             <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-xl p-4 mb-6">
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -723,8 +660,6 @@ export default function OrderDetailPage() {
                 </div>
               </div>
             </div>
-            
-            
             <div className="space-y-3 mb-6">
               <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
                 <FaShieldAlt size={12} className="text-blue-400" />
@@ -745,8 +680,6 @@ export default function OrderDetailPage() {
                 </div>
               </div>
             </div>
-            
-            
             <div className="flex gap-3">
               <button
                 onClick={() => {
@@ -777,8 +710,6 @@ export default function OrderDetailPage() {
                 )}
               </button>
             </div>
-            
-            
             <div className="mt-6 pt-4 border-t border-dark-700/50">
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <FaShieldAlt size={10} />

@@ -8,7 +8,6 @@ import database, {
   getProductById 
 } from '@/lib/database';
 import { authenticateUser, isAdmin } from '@/lib/auth';
-
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -21,7 +20,6 @@ export async function GET(
         { status: 401 }
       );
     }
-
     const productId = parseInt(params.id);
     if (isNaN(productId)) {
       return NextResponse.json(
@@ -29,7 +27,6 @@ export async function GET(
         { status: 400 }
       );
     }
-
     const product = await getProductById(productId);
     if (!product) {
       return NextResponse.json(
@@ -37,9 +34,7 @@ export async function GET(
         { status: 404 }
       );
     }
-
     const sizes = await getProductSizes(productId);
-
     return NextResponse.json({
       success: true,
       data: {
@@ -50,7 +45,6 @@ export async function GET(
         sizes: sizes || []
       }
     });
-
   } catch (error) {
     console.error('Erro ao buscar tamanhos do produto:', error);
     return NextResponse.json(
@@ -59,7 +53,6 @@ export async function GET(
     );
   }
 }
-
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -72,7 +65,6 @@ export async function POST(
         { status: 401 }
       );
     }
-
     const productId = parseInt(params.id);
     if (isNaN(productId)) {
       return NextResponse.json(
@@ -80,17 +72,14 @@ export async function POST(
         { status: 400 }
       );
     }
-
     const body = await request.json();
     const { size, stock_quantity } = body;
-
     if (!size || typeof size !== 'string') {
       return NextResponse.json(
         { success: false, error: 'Tamanho é obrigatório' },
         { status: 400 }
       );
     }
-
     const qtyPost = typeof stock_quantity === 'number' ? stock_quantity : Number(String(stock_quantity).trim());
     if (!Number.isFinite(qtyPost)) {
       return NextResponse.json(
@@ -98,7 +87,6 @@ export async function POST(
         { status: 400 }
       );
     }
-
     const product = await getProductById(productId);
     if (!product) {
       return NextResponse.json(
@@ -106,9 +94,7 @@ export async function POST(
         { status: 404 }
       );
     }
-
     await addProductSize(productId, size, Math.trunc(qtyPost));
-
     return NextResponse.json({
       success: true,
       message: 'Tamanho adicionado com sucesso',
@@ -118,7 +104,6 @@ export async function POST(
         stock_quantity: Math.trunc(qtyPost)
       }
     });
-
   } catch (error) {
     console.error('Erro ao adicionar tamanho:', error);
     return NextResponse.json(
@@ -127,7 +112,6 @@ export async function POST(
     );
   }
 }
-
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -140,7 +124,6 @@ export async function PUT(
         { status: 401 }
       );
     }
-
     const productId = parseInt(params.id);
     if (isNaN(productId)) {
       return NextResponse.json(
@@ -148,7 +131,6 @@ export async function PUT(
         { status: 400 }
       );
     }
-
     const body = await request.json();
     const { id, size, original_size, stock_quantity, is_active } = body as {
       id?: number;
@@ -157,14 +139,12 @@ export async function PUT(
       stock_quantity: number | string;
       is_active: boolean;
     };
-
     if (!size || typeof size !== 'string') {
       return NextResponse.json(
         { success: false, error: 'Tamanho é obrigatório' },
         { status: 400 }
       );
     }
-
     const qtyPut = typeof stock_quantity === 'number' ? stock_quantity : Number(String(stock_quantity).trim());
     if (!Number.isFinite(qtyPut)) {
       return NextResponse.json(
@@ -172,7 +152,6 @@ export async function PUT(
         { status: 400 }
       );
     }
-
     const product = await getProductById(productId);
     if (!product) {
       return NextResponse.json(
@@ -180,23 +159,19 @@ export async function PUT(
         { status: 404 }
       );
     }
-
     const newSize = size?.trim();
     const whereById = id && Number.isFinite(Number(id));
     const currentLookupSize = (original_size ?? size)?.trim();
-
-    console.log(`🔧 [DEBUG] Atualizando tamanho do produto ${productId}: id=${id ?? 'n/a'}, from='${currentLookupSize}' to='${newSize}', stock=${stock_quantity}, is_active=${is_active}`);
-
     try {
       if (whereById) {
         await database.query(
           'UPDATE product_sizes SET size = ?, stock_quantity = ?, is_active = ?, updated_at = NOW() WHERE product_id = ? AND id = ?',
-          [newSize, Math.trunc(qtyPut), is_active ? 1 : 0, productId, id]
+          [newSize, Math.trunc(qtyPut), is_active ? true : false, productId, id]
         );
       } else {
         await database.query(
           'UPDATE product_sizes SET size = ?, stock_quantity = ?, is_active = ?, updated_at = NOW() WHERE product_id = ? AND size = ?',
-          [newSize, Math.trunc(qtyPut), is_active ? 1 : 0, productId, currentLookupSize]
+          [newSize, Math.trunc(qtyPut), is_active ? true : false, productId, currentLookupSize]
         );
       }
     } catch (e: any) {
@@ -210,9 +185,6 @@ export async function PUT(
       console.error('Erro ao atualizar tamanho:', e);
       throw e;
     }
-
-    console.log(`✅ [DEBUG] Tamanho '${currentLookupSize}' atualizado para '${newSize}': stock=${stock_quantity}, is_active=${is_active ? 'ATIVO' : 'INATIVO'}`);
-
     return NextResponse.json({
       success: true,
       message: 'Estoque do tamanho atualizado com sucesso',
@@ -222,7 +194,6 @@ export async function PUT(
         stock_quantity: Math.trunc(qtyPut)
       }
     });
-
   } catch (error) {
     console.error('Erro ao atualizar estoque do tamanho:', error);
     return NextResponse.json(
@@ -231,7 +202,6 @@ export async function PUT(
     );
   }
 }
-
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -244,7 +214,6 @@ export async function DELETE(
         { status: 401 }
       );
     }
-
     const productId = parseInt(params.id);
     if (isNaN(productId)) {
       return NextResponse.json(
@@ -252,17 +221,14 @@ export async function DELETE(
         { status: 400 }
       );
     }
-
     const { searchParams } = new URL(request.url);
     const size = searchParams.get('size');
-
     if (!size) {
       return NextResponse.json(
         { success: false, error: 'Tamanho é obrigatório' },
         { status: 400 }
       );
     }
-
     const product = await getProductById(productId);
     if (!product) {
       return NextResponse.json(
@@ -270,9 +236,7 @@ export async function DELETE(
         { status: 404 }
       );
     }
-
     await removeProductSize(productId, size);
-
     return NextResponse.json({
       success: true,
       message: 'Tamanho removido com sucesso',
@@ -281,7 +245,6 @@ export async function DELETE(
         size
       }
     });
-
   } catch (error) {
     console.error('Erro ao remover tamanho:', error);
     return NextResponse.json(

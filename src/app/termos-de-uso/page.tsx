@@ -1,9 +1,7 @@
 'use client'
-
 import React, { useState, useEffect } from 'react';
 import { FaGavel, FaShieldAlt, FaExclamationTriangle, FaFileContract, FaUserShield, FaBalanceScale } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-
 const TermosSkeleton = () => (
   <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
     <div className="max-w-4xl mx-auto flex flex-col gap-8">
@@ -15,7 +13,6 @@ const TermosSkeleton = () => (
           <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
         </div>
       </div>
-      
       <div className="space-y-8">
         {[...Array(6)].map((_, i) => (
           <div key={i} className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8">
@@ -44,22 +41,17 @@ const TermosSkeleton = () => (
     </div>
   </div>
 );
-
 export default function TermosDeUso() {
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
-
     return () => clearTimeout(timer);
   }, []);
-
   if (loading) {
     return <TermosSkeleton />;
   }
-
   return (
     <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
       <div className="max-w-4xl mx-auto flex flex-col gap-8">
@@ -72,7 +64,6 @@ export default function TermosDeUso() {
           <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-0">Termos de Uso</h1>
           <p className="text-gray-400 text-lg mb-10">Leia atentamente os termos de uso antes de utilizar nosso site</p>
         </motion.div>
-        
         <section className="space-y-8">
           <motion.div 
             className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
@@ -86,7 +77,6 @@ export default function TermosDeUso() {
             </div>
             <p className="text-gray-300">Ao acessar o site Sarai Modas, você concorda em cumprir estes Termos de Uso e todas as leis e regulamentos aplicáveis.</p>
           </motion.div>
-
           <motion.div 
             className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
@@ -99,7 +89,6 @@ export default function TermosDeUso() {
             </div>
             <p className="text-gray-300">Você se compromete a utilizar o site apenas para fins legais e de acordo com estes termos. É proibido utilizar o site para fins ilícitos ou que possam prejudicar terceiros.</p>
           </motion.div>
-
           <motion.div 
             className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
@@ -112,7 +101,6 @@ export default function TermosDeUso() {
             </div>
             <p className="text-gray-300">Todo o conteúdo do site, incluindo textos, imagens, marcas e logotipos, é protegido por direitos autorais e não pode ser utilizado sem autorização prévia.</p>
           </motion.div>
-
           <motion.div 
             className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
@@ -125,7 +113,6 @@ export default function TermosDeUso() {
             </div>
             <p className="text-gray-300">Não nos responsabilizamos por danos decorrentes do uso ou da impossibilidade de uso do site, incluindo eventuais falhas técnicas ou indisponibilidade.</p>
           </motion.div>
-
           <motion.div 
             className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
@@ -138,7 +125,6 @@ export default function TermosDeUso() {
             </div>
             <p className="text-gray-300">Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações entram em vigor imediatamente após a publicação no site.</p>
           </motion.div>
-
           <motion.div 
             className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}

@@ -1,30 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import database from '@/lib/database';
 import { authenticateUser, isAdmin } from '@/lib/auth';
-
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const user = await authenticateUser(request);
-    
     if (!user) {
       return NextResponse.json(
         { success: false, error: 'Não autorizado' },
         { status: 401 }
       );
     }
-
     const id = parseInt(params.id);
-    
     if (isNaN(id)) {
       return NextResponse.json(
         { success: false, error: 'ID inválido' },
         { status: 400 }
       );
     }
-
     const orders = await database.query(`
       SELECT 
         id,
@@ -47,24 +42,19 @@ export async function GET(
       FROM orders 
       WHERE id = ?
     `, [id]);
-
     if (!orders || orders.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Pedido não encontrado' },
         { status: 404 }
       );
     }
-
     const order = orders[0];
-
     if (order.user_id !== user.userId && !isAdmin(user)) {
-       console.log(`🚨 [SECURITY] Tentativa de acesso não autorizado ao pedido ${id} pelo usuário ${user.userId}`);
        return NextResponse.json(
         { success: false, error: 'Acesso negado' },
         { status: 403 }
       );
     }
-
     const items = await database.query(`
       SELECT 
         oi.id,
@@ -78,7 +68,6 @@ export async function GET(
       FROM order_items oi
       WHERE oi.order_id = ?
     `, [id]);
-
     const formattedOrder = {
       order_id: order.id.toString(),
       order_number: order.order_number,
@@ -107,12 +96,10 @@ export async function GET(
         image: item.product_image
       }))
     };
-
     return NextResponse.json({
       success: true,
       order: formattedOrder
     });
-
   } catch (error) {
     console.error('❌ Erro ao buscar pedido:', error);
     return NextResponse.json(

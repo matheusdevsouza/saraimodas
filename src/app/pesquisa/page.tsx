@@ -1,12 +1,10 @@
 'use client'
-
 import { motion, AnimatePresence } from 'framer-motion'
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { MagnifyingGlass, Package, ShoppingCart, Heart, Eye, ArrowRight, Funnel, ArrowsDownUp, Square, List } from 'phosphor-react'
 import Image from 'next/image'
 import Link from 'next/link'
-
 const formatPrice = (price: any): string => {
   if (typeof price === 'number' && !isNaN(price)) {
     return price.toFixed(2).replace('.', ',')
@@ -19,10 +17,8 @@ const formatPrice = (price: any): string => {
   }
   return '0,00'
 }
-
 const FloatingParticles = () => {
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; delay: number }>>([])
-
   useEffect(() => {
     const newParticles = Array.from({ length: 30 }, (_, i) => ({
       id: i,
@@ -33,7 +29,6 @@ const FloatingParticles = () => {
     }))
     setParticles(newParticles)
   }, [])
-
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {particles.map((particle) => (
@@ -62,7 +57,6 @@ const FloatingParticles = () => {
     </div>
   )
 }
-
 const ProductCard = ({ 
   product, 
   index
@@ -76,7 +70,6 @@ const ProductCard = ({
     transition={{ duration: 0.5, delay: index * 0.1 }}
     className="group bg-dark-900/80 border border-dark-700 rounded-2xl overflow-hidden hover:border-primary-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10"
   >
-    
     <div className="relative aspect-square overflow-hidden bg-dark-800">
       <Image
         src={product.image || '/images/Logo.png'}
@@ -85,8 +78,6 @@ const ProductCard = ({
         className="object-cover group-hover:scale-110 transition-transform duration-500"
         sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
       />
-      
-      
       <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <Link 
           href={`/produto/${product.slug}`}
@@ -96,17 +87,12 @@ const ProductCard = ({
         </Link>
       </div>
     </div>
-
-    
     <div className="p-4">
-      
       <div className="mb-3">
         <h3 className="font-semibold text-white group-hover:text-primary-400 transition-colors duration-200 line-clamp-2 mb-1">
           {product.name}
         </h3>
       </div>
-
-      
       <div className="flex items-center gap-2 mb-3">
         <span className="text-lg font-bold text-primary-400">
           R$ {formatPrice(product.price)}
@@ -117,8 +103,6 @@ const ProductCard = ({
           </span>
         )}
       </div>
-
-      
       <Link
         href={`/produto/${product.slug}`}
         className="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 group-hover:scale-105"
@@ -130,7 +114,6 @@ const ProductCard = ({
     </div>
   </motion.div>
 )
-
 const ProductSkeleton = () => (
   <div className="bg-dark-900/80 border border-dark-700 rounded-2xl overflow-hidden animate-pulse">
     <div className="aspect-square bg-dark-800" />
@@ -143,11 +126,9 @@ const ProductSkeleton = () => (
     </div>
   </div>
 )
-
 function SearchContent() {
   const searchParams = useSearchParams()
   const query = searchParams.get('q') || ''
-  
   const [products, setProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
@@ -161,7 +142,6 @@ function SearchContent() {
   const [showSizeModal, setShowSizeModal] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<any>(null)
   const [selectedSize, setSelectedSize] = useState('')
-
   useEffect(() => {
     const fetchProducts = async () => {
       if (query.trim()) {
@@ -169,7 +149,6 @@ function SearchContent() {
         try {
           const response = await fetch(`/api/products/search?q=${encodeURIComponent(query.trim())}`)
           const data = await response.json()
-          
           if (data.success) {
             setProducts(data.data)
           } else {
@@ -183,10 +162,8 @@ function SearchContent() {
         }
       }
     }
-
     fetchProducts()
   }, [query])
-
   const filteredProducts = products.filter(product => {
     if (filters.minPrice && product.price < parseFloat(filters.minPrice)) return false
     if (filters.maxPrice && product.price > parseFloat(filters.maxPrice)) return false
@@ -194,7 +171,6 @@ function SearchContent() {
     if (filters.category && product.category_name !== filters.category) return false
     return true
   })
-
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
       case 'price_asc':
@@ -209,16 +185,12 @@ function SearchContent() {
         return 0
     }
   })
-
   if (!query.trim()) {
     return (
       <div className="min-h-screen bg-dark-950 relative flex items-center justify-center overflow-hidden">
         <FloatingParticles />
-        
         <div className="absolute inset-0 bg-gradient-to-br from-dark-900 via-dark-950 to-black opacity-80" />
-        
         <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl" />
-        
         <div className="relative z-10 text-center px-4 max-w-2xl">
           <motion.div
             initial={{ scale: 0, rotate: -180 }}
@@ -230,7 +202,6 @@ function SearchContent() {
               <MagnifyingGlass size={64} className="text-primary-400" />
             </div>
           </motion.div>
-
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -239,7 +210,6 @@ function SearchContent() {
           >
             Pesquisa de Produtos
           </motion.h1>
-
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -248,7 +218,6 @@ function SearchContent() {
           >
             Digite o que você procura na barra de pesquisa para encontrar os melhores tênis!
           </motion.p>
-
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -267,12 +236,9 @@ function SearchContent() {
       </div>
     )
   }
-
   return (
     <div className="min-h-screen bg-dark-950 relative">
       <FloatingParticles />
-      
-      
       <div className="relative z-10 pt-24 pb-8">
         <div className="container mx-auto px-4">
           <motion.div
@@ -287,23 +253,18 @@ function SearchContent() {
               {loading ? 'Buscando produtos...' : `${sortedProducts.length} produto(s) encontrado(s)`}
             </p>
           </motion.div>
-
-          
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="bg-dark-900/50 border border-dark-700 rounded-2xl p-4 mb-8"
           >
-            
             <div className="hidden lg:flex flex-row gap-4 items-center justify-between">
-              
               <div className="flex flex-wrap gap-4 items-center">
                 <div className="flex items-center gap-2">
                   <Funnel size={20} className="text-primary-400" />
                   <span className="text-white font-medium">Filtros:</span>
                 </div>
-                
                 <input
                   type="number"
                   placeholder="Preço min"
@@ -311,7 +272,6 @@ function SearchContent() {
                   onChange={(e) => setFilters(prev => ({ ...prev, minPrice: e.target.value }))}
                   className="bg-dark-800 border border-dark-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-primary-500 focus:outline-none w-32 text-center"
                 />
-                
                 <input
                   type="number"
                   placeholder="Preço max"
@@ -320,8 +280,6 @@ function SearchContent() {
                   className="bg-dark-800 border border-dark-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-primary-500 focus:outline-none w-32 text-center"
                 />
               </div>
-
-              
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <ArrowsDownUp size={20} className="text-primary-400" />
@@ -337,7 +295,6 @@ function SearchContent() {
                     <option value="rating">Melhor Avaliados</option>
                   </select>
                 </div>
-
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setViewMode('grid')}
@@ -362,10 +319,7 @@ function SearchContent() {
                 </div>
               </div>
             </div>
-
-            
             <div className="lg:hidden space-y-4">
-              
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-primary-500/20 rounded-full flex items-center justify-center">
@@ -374,8 +328,6 @@ function SearchContent() {
                   <span className="text-white font-semibold text-lg">Filtros e Ordenação</span>
                 </div>
               </div>
-
-              
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <span className="text-gray-300 text-sm font-medium">Faixa de Preço:</span>
@@ -393,7 +345,6 @@ function SearchContent() {
                       <div className="w-2 h-2 bg-primary-400 rounded-full"></div>
                     </div>
                   </div>
-                  
                   <div className="relative">
                     <input
                       type="number"
@@ -408,8 +359,6 @@ function SearchContent() {
                   </div>
                 </div>
               </div>
-
-              
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-primary-500/20 rounded-full flex items-center justify-center">
@@ -429,8 +378,6 @@ function SearchContent() {
                   <option value="rating">Melhor Avaliados</option>
                 </select>
               </div>
-
-              
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <span className="text-gray-300 text-sm font-medium">Visualização:</span>
@@ -468,8 +415,6 @@ function SearchContent() {
           </motion.div>
         </div>
       </div>
-
-      
       <div className="relative z-10 pb-16">
         <div className="container mx-auto px-4">
           {loading ? (
@@ -526,15 +471,11 @@ function SearchContent() {
           )}
         </div>
       </div>
-
-      
       <motion.div
         className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-500/50 to-transparent"
         animate={{ x: ["-100%", "100%"] }}
         transition={{ duration: 4, repeat: 999, ease: "linear" }}
       />
-
-      
       <AnimatePresence>
         {showSizeModal && selectedProduct && (
           <motion.div
@@ -554,8 +495,6 @@ function SearchContent() {
                 <h2 className="text-xl font-bold text-white mb-2">Escolha o Tamanho</h2>
                 <p className="text-gray-300">{selectedProduct.name}</p>
               </div>
-
-              
               <div className="grid grid-cols-3 gap-3 mb-6">
                 {['36', '37', '38', '39', '40', '41', '42', '43', '44'].map((size) => (
                   <button
@@ -571,8 +510,6 @@ function SearchContent() {
                   </button>
                 ))}
               </div>
-
-              
               <div className="flex gap-3">
                 <button
                   className="flex-1 px-6 py-3 rounded-lg bg-dark-800 text-gray-300 border border-dark-700 hover:bg-dark-700 transition-colors font-semibold"
@@ -606,7 +543,6 @@ function SearchContent() {
     </div>
   )
 }
-
 export default function SearchPage() {
   return (
     <Suspense fallback={

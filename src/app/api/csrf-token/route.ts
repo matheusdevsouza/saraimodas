@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateCSRFToken, storeCSRFToken } from '@/lib/csrf-protection';
-
 export async function GET(request: NextRequest) {
   try {
     const token = generateCSRFToken();
     storeCSRFToken(token, 3600000); 
-
     return NextResponse.json(
       { csrfToken: token },
       {

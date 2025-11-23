@@ -1,5 +1,4 @@
 'use client'
-
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -9,11 +8,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
 import { ArrowRight } from 'phosphor-react'
-
 export function ContactSection() {
   return (
     <section className="py-24 md:py-32 bg-gradient-to-b from-[#0D0D0D] via-[var(--logo-gold,#D4A574)]/10 to-[#0D0D0D] relative overflow-hidden">
-      
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{
@@ -40,7 +37,6 @@ export function ContactSection() {
           className="absolute bottom-20 left-1/4 w-48 h-48 bg-[var(--logo-gold,#D4A574)] rounded-full blur-3xl"
         />
       </div>
-
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -52,7 +48,6 @@ export function ContactSection() {
           }}
           className="max-w-5xl mx-auto"
         >
-          
           <div className="text-center mb-16 md:mb-20">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -69,7 +64,6 @@ export function ContactSection() {
                 Entre em Contato
               </span>
             </motion.div>
-
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -82,7 +76,6 @@ export function ContactSection() {
                 Conosco
               </span>
             </motion.h2>
-
             <motion.p
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -93,8 +86,6 @@ export function ContactSection() {
               Estamos prontos para ajudar você com qualquer dúvida sobre nossos produtos ou pedidos
             </motion.p>
           </div>
-
-          
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -124,7 +115,6 @@ export function ContactSection() {
                   e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(212, 165, 116, 0.3), 0 4px 6px -2px rgba(212, 165, 116, 0.2)';
                 }}
               >
-                
                 <motion.div
                   initial={{ opacity: 0 }}
                   whileHover={{ opacity: 1 }}
@@ -168,5 +158,4 @@ export function ContactSection() {
     </section>
   )
 }
-
 export const NewsletterSection = ContactSection

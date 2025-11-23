@@ -1,5 +1,4 @@
 'use client';
-
 import Link from 'next/link';
 import { useState } from 'react';
 import Image from 'next/image';
@@ -7,7 +6,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { EnvelopeSimple, X } from 'phosphor-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
 export default function CriarContaPage() {
   const [formData, setFormData] = useState({
     name: '',
@@ -21,70 +19,58 @@ export default function CriarContaPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error' | 'warning'; text: string } | null>(null);
   const [showVerifyEmailModal, setShowVerifyEmailModal] = useState(false);
-  
   const { register } = useAuth();
   const router = useRouter();
-
   const validatePassword = (password: string) => {
     const minLength = 8;
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumbers = /\d/.test(password);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-    
     const errors = [];
     if (password.length < minLength) errors.push(`Mínimo de ${minLength} caracteres`);
     if (!hasUpperCase) errors.push('Pelo menos uma letra maiúscula');
     if (!hasLowerCase) errors.push('Pelo menos uma letra minúscula');
     if (!hasNumbers) errors.push('Pelo menos um número');
     if (!hasSpecialChar) errors.push('Pelo menos um caractere especial');
-    
     return {
       isValid: errors.length === 0,
       errors,
       strength: Math.max(0, 5 - errors.length)
     };
   };
-
   const passwordValidation = validatePassword(formData.password);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
-
     if (formData.password !== formData.confirmPassword) {
       setMessage({ type: 'error', text: 'As senhas não coincidem' });
       setLoading(false);
       return;
     }
-
     if (!passwordValidation.isValid) {
       setMessage({ type: 'error', text: 'A senha não atende aos requisitos de segurança' });
       setLoading(false);
       return;
     }
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setMessage({ type: 'error', text: 'E-mail inválido' });
       setLoading(false);
       return;
     }
-
     if (formData.name.trim().length < 2) {
       setMessage({ type: 'error', text: 'Nome deve ter pelo menos 2 caracteres' });
       setLoading(false);
       return;
     }
-
     try {
       const result = await register({
         ...formData,
@@ -92,7 +78,6 @@ export default function CriarContaPage() {
         birth_date: '',
         gender: undefined as 'M' | 'F' | 'Other' | undefined,
       });
-      
       if (result.success) {
         setShowVerifyEmailModal(true);
         setMessage(null);
@@ -110,7 +95,6 @@ export default function CriarContaPage() {
       setLoading(false);
     }
   };
-
   const getPasswordStrengthColor = (strength: number) => {
     if (strength <= 1) return 'bg-red-500';
     if (strength <= 2) return 'bg-orange-500';
@@ -118,7 +102,6 @@ export default function CriarContaPage() {
     if (strength <= 4) return 'bg-blue-500';
     return 'bg-green-500';
   };
-
   const getPasswordStrengthText = (strength: number) => {
     if (strength <= 1) return 'Muito fraca';
     if (strength <= 2) return 'Fraca';
@@ -126,7 +109,6 @@ export default function CriarContaPage() {
     if (strength <= 4) return 'Forte';
     return 'Muito forte';
   };
-
   return (
     <section className="min-h-screen flex items-center justify-center bg-dark-950 py-12 px-4">
       <div className="w-full max-w-md bg-dark-900 border border-dark-800 rounded-3xl shadow-2xl p-8 flex flex-col gap-8">
@@ -137,7 +119,6 @@ export default function CriarContaPage() {
           <h1 className="text-2xl font-extrabold text-white mb-2 text-center">Criar uma conta</h1>
           <p className="text-gray-400 text-center text-sm">Preencha os campos abaixo para se cadastrar.</p>
         </div>
-
         <AnimatePresence>
           {showVerifyEmailModal && (
             <motion.div
@@ -173,7 +154,6 @@ export default function CriarContaPage() {
             </motion.div>
           )}
         </AnimatePresence>
-
         {message && !showVerifyEmailModal && (
           <div className={`p-4 rounded-lg text-sm ${
             message.type === 'success' 
@@ -185,7 +165,6 @@ export default function CriarContaPage() {
             {message.text}
           </div>
         )}
-
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
             <label htmlFor="name" className="text-gray-300 font-semibold">Nome *</label>
@@ -202,7 +181,6 @@ export default function CriarContaPage() {
               minLength={2}
             />
           </div>
-
           <div className="flex flex-col gap-2">
             <label htmlFor="email" className="text-gray-300 font-semibold">E-mail *</label>
             <input
@@ -217,7 +195,6 @@ export default function CriarContaPage() {
               placeholder="Digite seu e-mail"
             />
           </div>
-
           <div className="flex flex-col gap-2">
             <label htmlFor="phone" className="text-gray-300 font-semibold">Telefone</label>
             <input
@@ -231,7 +208,6 @@ export default function CriarContaPage() {
               placeholder="(11) 99999-9999"
             />
           </div>
-
           <div className="flex flex-col gap-2">
             <label htmlFor="password" className="text-gray-300 font-semibold">Senha *</label>
             <div className="relative">
@@ -264,8 +240,6 @@ export default function CriarContaPage() {
                 )}
               </button>
             </div>
-
-            
             {formData.password && (
               <div className="mt-2">
                 <div className="flex items-center gap-2 mb-2">
@@ -283,8 +257,6 @@ export default function CriarContaPage() {
                     {getPasswordStrengthText(passwordValidation.strength)}
                   </span>
                 </div>
-                
-                
                 <div className="text-xs text-gray-400 space-y-1">
                   <div className={`flex items-center gap-2 ${formData.password.length >= 8 ? 'text-green-400' : 'text-gray-500'}`}>
                     <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -320,7 +292,6 @@ export default function CriarContaPage() {
               </div>
             )}
           </div>
-
           <div className="flex flex-col gap-2">
             <label htmlFor="confirmPassword" className="text-gray-300 font-semibold">Confirmar Senha *</label>
             <div className="relative">
@@ -353,8 +324,6 @@ export default function CriarContaPage() {
                 )}
               </button>
             </div>
-            
-            
             {formData.confirmPassword && (
               <div className={`text-xs flex items-center gap-2 ${
                 formData.password === formData.confirmPassword ? 'text-green-400' : 'text-red-400'
@@ -366,12 +335,10 @@ export default function CriarContaPage() {
               </div>
             )}
           </div>
-
           <div className="flex items-center justify-between mt-2">
             <Link href="/login" className="text-primary-400 text-sm hover:underline">Já tenho uma conta!</Link>
             <Link href="/" className="text-gray-400 text-sm hover:underline">Voltar</Link>
           </div>
-          
           <button
             type="submit"
             disabled={loading || !passwordValidation.isValid || formData.password !== formData.confirmPassword}

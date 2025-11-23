@@ -1,54 +1,30 @@
 import nodemailer from 'nodemailer';
 import fs from 'fs';
 import path from 'path';
-
 function loadEnvFile(filePath: string) {
   if (fs.existsSync(filePath)) {
-    console.log('🔧 [DEBUG] Carregando arquivo:', filePath);
     const content = fs.readFileSync(filePath, 'utf8');
     const lines = content.split('\n');
-
     for (const line of lines) {
       const trimmedLine = line.trim();
       if (trimmedLine && !trimmedLine.startsWith('#')) {
         const [key, ...valueParts] = trimmedLine.split('=');
         if (key && valueParts.length > 0) {
           let value = valueParts.join('=').trim();
-          
           if (value.startsWith('"') && value.endsWith('"')) {
             value = value.slice(1, -1);
           }
-          
           process.env[key.trim()] = value;
-          console.log('🔧 [DEBUG] Carregado:', key.trim(), '=', value);
         }
       }
     }
-  } else {
-    console.log('🔧 [DEBUG] Arquivo não encontrado:', filePath);
   }
 }
-
 if (!process.env.SMTP_HOST) {
-  console.log('🔧 [DEBUG] Carregando variáveis de ambiente manualmente...');
-  
   loadEnvFile('.env.local');
   loadEnvFile('.env');
-  
-  console.log('🔧 [DEBUG] Variáveis após carregamento:');
-  console.log('🔧 [DEBUG] SMTP_HOST:', process.env.SMTP_HOST);
-  console.log('🔧 [DEBUG] SMTP_PORT:', process.env.SMTP_PORT);
-  console.log('🔧 [DEBUG] SMTP_USER:', process.env.SMTP_USER);
-  console.log('🔧 [DEBUG] SMTP_PASS:', process.env.SMTP_PASS);
 }
-
 const createTransporter = () => {
-  console.log('🔧 [DEBUG] Criando transporter SMTP...');
-  console.log('🔧 [DEBUG] SMTP_HOST:', process.env.SMTP_HOST);
-  console.log('🔧 [DEBUG] SMTP_PORT:', process.env.SMTP_PORT, '(tipo:', typeof process.env.SMTP_PORT, ')');
-  console.log('🔧 [DEBUG] SMTP_USER:', process.env.SMTP_USER);
-  console.log('🔧 [DEBUG] SMTP_PASS:', process.env.SMTP_PASS);
-  
   const config = {
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT),
@@ -62,32 +38,17 @@ const createTransporter = () => {
       ciphers: 'SSLv3'
     }
   };
-  
-  console.log('🔧 [DEBUG] Configuração final:', {
-    host: config.host,
-    port: config.port,
-    secure: config.secure,
-    auth: {
-      user: config.auth.user,
-      pass: config.auth.pass
-    },
-    tls: config.tls
-  });
-  
   return nodemailer.createTransport(config);
 };
-
 const saveEmailToFile = async (mailOptions: any) => {
   try {
     const emailDir = path.join(process.cwd(), 'temp_emails');
     if (!fs.existsSync(emailDir)) {
       fs.mkdirSync(emailDir, { recursive: true });
     }
-    
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const filename = `email-${timestamp}.html`;
     const filepath = path.join(emailDir, filename);
-    
     const emailContent = `
 <!DOCTYPE html>
 <html>
@@ -112,31 +73,23 @@ const saveEmailToFile = async (mailOptions: any) => {
   </div>
 </body>
 </html>`;
-    
     fs.writeFileSync(filepath, emailContent);
-    console.log(`📧 Email salvo em: ${filepath}`);
-    console.log(`📧 Para: ${mailOptions.to}`);
-    console.log(`📧 Assunto: ${mailOptions.subject}`);
-    
     return true;
   } catch (error) {
     console.error('Erro ao salvar email:', error);
     return false;
   }
 };
-
 export interface VerificationEmailData {
   email: string;
   name: string;
   verificationToken: string;
 }
-
 export interface PasswordResetEmailData {
   email: string;
   name: string;
   resetToken: string;
 }
-
 export interface TrackingEmailData {
   email: string;
   name: string;
@@ -145,7 +98,6 @@ export interface TrackingEmailData {
   trackingUrl: string;
   shippingCompany: string;
 }
-
 export interface PaymentConfirmationEmailData {
   email: string;
   name: string;
@@ -157,7 +109,6 @@ export interface PaymentConfirmationEmailData {
     price: number;
   }>;
 }
-
 export interface OrderShippedEmailData {
   email: string;
   name: string;
@@ -167,20 +118,8 @@ export interface OrderShippedEmailData {
   shippingCompany: string;
   estimatedDelivery: string;
 }
-
 export async function sendVerificationEmail(data: VerificationEmailData): Promise<void> {
-  console.log('🚀 [DEBUG] ===== INÍCIO DA FUNÇÃO sendVerificationEmail =====');
-  console.log('🚀 [DEBUG] Verificando variáveis de ambiente...');
-  console.log('🚀 [DEBUG] NODE_ENV:', process.env.NODE_ENV);
-  console.log('🚀 [DEBUG] SMTP_HOST:', process.env.SMTP_HOST);
-  console.log('🚀 [DEBUG] SMTP_PORT:', process.env.SMTP_PORT);
-  console.log('🚀 [DEBUG] SMTP_USER:', process.env.SMTP_USER);
-  console.log('🚀 [DEBUG] SMTP_PASS:', process.env.SMTP_PASS);
-  console.log('🚀 [DEBUG] NEXT_PUBLIC_APP_URL:', process.env.NEXT_PUBLIC_APP_URL);
-  
   const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verificar-email?token=${data.verificationToken}`;
-  console.log('🚀 [DEBUG] URL de verificação:', verificationUrl);
-
   const mailOptions = {
     from: `"Sarai Modas" <${process.env.SMTP_FROM || process.env.EMAIL_FROM}>`,
     to: data.email,
@@ -210,18 +149,14 @@ export async function sendVerificationEmail(data: VerificationEmailData): Promis
           <div class="content">
             <h2>Olá, ${data.name}!</h2>
             <p>Obrigado por se cadastrar na Sarai Modas. Para ativar sua conta, clique no botão abaixo:</p>
-            
             <div style="text-align: center;">
               <a href="${verificationUrl}" 
                  style="display:inline-block;background:#e63946;color:#fff;padding:15px 30px;text-decoration:none;border-radius:5px;margin:20px 0;font-weight:bold;font-size:16px;"
               >Verificar E-mail</a>
             </div>
-            
             <p>Se o botão não funcionar, copie e cole este link no seu navegador:</p>
             <p style="word-break: break-all; color: white;">${verificationUrl}</p>
-            
             <p><strong>Importante:</strong> Este link expira em 24 horas por segurança.</p>
-            
             <p>Se você não criou uma conta na Sarai Modas, pode ignorar este e-mail.</p>
           </div>
           <div class="footer">
@@ -232,55 +167,17 @@ export async function sendVerificationEmail(data: VerificationEmailData): Promis
       </html>
     `,
   };
-
   try {
-    console.log('📧 [DEBUG] Iniciando envio de email...');
-    console.log('📧 [DEBUG] Dados do email:', {
-      to: data.email,
-      name: data.name,
-      verificationUrl: verificationUrl
-    });
-    
-    console.log('📧 [DEBUG] Criando transporter...');
     const transporter = createTransporter();
-    
-    console.log('📧 [DEBUG] Verificando conexão SMTP...');
     await transporter.verify();
-    console.log('📧 [DEBUG] Conexão SMTP verificada com sucesso!');
-    
-    console.log('📧 [DEBUG] Enviando email...');
-    const result = await transporter.sendMail(mailOptions);
-    console.log('📧 [DEBUG] Email enviado com sucesso!');
-    console.log('📧 [DEBUG] Message ID:', result.messageId);
-    console.log('📧 [DEBUG] Response:', result.response);
-    
-    console.log(`✅ Email de verificação enviado para ${data.email}`);
+    await transporter.sendMail(mailOptions);
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
-    console.error('❌ [DEBUG] Erro detalhado ao enviar email:');
-    console.error('❌ [DEBUG] Mensagem:', errorMessage);
-    
-    if (error && typeof error === 'object') {
-      const errorObj = error as any;
-      console.error('❌ [DEBUG] Código:', errorObj.code);
-      console.error('❌ [DEBUG] Response:', errorObj.response);
-      console.error('❌ [DEBUG] Command:', errorObj.command);
-      console.error('❌ [DEBUG] Stack:', errorObj.stack);
-    }
-    
-    console.log('📁 Salvando email em arquivo como fallback...');
-    
     await saveEmailToFile(mailOptions);
-    console.log(`✅ Email de verificação salvo em arquivo para ${data.email}`);
-    console.log(`🔗 Link de verificação: ${verificationUrl}`);
   }
 }
-
 export async function sendPasswordResetEmail(data: PasswordResetEmailData): Promise<void> {
   const transporter = createTransporter();
-
   const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/redefinir-senha?token=${data.resetToken}`;
-
   const mailOptions = {
     from: `"Sarai Modas" <${process.env.SMTP_FROM || process.env.EMAIL_FROM}>`,
     to: data.email,
@@ -310,16 +207,12 @@ export async function sendPasswordResetEmail(data: PasswordResetEmailData): Prom
           <div class="content">
             <h2>Redefinir sua senha</h2>
             <p>Você solicitou a redefinição da sua senha. Clique no botão abaixo para criar uma nova senha:</p>
-            
             <div style="text-align: center;">
               <a href="${resetUrl}" class="button">Redefinir Senha</a>
             </div>
-            
             <p>Se o botão não funcionar, copie e cole este link no seu navegador:</p>
             <p style="word-break: break-all; color: white;">${resetUrl}</p>
-            
             <p><strong>Importante:</strong> Este link expira em 1 hora por segurança.</p>
-            
             <p>Se você não solicitou a redefinição de senha, pode ignorar este e-mail.</p>
           </div>
           <div class="footer">
@@ -330,13 +223,10 @@ export async function sendPasswordResetEmail(data: PasswordResetEmailData): Prom
       </html>
     `,
   };
-
   await transporter.sendMail(mailOptions);
 }
-
 export async function sendTrackingEmail(data: TrackingEmailData): Promise<void> {
   const transporter = createTransporter();
-  
   const mailOptions = {
     from: `"Sarai Modas" <${process.env.SMTP_FROM || process.env.EMAIL_FROM}>`,
     to: data.email,
@@ -414,25 +304,20 @@ export async function sendTrackingEmail(data: TrackingEmailData): Promise<void> 
           <div class="header">
             <h1>Sarai Modas</h1>
           </div>
-          
           <div class="content">
             <h2>Olá, ${data.name}!</h2>
             <p>Seu pedido foi enviado! Aqui estão as informações de rastreamento:</p>
-            
             <div class="tracking-info">
               <h3>Informações do Pedido</h3>
               <p><strong>Número do Pedido:</strong> ${data.orderNumber}</p>
               <p><strong>Código de Rastreamento:</strong> ${data.trackingCode}</p>
               <p><strong>Transportadora:</strong> ${data.shippingCompany}</p>
             </div>
-            
             <div style="text-align: center;">
               <a href="${data.trackingUrl}" class="button">Rastrear Pedido</a>
             </div>
-            
             <p>Você também pode acompanhar seu pedido acessando sua conta em nosso site.</p>
           </div>
-          
           <div class="footer">
             <p>© 2025 Sarai Modas. Todos os direitos reservados.</p>
             <p>Este é um e-mail automático, por favor não responda.</p>
@@ -442,13 +327,10 @@ export async function sendTrackingEmail(data: TrackingEmailData): Promise<void> 
       </html>
     `,
   };
-
   await transporter.sendMail(mailOptions);
 }
-
 export async function sendPaymentConfirmationEmail(data: PaymentConfirmationEmailData): Promise<void> {
   const transporter = createTransporter();
-
   const mailOptions = {
     from: `"Sarai Modas" <${process.env.SMTP_FROM || process.env.EMAIL_FROM}>`,
     to: data.email,
@@ -483,15 +365,12 @@ export async function sendPaymentConfirmationEmail(data: PaymentConfirmationEmai
             <div style="text-align: center;">
               <div class="success-icon">✅</div>
             </div>
-            
             <h2>Olá, ${data.name}!</h2>
             <p>Ótimas notícias! Seu pagamento foi aprovado e seu pedido está sendo processado.</p>
-            
             <div class="order-info">
               <h3>Detalhes do Pedido</h3>
               <p><strong>Número do Pedido:</strong> ${data.orderNumber}</p>
               <p><strong>Status:</strong> Processando</p>
-              
               <h4>Itens do Pedido:</h4>
               ${data.items.map(item => `
                 <div class="item">
@@ -499,7 +378,6 @@ export async function sendPaymentConfirmationEmail(data: PaymentConfirmationEmai
                   <span>R$ ${(item.price * item.quantity).toFixed(2)}</span>
                 </div>
               `).join('')}
-              
               <div class="total">
                 <div class="item">
                   <span>Total:</span>
@@ -507,13 +385,11 @@ export async function sendPaymentConfirmationEmail(data: PaymentConfirmationEmai
                 </div>
               </div>
             </div>
-            
             <p><strong>Próximos Passos:</strong></p>
             <ul>
               <li>Seu pedido está sendo preparado com carinho</li>
               <li>Você receberá um e-mail quando o produto for enviado</li>
             </ul>
-            
             <p>Obrigado por escolher a Sarai Modas! 🎉</p>
           </div>
           <div class="footer">
@@ -525,13 +401,10 @@ export async function sendPaymentConfirmationEmail(data: PaymentConfirmationEmai
       </html>
     `,
   };
-
   await transporter.sendMail(mailOptions);
 }
-
 export async function sendOrderShippedEmail(data: OrderShippedEmailData): Promise<void> {
   const transporter = createTransporter();
-
   const mailOptions = {
     from: `"Sarai Modas" <${process.env.SMTP_FROM || process.env.EMAIL_FROM}>`,
     to: data.email,
@@ -564,10 +437,8 @@ export async function sendOrderShippedEmail(data: OrderShippedEmailData): Promis
             <div style="text-align: center;">
               <div class="shipping-icon">📦</div>
             </div>
-            
             <h2>Olá, ${data.name}!</h2>
             <p>Ótimas notícias! Seu pedido foi enviado e está a caminho!</p>
-            
             <div class="tracking-info">
               <h3>Informações de Rastreamento</h3>
               <p><strong>Número do Pedido:</strong> ${data.orderNumber}</p>
@@ -575,18 +446,15 @@ export async function sendOrderShippedEmail(data: OrderShippedEmailData): Promis
               <p><strong>Transportadora:</strong> ${data.shippingCompany}</p>
               <p><strong>Previsão de Entrega:</strong> ${data.estimatedDelivery}</p>
             </div>
-            
             <div style="text-align: center;">
               <a href="${data.trackingUrl}" class="button">Rastrear Pedido</a>
             </div>
-            
             <p><strong>O que acontece agora?</strong></p>
             <ul>
               <li>Seu pedido está em trânsito</li>
               <li>Você pode acompanhar o status usando o código de rastreamento</li>
               <li>Em caso de dúvidas, entre em contato conosco</li>
             </ul>
-            
             <p>Obrigado por escolher a Sarai Modas! 🎉</p>
           </div>
           <div class="footer">
@@ -598,6 +466,5 @@ export async function sendOrderShippedEmail(data: OrderShippedEmailData): Promis
       </html>
     `,
   };
-
   await transporter.sendMail(mailOptions);
 }

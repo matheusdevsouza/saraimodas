@@ -1,13 +1,10 @@
 'use client'
-
 import React, { useState, useEffect } from 'react';
 import { FaTruck, FaMapMarkerAlt, FaClock, FaShieldAlt, FaBox, FaSearch, FaGift, FaGlobe } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-
 const EntregasSkeleton = () => (
   <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
     <div className="max-w-4xl mx-auto flex flex-col gap-8">
-      
       <div className="text-center">
         <div className="h-12 bg-gray-800 rounded-lg mx-auto max-w-md mb-4 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
@@ -16,8 +13,6 @@ const EntregasSkeleton = () => (
           <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
         </div>
       </div>
-      
-      
       <div className="space-y-8">
         {[...Array(5)].map((_, i) => (
           <div key={i} className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8">
@@ -40,8 +35,6 @@ const EntregasSkeleton = () => (
                 <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
               </div>
             </div>
-            
-            
             {i === 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 {[...Array(2)].map((_, j) => (
@@ -56,7 +49,6 @@ const EntregasSkeleton = () => (
                 ))}
               </div>
             )}
-            
             {i === 1 && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
                 {[...Array(3)].map((_, j) => (
@@ -74,7 +66,6 @@ const EntregasSkeleton = () => (
                 ))}
               </div>
             )}
-            
             {i === 2 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                 {[...Array(2)].map((_, j) => (
@@ -89,7 +80,6 @@ const EntregasSkeleton = () => (
                 ))}
               </div>
             )}
-            
             {i === 3 && (
               <div className="space-y-2 mt-4">
                 {[...Array(4)].map((_, j) => (
@@ -99,7 +89,6 @@ const EntregasSkeleton = () => (
                 ))}
               </div>
             )}
-            
             {i === 4 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                 {[...Array(4)].map((_, j) => (
@@ -120,22 +109,17 @@ const EntregasSkeleton = () => (
     </div>
   </div>
 );
-
 export default function Entregas() {
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 1000);
-
     return () => clearTimeout(timer);
   }, []);
-
   if (loading) {
     return <EntregasSkeleton />;
   }
-
   return (
     <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
       <div className="max-w-4xl mx-auto flex flex-col gap-8">
@@ -148,7 +132,6 @@ export default function Entregas() {
           <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-0">Entregas</h1>
           <p className="text-gray-400 text-lg mb-10">Conheça nossas opções de entrega</p>
         </motion.div>
-        
         <section className="space-y-8">
           <motion.div 
             className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
@@ -174,7 +157,6 @@ export default function Entregas() {
               </div>
             </div>
           </motion.div>
-
           <motion.div 
             className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
@@ -199,7 +181,6 @@ export default function Entregas() {
               </div>
             </div>
           </motion.div>
-
           <motion.div 
             className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
@@ -225,7 +206,6 @@ export default function Entregas() {
               <li>• Produto lacrado e autenticado</li>
             </motion.ul>
           </motion.div>
-
           <motion.div 
             className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}

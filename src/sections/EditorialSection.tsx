@@ -1,10 +1,8 @@
 'use client'
-
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, CalendarBlank } from 'phosphor-react'
-
 const editorialStories = [
   {
     id: 1,
@@ -31,12 +29,10 @@ const editorialStories = [
     category: 'Guia'
   }
 ]
-
 export function EditorialSection() {
   return (
     <section className="py-24 bg-[#0D0D0D]">
       <div className="container mx-auto px-4">
-        
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -54,8 +50,6 @@ export function EditorialSection() {
             Conteúdos exclusivos sobre moda, estilo e as últimas tendências
           </p>
         </motion.div>
-
-        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {editorialStories.map((story, index) => (
             <motion.article
@@ -68,7 +62,6 @@ export function EditorialSection() {
               className="group bg-[#261E10] rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
             >
               <Link href="/blog" className="block">
-                
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Image
                     src={story.imageUrl}
@@ -77,33 +70,23 @@ export function EditorialSection() {
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
                   />
-                  
                   <div className="absolute top-4 left-4">
                     <span className="px-3 py-1 bg-[#0D0D0D]/90 backdrop-blur-sm text-[var(--logo-gold,#D4AF37)] text-xs uppercase tracking-wider font-semibold rounded-lg">
                       {story.category}
                     </span>
                   </div>
                 </div>
-
-                
                 <div className="p-6 space-y-4">
-                  
                   <div className="flex items-center gap-2 text-gray-500 text-xs">
                     <CalendarBlank size={14} weight="regular" />
                     <span>{story.date}</span>
                   </div>
-
-                  
                   <h3 className="text-xl font-semibold text-white group-hover:text-[var(--logo-gold,#D4AF37)] transition-colors duration-300">
                     {story.title}
                   </h3>
-
-                  
                   <p className="text-gray-400 leading-relaxed line-clamp-2">
                     {story.excerpt}
                   </p>
-
-                  
                   <div className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--logo-gold,#D4AF37)] text-[#0D0D0D] rounded-lg group-hover:gap-3 transition-all duration-300 mt-2">
                     <span className="text-sm uppercase tracking-wider font-semibold">
                       Ler Mais
@@ -119,4 +102,3 @@ export function EditorialSection() {
     </section>
   )
 }
-

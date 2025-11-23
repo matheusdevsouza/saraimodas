@@ -1,29 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getOrderByTrackingCode, getOrderItems } from '@/lib/database';
-
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const trackingCode = searchParams.get('code');
-
     if (!trackingCode) {
       return NextResponse.json({
         success: false,
         error: 'Código de rastreio é obrigatório'
       }, { status: 400 });
     }
-
     const order = await getOrderByTrackingCode(trackingCode);
-    
     if (!order) {
       return NextResponse.json({
         success: false,
         error: 'Pedido não encontrado com este código de rastreio'
       }, { status: 404 });
     }
-
     const orderItems = await getOrderItems(order.id);
-
     const trackingData = {
       orderNumber: order.order_number,
       status: order.status,
@@ -38,12 +32,10 @@ export async function GET(request: NextRequest) {
         quantity: item.quantity
       }))
     };
-
     return NextResponse.json({
       success: true,
       data: trackingData
     });
-
   } catch (error) {
     console.error('Erro ao buscar rastreio:', error);
     return NextResponse.json({
@@ -52,7 +44,6 @@ export async function GET(request: NextRequest) {
     }, { status: 500 });
   }
 }
-
 function getLocationFromStatus(status: string): string {
   const statusMap: { [key: string]: string } = {
     'pending': 'Aguardando processamento',
@@ -63,10 +54,8 @@ function getLocationFromStatus(status: string): string {
     'delivered': 'Entregue',
     'cancelled': 'Pedido cancelado'
   };
-  
   return statusMap[status] || 'Status não disponível';
 }
-
 function getDescriptionFromStatus(status: string): string {
   const descriptionMap: { [key: string]: string } = {
     'pending': 'Pedido recebido e aguardando processamento',
@@ -77,7 +66,5 @@ function getDescriptionFromStatus(status: string): string {
     'delivered': 'Pedido entregue com sucesso',
     'cancelled': 'Pedido foi cancelado'
   };
-  
   return descriptionMap[status] || 'Status não disponível';
 }
-

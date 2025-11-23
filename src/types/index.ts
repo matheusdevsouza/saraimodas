@@ -16,7 +16,6 @@ export interface Product {
   createdAt: Date
   updatedAt: Date
 }
-
 export interface Category {
   id: string
   name: string
@@ -26,7 +25,6 @@ export interface Category {
   createdAt: Date
   updatedAt: Date
 }
-
 export interface User {
   id: string
   name: string
@@ -36,7 +34,6 @@ export interface User {
   createdAt: Date
   updatedAt: Date
 }
-
 export interface Order {
   id: string
   userId: string
@@ -47,7 +44,6 @@ export interface Order {
   createdAt: Date
   updatedAt: Date
 }
-
 export interface OrderItem {
   id: string
   orderId: string
@@ -56,7 +52,6 @@ export interface OrderItem {
   quantity: number
   price: number
 }
-
 export enum OrderStatus {
   PENDING = 'PENDING',
   PAID = 'PAID',
@@ -64,7 +59,6 @@ export enum OrderStatus {
   DELIVERED = 'DELIVERED',
   CANCELLED = 'CANCELLED'
 }
-
 export interface Model {
   id: string
   name: string
@@ -73,7 +67,6 @@ export interface Model {
   createdAt: Date
   updatedAt: Date
 }
-
 export interface Banner {
   id: string
   imageUrl: string
@@ -87,7 +80,6 @@ export interface Banner {
   createdAt: Date
   updatedAt: Date
 }
-
 export interface CartItem {
   id: string
   product: Product
@@ -96,32 +88,27 @@ export interface CartItem {
   size?: string 
   image?: string 
 }
-
 export interface Cart {
   items: CartItem[]
   total: number
   itemCount: number
 }
-
 export interface AuthUser {
   id: string
   name: string
   email: string
   token: string
 }
-
 export interface LoginCredentials {
   email: string
   password: string
 }
-
 export interface RegisterData {
   name: string
   email: string
   password: string
   confirmPassword: string
 }
-
 export interface Address {
   id?: string
   userId?: string
@@ -135,14 +122,12 @@ export interface Address {
   country: string
   isDefault?: boolean
 }
-
 export interface PaymentMethod {
   id: string
   type: 'credit_card' | 'debit_card' | 'pix' | 'boleto'
   name: string
   details: any
 }
-
 export interface CreditCard {
   number: string
   holderName: string
@@ -150,7 +135,6 @@ export interface CreditCard {
   expiryYear: string
   cvv: string
 }
-
 export interface ShippingOption {
   id: string
   name: string
@@ -158,7 +142,6 @@ export interface ShippingOption {
   estimatedDays: number
   company: string
 }
-
 export interface ShippingCalculation {
   zipCode: string
   weight: number
@@ -168,7 +151,6 @@ export interface ShippingCalculation {
     height: number
   }
 }
-
 export interface CheckoutData {
   user: User
   cart: Cart
@@ -181,7 +163,6 @@ export interface CheckoutData {
   shippingCost: number
   taxes: number
 }
-
 export interface ProductFilters {
   categoryId?: string
   minPrice?: number
@@ -192,21 +173,18 @@ export interface ProductFilters {
   inStock?: boolean
   search?: string
 }
-
 export interface PaginationParams {
   page: number
   limit: number
   total?: number
   totalPages?: number
 }
-
 export interface ApiResponse<T = any> {
   success: boolean
   data?: T
   message?: string
   error?: string
 }
-
 export interface PaginatedResponse<T> extends ApiResponse<T[]> {
   pagination: {
     page: number
@@ -215,7 +193,6 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
     totalPages: number
   }
 }
-
 export interface Testimonial {
   id: string
   name: string
@@ -226,12 +203,10 @@ export interface Testimonial {
   product: string
   createdAt: Date
 }
-
 export interface NewsletterSubscription {
   email: string
   subscribedAt: Date
 }
-
 export interface ContactMessage {
   name: string
   email: string
@@ -239,13 +214,11 @@ export interface ContactMessage {
   message: string
   phone?: string
 }
-
 export interface ThemeConfig {
   mode: 'light' | 'dark'
   primaryColor: string
   accentColor: string
 }
-
 export interface SiteConfig {
   name: string
   description: string
@@ -258,14 +231,12 @@ export interface SiteConfig {
     facebook: string
   }
 }
-
 export interface AnimationConfig {
   duration: number
   delay?: number
   ease?: string
   stagger?: number
 }
-
 export interface Notification {
   id: string
   type: 'success' | 'error' | 'warning' | 'info'
@@ -277,7 +248,6 @@ export interface Notification {
     onClick: () => void
   }
 }
-
 export interface MetaData {
   title: string
   description: string

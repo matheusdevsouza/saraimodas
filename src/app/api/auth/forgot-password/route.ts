@@ -2,39 +2,31 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getUserByEmail, createPasswordResetToken, deleteExpiredPasswordResetTokens } from '@/lib/database'
 import { sendPasswordResetEmail } from '@/lib/email'
 import crypto from 'crypto'
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { email } = body || {}
-
     console.log('=== FORGOT PASSWORD DEBUG ===')
     console.log('Email recebido:', email)
     console.log('SMTP_HOST:', process.env.SMTP_HOST)
     console.log('SMTP_USER:', process.env.SMTP_USER)
     console.log('NEXT_PUBLIC_APP_URL:', process.env.NEXT_PUBLIC_APP_URL)
-
     if (!email || typeof email !== 'string') {
       return NextResponse.json(
         { error: 'E-mail é obrigatório' },
         { status: 400 }
       )
     }
-
     const normalizedEmail = email.trim().toLowerCase()
     console.log('Email normalizado:', normalizedEmail)
-
     const user = await getUserByEmail(normalizedEmail)
     console.log('Usuário encontrado:', user ? 'SIM' : 'NÃO')
-
     await deleteExpiredPasswordResetTokens()
-
     if (user) {
       console.log('Usuário ID:', user.id)
       const token = crypto.randomBytes(32).toString('hex')
       console.log('Token gerado:', token.substring(0, 10) + '...')
       await createPasswordResetToken(user.id, token)
-
       console.log('Tentando enviar email...')
       const emailResult = await sendPasswordResetEmail({
         email: user.email,
@@ -43,7 +35,6 @@ export async function POST(request: NextRequest) {
       })
       console.log('Resultado do envio de email:', emailResult)
     }
-
     return NextResponse.json(
       { 
         message: 'Se o e-mail estiver cadastrado, você receberá um link de redefinição em breve.',

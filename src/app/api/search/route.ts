@@ -1,21 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
+import database from '@/lib/database';
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q');
-
     if (!query || query.trim().length < 2) {
       return NextResponse.json({
         success: false,
         error: 'Query de busca deve ter pelo menos 2 caracteres'
       }, { status: 400 });
     }
-
     const searchTerm = query.trim().toLowerCase();
+    const likeTerm = `%${searchTerm}%`;
     const results: Array<{
       id: number;
       name: string;
@@ -26,51 +22,38 @@ export async function GET(request: NextRequest) {
       brand?: string;
       category?: string;
     }> = [];
-
-    const products = await prisma.product.findMany({
-      where: {
-        OR: [
-          { name: { contains: searchTerm } },
-          { description: { contains: searchTerm } },
-          { slug: { contains: searchTerm } }
-        ],
-        is_active: true
-      },
-      include: {
-        brands: true,
-        category: true,
-        product_images: {
-          take: 1,
-          where: { is_primary: true }
-        }
-      },
-      take: 5
-    });
-
+    const products = await database.query(
+      `SELECT p.id, p.name, p.slug, p.price, p.description,
+              b.name as brand_name, 
+              c.name as category_name,
+              (SELECT image_url FROM product_images WHERE product_id = p.id AND is_primary = TRUE LIMIT 1) as image_url
+       FROM products p
+       LEFT JOIN brands b ON p.brand_id = b.id
+       LEFT JOIN categories c ON p.category_id = c.id
+       WHERE (p.name LIKE ? OR p.description LIKE ? OR p.slug LIKE ?)
+       AND p.is_active = TRUE
+       LIMIT 5`,
+      [likeTerm, likeTerm, likeTerm]
+    );
     products.forEach((product: any) => {
       results.push({
         id: product.id,
         name: product.name,
         slug: product.slug,
         price: Number(product.price),
-        image: product.product_images[0]?.image_url || '',
+        image: product.image_url || '',
         type: 'product' as const,
-        brand: product.brands?.name,
-        category: product.category?.name
+        brand: product.brand_name,
+        category: product.category_name
       });
     });
-
-    const brands = await prisma.brands.findMany({
-      where: {
-        OR: [
-          { name: { contains: searchTerm } },
-          { slug: { contains: searchTerm } }
-        ],
-        is_active: true
-      },
-      take: 3
-    });
-
+    const brands = await database.query(
+      `SELECT * FROM brands 
+       WHERE (name LIKE ? OR slug LIKE ?) 
+       AND is_active = TRUE 
+       LIMIT 3`,
+      [likeTerm, likeTerm]
+    );
     brands.forEach((brand: any) => {
       results.push({
         id: brand.id,
@@ -83,18 +66,13 @@ export async function GET(request: NextRequest) {
         category: undefined
       });
     });
-
-    const categories = await prisma.category.findMany({
-      where: {
-        OR: [
-          { name: { contains: searchTerm } },
-          { slug: { contains: searchTerm } }
-        ],
-        is_active: true
-      },
-      take: 3
-    });
-
+    const categories = await database.query(
+      `SELECT * FROM categories 
+       WHERE (name LIKE ? OR slug LIKE ?) 
+       AND is_active = TRUE 
+       LIMIT 3`,
+      [likeTerm, likeTerm]
+    );
     categories.forEach((category: any) => {
       results.push({
         id: category.id,
@@ -107,7 +85,6 @@ export async function GET(request: NextRequest) {
         category: category.name
       });
     });
-
     const typeOrder = { product: 1, brand: 2, category: 3 };
     results.sort((a, b) => {
       if (typeOrder[a.type] !== typeOrder[b.type]) {
@@ -119,23 +96,18 @@ export async function GET(request: NextRequest) {
       if (!aNameMatch && bNameMatch) return 1;
       return 0;
     });
-
     const limitedResults = results.slice(0, 10);
-
     return NextResponse.json({
       success: true,
       results: limitedResults,
       total: limitedResults.length,
       query: searchTerm
     });
-
   } catch (error) {
     console.error('Erro na busca:', error);
     return NextResponse.json({
       success: false,
       error: 'Erro interno do servidor'
     }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }

@@ -1,5 +1,3 @@
-
-
 export interface SafeUserData {
   id: number;
   name: string;
@@ -15,19 +13,15 @@ export interface SafeUserData {
   is_admin: boolean;
   created_at: string;
 }
-
-
 export function processSafeUserData(userData: any): SafeUserData {
   const isEncrypted = (value: string): boolean => {
     return Boolean(value && value.includes(':') && value.length > 50);
   };
-
   const getSafeValue = (value: string, placeholder: string = 'Não informado'): string => {
     if (!value) return placeholder;
     if (isEncrypted(value)) return '[Dados protegidos]';
     return value;
   };
-
   return {
     id: userData.id,
     name: getSafeValue(userData.name, 'Usuário'),
@@ -44,19 +38,12 @@ export function processSafeUserData(userData: any): SafeUserData {
     created_at: userData.created_at
   };
 }
-
-
 export function isUserDataEncrypted(userData: any): boolean {
   return (
     (userData.name && userData.name.includes(':') && userData.name.length > 50) ||
     (userData.email && userData.email.includes(':') && userData.email.length > 50)
   );
 }
-
-
 export function getEncryptedDataMessage(): string {
   return 'Seus dados estão protegidos e sendo processados com segurança.';
 }
-
-
-
