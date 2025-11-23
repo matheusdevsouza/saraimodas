@@ -84,7 +84,7 @@ export function Footer() {
               Moda feminina de alta sofisticação. Elegância em cada detalhe.
             </p>
             <div className="flex space-x-4">
-              <a href="https://www.instagram.com/modas_sarai.a" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-[#261E10] hover:bg-[var(--logo-gold,#D4AF37)] hover:text-[#0D0D0D] rounded-lg flex items-center justify-center text-gray-400 transition-all duration-300" aria-label="Instagram">
+              <a href="https://www.instagram.com/modas_sarai_" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-[#261E10] hover:bg-[var(--logo-gold,#D4AF37)] hover:text-[#0D0D0D] rounded-lg flex items-center justify-center text-gray-400 transition-all duration-300" aria-label="Instagram">
                 <FontAwesomeIcon icon={faInstagram} size="lg" />
               </a>
               <a href="https://www.tiktok.com/@modas_sarai" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-[#261E10] hover:bg-[var(--logo-gold,#D4AF37)] hover:text-[#0D0D0D] rounded-lg flex items-center justify-center text-gray-400 transition-all duration-300" aria-label="TikTok">
@@ -154,7 +154,7 @@ export function Footer() {
               Moda feminina de alta sofisticação. Elegância em cada detalhe.
             </p>
             <div className="flex justify-center space-x-4">
-              <a href="https://www.instagram.com/modas_sarai.a" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-[#261E10] hover:bg-[var(--logo-gold,#D4AF37)] hover:text-[#0D0D0D] rounded-lg flex items-center justify-center text-gray-400 transition-all duration-300" aria-label="Instagram">
+              <a href="https://www.instagram.com/modas_sarai_" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-[#261E10] hover:bg-[var(--logo-gold,#D4AF37)] hover:text-[#0D0D0D] rounded-lg flex items-center justify-center text-gray-400 transition-all duration-300" aria-label="Instagram">
                 <FontAwesomeIcon icon={faInstagram} size="lg" />
               </a>
               <a href="https://www.tiktok.com/@modas_sarai" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-[#261E10] hover:bg-[var(--logo-gold,#D4AF37)] hover:text-[#0D0D0D] rounded-lg flex items-center justify-center text-gray-400 transition-all duration-300" aria-label="TikTok">

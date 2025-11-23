@@ -199,7 +199,7 @@ function SearchContent() {
   })
   if (!query.trim()) {
     return (
-      <div className="min-h-screen bg-dark-950 relative flex items-center justify-center overflow-hidden">
+      <div className="min-h-screen bg-dark-950 relative flex items-center justify-center overflow-hidden pt-48 pb-12">
         <FloatingParticles />
         <div className="absolute inset-0 bg-gradient-to-br from-dark-900 via-dark-950 to-black opacity-80" />
         <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl" />
@@ -226,7 +226,7 @@ function SearchContent() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg md:text-xl text-gray-300 mb-8 leading-relaxed"
+            className="text-lg md:text-xl text-gray-300 leading-relaxed"
           >
             Digite o que você procura na barra de pesquisa para encontrar os melhores tênis!
           </motion.p>
@@ -251,7 +251,7 @@ function SearchContent() {
   return (
     <div className="min-h-screen bg-dark-950 relative">
       <FloatingParticles />
-      <div className="relative z-10 pt-24 pb-8">
+      <div className="relative z-10 pt-48 pb-12">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -269,7 +269,7 @@ function SearchContent() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-dark-900/50 border border-dark-700 rounded-2xl p-4 mb-8"
+            className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl p-4 mb-8"
           >
             <div className="hidden lg:flex flex-row gap-4 items-center justify-between">
               <div className="flex flex-wrap gap-4 items-center">
@@ -465,7 +465,7 @@ function SearchContent() {
               animate={{ opacity: 1, y: 0 }}
               className="text-center py-16"
             >
-              <div className="p-8 bg-dark-900/50 border border-dark-700 rounded-2xl max-w-md mx-auto">
+              <div className="p-8 bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl max-w-md mx-auto">
                 <Package size={64} className="mx-auto mb-4 text-gray-500" />
                 <h3 className="text-xl font-semibold text-white mb-2">Nenhum produto encontrado</h3>
                 <p className="text-gray-400 mb-6">

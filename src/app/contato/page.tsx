@@ -196,7 +196,7 @@ export default function Contato() {
             <FaInstagram className="text-primary-500 mb-2" size={28} />
             <span className="font-semibold text-lg text-white mb-1">Instagram</span>
             <span className="text-gray-400 text-sm text-center">Siga-nos nas redes sociais</span>
-            <a href="https://instagram.com/saraimodas" target="_blank" rel="noopener noreferrer" className="text-gray-300 text-base mt-1 hover:text-primary-500 underline-offset-4 transition-colors">@saraimodas</a>
+            <a href="https://instagram.com/modas_sarai_" target="_blank" rel="noopener noreferrer" className="text-gray-300 text-base mt-1 hover:text-primary-500 underline-offset-4 transition-colors">@modas_sarai_</a>
           </motion.div>
         </div>
         <motion.section 
