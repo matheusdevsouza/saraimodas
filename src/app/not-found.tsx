@@ -1,77 +1,18 @@
 'use client'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
 import { House, ArrowLeft, ShoppingBag } from 'phosphor-react'
-const FloatingParticles = () => {
-  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; delay: number }>>([])
-  useEffect(() => {
-    const newParticles = Array.from({ length: 50 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 4 + 2,
-      delay: Math.random() * 2
-    }))
-    setParticles(newParticles)
-  }, [])
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((particle) => (
-        <motion.div
-          key={particle.id}
-          className="absolute bg-[#F2C063]/20 rounded-full"
-          style={{
-            left: `${particle.x}%`,
-            top: `${particle.y}%`,
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-          }}
-          animate={{
-            y: [0, -20, 0],
-            opacity: [0.3, 0.8, 0.3],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 3 + Math.random() * 2,
-            repeat: Infinity,
-            delay: particle.delay,
-            ease: "easeInOut"
-          }}
-        />
-      ))}
-    </div>
-  )
-}
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] relative flex flex-col items-center justify-center overflow-hidden pt-48 md:pt-64 pb-12">
-      <FloatingParticles />
       <div className="absolute inset-0 bg-gradient-to-br from-[#261E10] via-[#0D0D0D] to-black opacity-80" />
       <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#F2C063]/10 rounded-full blur-3xl" />
       <div className="relative z-10 text-center px-4 max-w-2xl">
-        <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
-          className="mb-8 flex justify-center"
-        >
+        <div className="mb-8 flex justify-center">
           <div className="relative p-6 bg-[#261E10] border border-[#594725]/50 rounded-full">
             <ShoppingBag size={64} className="text-[#F2C063]" weight="duotone" />
-            <motion.div
-              className="absolute inset-0 rounded-full border border-[#F2C063]/30"
-              animate={{
-                scale: [1, 1.1, 1],
-                opacity: [0.5, 0.8, 0.5],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
           </div>
-        </motion.div>
+        </div>
         <motion.h1
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -151,30 +92,6 @@ export default function NotFound() {
         animate={{ x: ["-100%", "100%"] }}
         transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
       />
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute"
-            style={{
-              left: `${10 + i * 12}%`,
-              top: `${15 + (i % 3) * 25}%`,
-            }}
-            animate={{
-              opacity: [0.2, 0.6, 0.2],
-              scale: [0.8, 1.2, 0.8],
-            }}
-            transition={{
-              duration: 2 + i * 0.3,
-              repeat: Infinity,
-              delay: i * 0.2,
-              ease: "easeInOut"
-            }}
-          >
-            <div className="w-2 h-2 rounded-full bg-[#F2C063]/30" />
-          </motion.div>
-        ))}
-      </div>
     </div>
   )
 }

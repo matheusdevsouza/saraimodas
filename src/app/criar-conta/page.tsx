@@ -110,11 +110,11 @@ export default function CriarContaPage() {
     return 'Muito forte';
   };
   return (
-    <section className="min-h-screen flex items-center justify-center bg-dark-950 py-12 px-4">
-      <div className="w-full max-w-md bg-dark-900 border border-dark-800 rounded-3xl shadow-2xl p-8 flex flex-col gap-8">
+    <section className="flex items-center justify-center bg-[#0D0D0D] px-4 pb-16 lg:pb-20 lg:mt-20" style={{ marginTop: '10.5rem', minHeight: 'calc(100vh - 10.5rem)', paddingTop: '2rem' }}>
+      <div className="w-full max-w-md bg-[#1f1f1f] border border-[#2a2a2a] rounded-3xl shadow-2xl p-8 flex flex-col gap-8">
         <div className="flex flex-col items-center gap-2">
-          <div className="w-16 h-16 mb-2">
-            <Image src="/images/Logo.png" alt="Logo" width={64} height={64} className="w-full h-full object-contain" />
+          <div className="relative w-16 h-16 mb-2">
+            <Image src="/images/logo.png" alt="Sarai Modas Logo" fill sizes="64px" className="object-contain filter brightness-110" priority />
           </div>
           <h1 className="text-2xl font-extrabold text-white mb-2 text-center">Criar uma conta</h1>
           <p className="text-gray-400 text-center text-sm">Preencha os campos abaixo para se cadastrar.</p>
@@ -128,7 +128,7 @@ export default function CriarContaPage() {
               exit={{ opacity: 0 }}
             >
               <motion.div
-                className="bg-dark-900 border border-dark-700 rounded-2xl shadow-2xl p-8 max-w-md w-full text-center relative"
+                className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl shadow-2xl p-8 max-w-md w-full text-center relative"
                 initial={{ opacity: 0, scale: 0.92 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.92 }}
@@ -145,7 +145,7 @@ export default function CriarContaPage() {
                 <h2 className="text-xl font-bold text-white mb-2">Verifique seu e-mail</h2>
                 <p className="text-gray-300 mb-4">Enviamos um link de confirmação para o seu e-mail. Por favor, acesse sua caixa de entrada e clique no link para ativar sua conta.</p>
                 <button
-                  className="mt-2 px-6 py-2 rounded-lg bg-primary-500 text-white font-bold hover:bg-primary-600 transition-colors"
+                  className="mt-2 px-6 py-2 rounded-lg bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] text-white font-bold transition-all"
                   onClick={() => setShowVerifyEmailModal(false)}
                 >
                   Ok, entendi
@@ -176,7 +176,7 @@ export default function CriarContaPage() {
               required
               value={formData.name}
               onChange={handleChange}
-              className="px-4 py-3 rounded-lg border-2 border-dark-700 bg-dark-800 text-white focus:border-primary-500 outline-none transition-all"
+              className="px-4 py-3 rounded-lg border-2 border-[#2a2a2a] bg-[#0D0D0D] text-white focus:border-primary-500 outline-none transition-all"
               placeholder="Digite seu nome"
               minLength={2}
             />
@@ -191,7 +191,7 @@ export default function CriarContaPage() {
               required
               value={formData.email}
               onChange={handleChange}
-              className="px-4 py-3 rounded-lg border-2 border-dark-700 bg-dark-800 text-white focus:border-primary-500 outline-none transition-all"
+              className="px-4 py-3 rounded-lg border-2 border-[#2a2a2a] bg-[#0D0D0D] text-white focus:border-primary-500 outline-none transition-all"
               placeholder="Digite seu e-mail"
             />
           </div>
@@ -204,7 +204,7 @@ export default function CriarContaPage() {
               autoComplete="tel"
               value={formData.phone}
               onChange={handleChange}
-              className="px-4 py-3 rounded-lg border-2 border-dark-700 bg-dark-800 text-white focus:border-primary-500 outline-none transition-all"
+              className="px-4 py-3 rounded-lg border-2 border-[#2a2a2a] bg-[#0D0D0D] text-white focus:border-primary-500 outline-none transition-all"
               placeholder="(11) 99999-9999"
             />
           </div>
@@ -219,7 +219,7 @@ export default function CriarContaPage() {
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className="px-4 py-3 pr-12 rounded-lg border-2 border-dark-700 bg-dark-800 text-white focus:border-primary-500 outline-none transition-all w-full"
+                className="px-4 py-3 pr-12 rounded-lg border-2 border-[#2a2a2a] bg-[#0D0D0D] text-white focus:border-primary-500 outline-none transition-all w-full"
                 placeholder="Crie uma senha segura"
                 minLength={8}
               />
@@ -303,7 +303,7 @@ export default function CriarContaPage() {
                 required
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className="px-4 py-3 pr-12 rounded-lg border-2 border-dark-700 bg-dark-800 text-white focus:border-primary-500 outline-none transition-all w-full"
+                className="px-4 py-3 pr-12 rounded-lg border-2 border-[#2a2a2a] bg-[#0D0D0D] text-white focus:border-primary-500 outline-none transition-all w-full"
                 placeholder="Repita a senha"
                 minLength={8}
               />
@@ -342,7 +342,7 @@ export default function CriarContaPage() {
           <button
             type="submit"
             disabled={loading || !passwordValidation.isValid || formData.password !== formData.confirmPassword}
-            className="mt-4 bg-primary-500 hover:bg-primary-600 disabled:bg-primary-500/50 disabled:cursor-not-allowed text-white font-bold px-6 py-3 rounded-2xl text-lg shadow-lg transition-all duration-300 w-full"
+            className="mt-4 bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] disabled:bg-primary-500/50 disabled:cursor-not-allowed text-white font-bold px-6 py-3 rounded-2xl text-lg shadow-lg transition-all duration-300 w-full"
           >
             {loading ? 'Criando conta...' : 'Criar conta'}
           </button>

@@ -76,7 +76,7 @@ function VerificarEmailContent() {
               <p className="text-red-400 font-semibold">{message}</p>
               <button
                 onClick={() => router.push('/login')}
-                className="mt-4 bg-primary-500 hover:bg-primary-600 text-white font-semibold px-6 py-3 rounded-lg transition-all"
+                className="mt-4 bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] text-white font-semibold px-6 py-3 rounded-lg transition-all"
               >
                 Ir para o Login
               </button>

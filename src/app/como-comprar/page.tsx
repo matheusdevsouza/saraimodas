@@ -4,45 +4,45 @@ import { FaSearch, FaShoppingCart, FaRegAddressCard, FaCreditCard, FaSmile } fro
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 const ComoComprarSkeleton = () => (
-  <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
+  <div className="min-h-screen bg-dark-950 text-white pt-48 pb-12 px-4 md:px-0 animate-skeleton-fade">
     <div className="max-w-6xl mx-auto flex flex-col gap-12">
       <div className="text-center">
-        <div className="h-12 bg-gray-800 rounded-lg mx-auto max-w-md mb-4 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+        <div className="h-12 bg-gray-800/50 rounded-lg mx-auto max-w-md mb-4 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
         </div>
-        <div className="h-6 bg-gray-800 rounded-md mx-auto max-w-lg relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+        <div className="h-6 bg-gray-800/50 rounded-md mx-auto max-w-lg relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
         </div>
       </div>
       <div className="flex flex-col md:flex-row gap-6 md:gap-4 justify-center items-stretch w-full">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="group bg-dark-800/70 border border-dark-700/50 rounded-2xl flex-1 flex flex-col items-center p-6 shadow-lg">
-            <div className="w-12 h-12 bg-gray-700 rounded-full mb-3 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+          <div key={i} className="group bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl flex-1 flex flex-col items-center p-6 shadow-lg animate-skeleton-pulse" style={{ animationDelay: `${i * 0.1}s` }}>
+            <div className="w-12 h-12 bg-gray-700/50 rounded-full mb-3 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
             </div>
-            <div className="h-6 bg-gray-700 rounded w-3/4 mb-2 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+            <div className="h-6 bg-gray-700/50 rounded w-3/4 mb-2 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
             </div>
             <div className="space-y-2 w-full">
-              <div className="h-4 bg-gray-700 rounded w-full relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+              <div className="h-4 bg-gray-700/50 rounded w-full relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
               </div>
-              <div className="h-4 bg-gray-700 rounded w-5/6 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+              <div className="h-4 bg-gray-700/50 rounded w-5/6 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
               </div>
-              <div className="h-4 bg-gray-700 rounded w-4/5 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+              <div className="h-4 bg-gray-700/50 rounded w-4/5 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
               </div>
             </div>
-            <div className="mt-auto pt-4 w-8 h-8 bg-gray-700 rounded relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+            <div className="mt-auto pt-4 w-8 h-8 bg-gray-700/50 rounded relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
             </div>
           </div>
         ))}
       </div>
       <div className="flex flex-col items-center gap-6 mt-10">
-        <div className="h-14 bg-gray-700 rounded-2xl w-64 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+        <div className="h-14 bg-gray-700/50 rounded-2xl w-64 relative overflow-hidden animate-skeleton-pulse">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
         </div>
       </div>
     </div>
@@ -82,7 +82,7 @@ export default function ComoComprar() {
     return <ComoComprarSkeleton />;
   }
   return (
-    <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
+    <div className="min-h-screen bg-dark-950 text-white pt-48 pb-12 px-4 md:px-0">
       <div className="max-w-6xl mx-auto flex flex-col gap-12">
         <motion.div 
           className="text-center"
@@ -90,14 +90,14 @@ export default function ComoComprar() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-0">Como Comprar</h1>
-          <p className="text-gray-400 text-lg mb-10">Veja como realizar suas compras em nossa loja:</p>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Como Comprar</h1>
+          <p className="text-gray-400 text-lg">Veja como realizar suas compras em nossa loja:</p>
         </motion.div>
         <div className="flex flex-col md:flex-row gap-6 md:gap-4 justify-center items-stretch w-full">
           {steps.map((step, i) => (
             <motion.div 
               key={i} 
-              className="group bg-dark-800/70 border border-dark-700/50 rounded-2xl flex-1 flex flex-col items-center p-6 shadow-lg hover:shadow-primary-500/10 transition-all duration-500 cursor-pointer hover:border-primary-500/40 hover:bg-dark-800/90"
+              className="group bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl flex-1 flex flex-col items-center p-6 shadow-lg hover:shadow-primary-500/10 transition-all duration-500 cursor-pointer hover:border-primary-500/40"
               initial={{ opacity: 0, y: 30, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ 
@@ -152,7 +152,7 @@ export default function ComoComprar() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Link href="/produtos" className="bg-primary-500 hover:bg-primary-600 text-white font-bold px-8 py-4 rounded-2xl text-lg shadow-lg transition-all duration-300">
+            <Link href="/produtos" className="bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] text-white font-bold px-8 py-4 rounded-2xl text-lg shadow-lg transition-all duration-300">
               Conheça nossos produtos
             </Link>
           </motion.div>

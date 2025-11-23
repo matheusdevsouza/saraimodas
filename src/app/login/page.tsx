@@ -66,11 +66,11 @@ export default function LoginPage() {
     }
   };
   return (
-    <section className="min-h-screen flex items-center justify-center bg-[#0D0D0D] py-12 px-4">
-      <div className="w-full max-w-md bg-[#261E10] rounded-xl shadow-2xl p-8 flex flex-col gap-8">
+    <section className="flex items-center justify-center bg-[#0D0D0D] px-4 pb-16 lg:pb-20" style={{ marginTop: '10.5rem', minHeight: 'calc(100vh - 10.5rem)', paddingTop: '2rem' }}>
+      <div className="w-full max-w-md bg-[#1f1f1f] border border-[#2a2a2a] rounded-xl shadow-2xl p-8 flex flex-col gap-8">
         <div className="flex flex-col items-center gap-4">
           <div className="relative w-16 h-16 mb-2">
-            <Image src="/logo.png" alt="Sarai Modas Logo" fill sizes="64px" className="object-contain filter brightness-110" priority />
+            <Image src="/images/logo.png" alt="Sarai Modas Logo" fill sizes="64px" className="object-contain filter brightness-110" priority />
           </div>
           <h1 className="text-2xl font-semibold text-white mb-2 text-center">Entrar na sua conta</h1>
           <p className="text-gray-400 text-center text-sm">Bem-vindo de volta! Faça login para continuar.</p>

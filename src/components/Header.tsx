@@ -2,11 +2,15 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ShoppingCart, User, List, X, MagnifyingGlass, Truck, UserPlus, EnvelopeSimple, SignOut, AddressBook, UserCircle, Receipt } from 'phosphor-react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 import { useCart } from '@/contexts/CartContext'
 import SidebarCart from './SidebarCart'
 import { useAuth } from '@/contexts/AuthContext';
 export function Header() {
+  const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [userMenuOpen, setUserMenuOpen] = useState(false)
@@ -96,7 +100,7 @@ export function Header() {
                   <MagnifyingGlass 
                     size={20} 
                     weight="regular" 
-                    className="text-white/70 mr-3 flex-shrink-0" 
+                    className="text-[#0D0D0D] mr-3 flex-shrink-0" 
                   />
                   <input
                     type="text"
@@ -104,7 +108,7 @@ export function Header() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch(e)}
-                    className="flex-1 bg-transparent text-white placeholder-white/70 focus:outline-none text-sm w-full"
+                    className="flex-1 bg-transparent text-[#0D0D0D] placeholder-[#0D0D0D]/70 focus:outline-none text-sm w-full"
                   />
                   {searchQuery && (
                     <motion.button
@@ -112,7 +116,7 @@ export function Header() {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       onClick={clearSearch}
-                      className="ml-2 text-white/70 hover:text-white transition-colors p-1 rounded-full hover:bg-white/10"
+                      className="ml-2 text-[#0D0D0D]/70 hover:text-[#0D0D0D] transition-colors p-1 rounded-full hover:bg-[#0D0D0D]/10"
                     >
                       <X size={16} weight="bold" />
                     </motion.button>
@@ -189,20 +193,20 @@ export function Header() {
                             </div>
                           </div>
                           <div className="py-2">
-                            <a href="/perfil" className="flex items-center gap-3 px-5 py-3 text-gray-300 hover:bg-[var(--logo-gold,#D4A574)]/10 hover:text-[var(--logo-gold,#D4A574)] transition-colors rounded-lg mx-2">
-                              <UserCircle size={18} className="text-gray-400" weight="regular" />
+                            <a href="/perfil" className="group flex items-center gap-3 px-5 py-3 text-gray-300 hover:bg-[var(--logo-gold,#D4A574)]/10 hover:text-[var(--logo-gold,#D4A574)] transition-colors rounded-lg mx-2">
+                              <UserCircle size={18} className="text-gray-400 group-hover:text-[var(--logo-gold,#D4A574)] transition-colors" weight="regular" />
                               <span className="text-sm">Meu Perfil</span>
                             </a>
-                            <a href="/meus-pedidos" className="flex items-center gap-3 px-5 py-3 text-gray-300 hover:bg-[var(--logo-gold,#D4A574)]/10 hover:text-[var(--logo-gold,#D4A574)] transition-colors rounded-lg mx-2">
-                              <Receipt size={18} className="text-gray-400" weight="regular" />
+                            <a href="/meus-pedidos" className="group flex items-center gap-3 px-5 py-3 text-gray-300 hover:bg-[var(--logo-gold,#D4A574)]/10 hover:text-[var(--logo-gold,#D4A574)] transition-colors rounded-lg mx-2">
+                              <Receipt size={18} className="text-gray-400 group-hover:text-[var(--logo-gold,#D4A574)] transition-colors" weight="regular" />
                               <span className="text-sm">Meus Pedidos</span>
                             </a>
-                            <a href="/enderecos" className="flex items-center gap-3 px-5 py-3 text-gray-300 hover:bg-[var(--logo-gold,#D4A574)]/10 hover:text-[var(--logo-gold,#D4A574)] transition-colors rounded-lg mx-2">
-                              <AddressBook size={18} className="text-gray-400" weight="regular" />
+                            <a href="/enderecos" className="group flex items-center gap-3 px-5 py-3 text-gray-300 hover:bg-[var(--logo-gold,#D4A574)]/10 hover:text-[var(--logo-gold,#D4A574)] transition-colors rounded-lg mx-2">
+                              <AddressBook size={18} className="text-gray-400 group-hover:text-[var(--logo-gold,#D4A574)] transition-colors" weight="regular" />
                               <span className="text-sm">Endereços</span>
                             </a>
                             {user.is_admin && (
-                              <a href="/admin" className="flex items-center gap-3 px-5 py-3 text-gray-300 hover:bg-[var(--logo-gold,#D4A574)]/10 hover:text-[var(--logo-gold,#D4A574)] transition-colors mt-2 rounded-lg mx-2">
+                              <a href="/admin" className="group flex items-center gap-3 px-5 py-3 text-gray-300 hover:bg-[var(--logo-gold,#D4A574)]/10 hover:text-[var(--logo-gold,#D4A574)] transition-colors mt-2 rounded-lg mx-2">
                                 <div className="w-6 h-6 bg-[var(--logo-gold,#D4A574)] rounded-lg flex items-center justify-center">
                                   <span className="text-[#0D0D0D] text-xs font-bold">A</span>
                                 </div>
@@ -213,25 +217,50 @@ export function Header() {
                           <div className="mt-2 pt-2">
                             <button
                               onClick={async () => { await logout(); setUserMenuOpen(false); }}
-                              className="w-full flex items-center gap-3 px-5 py-3 text-gray-400 hover:bg-red-500/10 hover:text-red-400 transition-colors rounded-lg mx-2"
+                              className="group w-full flex items-center gap-3 px-5 py-3 text-gray-400 hover:bg-red-500/10 hover:text-red-400 transition-colors rounded-lg mx-2"
                             >
-                              <SignOut size={18} className="text-gray-400" weight="regular" />
+                              <SignOut size={18} className="text-gray-400 group-hover:text-red-400 transition-colors" weight="regular" />
                               <span className="text-sm">Sair</span>
                             </button>
                           </div>
                         </>
                       ) : (
                         <>
-                          <a href="/login" className="flex items-center gap-3 px-5 py-3 text-gray-300 hover:bg-[var(--logo-gold,#D4A574)]/10 hover:text-[var(--logo-gold,#D4A574)] transition-colors rounded-lg mx-2">
-                            <User size={18} className="text-gray-400" weight="regular" />
+                          <a href="/login" className={`group flex items-center gap-3 px-5 py-3 transition-colors rounded-lg mx-2 ${
+                            pathname === '/login' 
+                              ? 'bg-[var(--logo-gold,#D4A574)]/10 text-[var(--logo-gold,#D4A574)] font-medium' 
+                              : 'text-gray-300 hover:bg-[var(--logo-gold,#D4A574)]/10 hover:text-[var(--logo-gold,#D4A574)]'
+                          }`}>
+                            <User size={18} className={`transition-colors ${
+                              pathname === '/login' 
+                                ? 'text-[var(--logo-gold,#D4A574)]' 
+                                : 'text-gray-400 group-hover:text-[var(--logo-gold,#D4A574)]'
+                            }`} weight="regular" />
                             <span className="text-sm">Fazer Login</span>
                           </a>
-                          <a href="/criar-conta" className="flex items-center gap-3 px-5 py-3 bg-[var(--logo-gold,#D4A574)]/10 text-[var(--logo-gold,#D4A574)] hover:bg-[var(--logo-gold,#D4A574)]/20 transition-colors rounded-lg mx-2 font-medium">
-                            <UserPlus size={18} weight="regular" />
+                          <a href="/criar-conta" className={`group flex items-center gap-3 px-5 py-3 transition-colors rounded-lg mx-2 ${
+                            pathname === '/criar-conta' 
+                              ? 'bg-[var(--logo-gold,#D4A574)]/10 text-[var(--logo-gold,#D4A574)] font-medium' 
+                              : 'text-gray-300 hover:bg-[var(--logo-gold,#D4A574)]/10 hover:text-[var(--logo-gold,#D4A574)]'
+                          }`}>
+                            <UserPlus size={18} className={`transition-colors ${
+                              pathname === '/criar-conta' 
+                                ? 'text-[var(--logo-gold,#D4A574)]' 
+                                : 'text-gray-400 group-hover:text-[var(--logo-gold,#D4A574)]'
+                            }`} weight="regular" />
                             <span className="text-sm">Criar Conta</span>
                           </a>
-                          <a href="/contato" className="flex items-center gap-3 px-5 py-3 text-gray-300 hover:bg-[var(--logo-gold,#D4A574)]/10 hover:text-[var(--logo-gold,#D4A574)] transition-colors rounded-lg mx-2 mt-2">
-                            <EnvelopeSimple size={18} className="text-gray-400" weight="regular" />
+                          <div className="border-t border-gray-700/30 my-2 mx-2"></div>
+                          <a href="/contato" className={`group flex items-center gap-3 px-5 py-3 transition-colors rounded-lg mx-2 ${
+                            pathname === '/contato' 
+                              ? 'bg-[var(--logo-gold,#D4A574)]/10 text-[var(--logo-gold,#D4A574)] font-medium' 
+                              : 'text-gray-300 hover:bg-[var(--logo-gold,#D4A574)]/10 hover:text-[var(--logo-gold,#D4A574)]'
+                          }`}>
+                            <EnvelopeSimple size={18} className={`transition-colors ${
+                              pathname === '/contato' 
+                                ? 'text-[var(--logo-gold,#D4A574)]' 
+                                : 'text-gray-400 group-hover:text-[var(--logo-gold,#D4A574)]'
+                            }`} weight="regular" />
                             <span className="text-sm">Contato</span>
                           </a>
                         </>
@@ -264,7 +293,7 @@ export function Header() {
                 <MagnifyingGlass 
                   size={20} 
                   weight="regular" 
-                  className="text-white/70 mr-3 flex-shrink-0" 
+                  className="text-[#0D0D0D] mr-3 flex-shrink-0" 
                 />
                   <input
                     type="text"
@@ -274,7 +303,7 @@ export function Header() {
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch(e)}
                     onFocus={() => setIsSearchFocused(true)}
                     onBlur={() => setIsSearchFocused(false)}
-                    className="flex-1 bg-transparent text-white placeholder-white/70 focus:outline-none text-sm"
+                    className="flex-1 bg-transparent text-[#0D0D0D] placeholder-[#0D0D0D]/70 focus:outline-none text-sm"
                   />
                 {searchQuery && (
                   <motion.button
@@ -282,7 +311,7 @@ export function Header() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     onClick={clearSearch}
-                    className="ml-2 text-white/70 hover:text-white transition-colors p-1 rounded-full hover:bg-white/10"
+                    className="ml-2 text-[#0D0D0D]/70 hover:text-[#0D0D0D] transition-colors p-1 rounded-full hover:bg-[#0D0D0D]/10"
                   >
                     <X size={16} weight="bold" />
                   </motion.button>
@@ -328,41 +357,6 @@ export function Header() {
               </motion.a>
             ))}
           </nav>
-          <AnimatePresence>
-            {isMenuOpen && (
-              <motion.nav
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="lg:hidden py-4 space-y-1 overflow-hidden"
-              >
-                {menuItems.map((item, index) => (
-                  <motion.a
-                    key={item.href}
-                    href={item.href}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    whileHover={{ x: 4, scale: 1.02 }}
-                    className="relative block px-6 py-3 text-[#0D0D0D] transition-all duration-300 rounded-xl font-medium uppercase tracking-wide group overflow-hidden"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <motion.div
-                      className="absolute inset-0 bg-[#0D0D0D]/15 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300"
-                      initial={false}
-                    />
-                    <motion.div
-                      className="absolute left-0 top-0 bottom-0 w-1 bg-[#0D0D0D] rounded-full opacity-0 group-hover:opacity-100"
-                      initial={{ scaleY: 0 }}
-                      whileHover={{ scaleY: 1 }}
-                      transition={{ duration: 0.3 }}
-                    />
-                    <span className="relative z-10 block transition-all duration-300 group-hover:font-semibold">{item.label}</span>
-                  </motion.a>
-                ))}
-              </motion.nav>
-            )}
-          </AnimatePresence>
         </div>
       </div>
       <AnimatePresence>
@@ -404,6 +398,118 @@ export function Header() {
                   Ir para rastreamento
                 </button>
               </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            className="fixed inset-0 z-[100] lg:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMenuOpen(false)}
+            />
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-br from-[#0D0D0D] via-[#1a1a1a] to-[#0D0D0D] flex flex-col"
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            >
+              <div className="flex items-center justify-between p-6 border-b border-[#2a2a2a]">
+                <div className="relative w-16 h-16">
+                  <Image
+                    src="/images/logo.png"
+                    alt="Sarai Modas"
+                    fill
+                    sizes="64px"
+                    className="object-contain filter brightness-110"
+                    priority
+                  />
+                </div>
+                <motion.button
+                  onClick={() => setIsMenuOpen(false)}
+                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="p-2 rounded-full bg-[#1f1f1f] border border-[#2a2a2a] text-gray-400 hover:text-white hover:bg-[#2a2a2a] transition-colors"
+                >
+                  <X size={24} weight="bold" />
+                </motion.button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto px-6 py-8">
+                <nav className="space-y-2">
+                  {menuItems.map((item, index) => (
+                    <motion.a
+                      key={item.href}
+                      href={item.href}
+                      initial={{ opacity: 0, x: -30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.08, type: 'spring', damping: 20 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="relative block px-6 py-4 text-[#0D0D0D] font-semibold text-lg uppercase tracking-wide rounded-xl group overflow-hidden bg-[var(--header-gold,#A67C52)]"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <motion.div
+                        className="absolute inset-0 bg-[#0D0D0D]/15 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        initial={false}
+                      />
+                      <span className="relative z-10 flex items-center justify-between">
+                        <motion.span
+                          className="flex-1 text-left"
+                          whileHover={{ x: 8 }}
+                          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                        >
+                          {item.label}
+                        </motion.span>
+                        <motion.div
+                          initial={{ opacity: 0, x: -10, scale: 0.8 }}
+                          whileHover={{ opacity: 1, x: 0, scale: 1 }}
+                          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                          className="text-black"
+                        >
+                          <FontAwesomeIcon icon={faChevronRight} size="sm" />
+                        </motion.div>
+                      </span>
+                    </motion.a>
+                  ))}
+                </nav>
+              </div>
+
+              {authenticated && user && (
+                <div className="border-t border-[#2a2a2a] p-6 space-y-3">
+                  <div className="flex items-center gap-3 px-4 py-3 bg-[#1f1f1f] border border-[#2a2a2a] rounded-xl">
+                    <div className="w-10 h-10 rounded-full bg-[var(--logo-gold,#D4A574)]/20 flex items-center justify-center">
+                      <UserCircle size={24} className="text-[var(--logo-gold,#D4A574)]" weight="fill" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white font-semibold text-sm truncate">{user.display_name || user.name?.split(' ')[0]}</p>
+                      <p className="text-gray-400 text-xs truncate">{user.email}</p>
+                    </div>
+                  </div>
+                  <motion.button
+                    onClick={async () => {
+                      await logout()
+                      setIsMenuOpen(false)
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl font-semibold hover:bg-red-500/20 transition-colors"
+                  >
+                    <SignOut size={20} weight="bold" />
+                    <span>Sair</span>
+                  </motion.button>
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}

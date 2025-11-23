@@ -13,7 +13,7 @@ const FAQItem = ({ faq, index }: FAQItemProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 + (index * 0.05), duration: 0.4 }}
-      className={`overflow-hidden rounded-xl transition-all duration-300 ${open ? 'border-l-4 border-primary-500 bg-dark-800/70' : 'border-l-4 border-transparent bg-dark-900/80'} border`}
+      className={`overflow-hidden rounded-xl transition-all duration-300 ${open ? 'border-2 border-primary-500 border-l-4 bg-[#1f1f1f]' : 'border-2 border-[#2a2a2a] bg-[#1f1f1f]'}`}
     >
       <button
         type="button"
@@ -46,7 +46,7 @@ const FAQItem = ({ faq, index }: FAQItemProps) => {
   );
 };
 const ContatoSkeleton = () => (
-  <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
+  <div className="min-h-screen bg-dark-950 text-white pt-48 pb-12 px-4 md:px-0 animate-skeleton-fade">
     <div className="max-w-5xl mx-auto flex flex-col gap-10">
       <div className="mb-2">
         <div className="h-12 bg-gray-800 rounded-lg mx-auto max-w-md mb-4 relative overflow-hidden">
@@ -58,7 +58,7 @@ const ContatoSkeleton = () => (
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-6">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="flex flex-col items-center bg-dark-900 rounded-xl p-6 shadow-sm min-w-[240px]">
+          <div key={i} className="flex flex-col items-center bg-[#1f1f1f] border border-[#2a2a2a] rounded-xl p-6 shadow-sm min-w-[240px]">
             <div className="w-7 h-7 bg-gray-700 rounded-full mb-2 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
             </div>
@@ -80,7 +80,7 @@ const ContatoSkeleton = () => (
         </div>
         <div className="space-y-4">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="overflow-hidden rounded-xl bg-dark-900/80 border border-dark-700">
+            <div key={i} className="overflow-hidden rounded-xl bg-[#1f1f1f] border border-[#2a2a2a]">
               <div className="w-full flex items-center justify-between px-5 py-4">
                 <div className="h-5 bg-gray-700 rounded w-3/4 relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
@@ -120,23 +120,23 @@ export default function Contato() {
     return <ContatoSkeleton />;
   }
   return (
-    <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
+    <div className="min-h-screen bg-dark-950 text-white pt-48 pb-12 px-4 md:px-0">
       <div className="max-w-5xl mx-auto flex flex-col gap-10">
         <motion.div 
-          className="mb-2"
+          className="text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-2 text-center">Central de Atendimento</h1>
-          <p className="text-gray-400 text-lg mb-8 text-center">Tem alguma dúvida? Entre em contato, estamos aqui para te ajudar!</p>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Central de Atendimento</h1>
+          <p className="text-gray-400 text-lg">Tem alguma dúvida? Entre em contato, estamos aqui para te ajudar!</p>
         </motion.div>
         <div className="flex flex-wrap justify-center gap-8 mb-6">
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5 }} 
-            className="flex flex-col items-center bg-dark-900 rounded-xl p-6 shadow-sm min-w-[240px] max-w-[240px]"
+            className="flex flex-col items-center bg-[#1f1f1f] border border-[#2a2a2a] rounded-xl p-6 shadow-sm min-w-[240px] max-w-[240px]"
           >
             <FaWhatsapp className="text-primary-500 mb-2" size={28} />
             <span className="font-semibold text-lg text-white mb-1">WhatsApp</span>
@@ -147,18 +147,18 @@ export default function Contato() {
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5, delay: 0.1 }} 
-            className="flex flex-col items-center bg-dark-900 rounded-xl p-6 shadow-sm min-w-[240px] max-w-[240px]"
+            className="flex flex-col items-center bg-[#1f1f1f] border border-[#2a2a2a] rounded-xl p-6 shadow-sm min-w-[240px] max-w-[240px]"
           >
             <FaEnvelope className="text-primary-500 mb-2" size={28} />
             <span className="font-semibold text-lg text-white mb-1">E-mail</span>
-            <span className="text-gray-400 text-sm">Resposta o mais breve possível</span>
+            <span className="text-gray-400 text-sm text-center">Resposta o mais breve possível</span>
             <a href={`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL}`} className="text-gray-300 text-base mt-1 hover:text-primary-500 underline-offset-4 transition-colors">{process.env.NEXT_PUBLIC_CONTACT_EMAIL}</a>
           </motion.div>
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5, delay: 0.2 }} 
-            className="flex flex-col items-center bg-dark-900 rounded-xl p-6 shadow-sm min-w-[240px] max-w-[240px]"
+            className="flex flex-col items-center bg-[#1f1f1f] border border-[#2a2a2a] rounded-xl p-6 shadow-sm min-w-[240px] max-w-[240px]"
           >
             <FaPhoneAlt className="text-primary-500 mb-2" size={28} />
             <span className="font-semibold text-lg text-white mb-1">Telefone</span>
@@ -169,7 +169,7 @@ export default function Contato() {
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5, delay: 0.3 }} 
-            className="flex flex-col items-center bg-dark-900 rounded-xl p-6 shadow-sm min-w-[240px] max-w-[240px]"
+            className="flex flex-col items-center bg-[#1f1f1f] border border-[#2a2a2a] rounded-xl p-6 shadow-sm min-w-[240px] max-w-[240px]"
           >
             <FaClock className="text-primary-500 mb-2" size={28} />
             <span className="font-semibold text-lg text-white mb-1">Horário</span>
@@ -180,12 +180,23 @@ export default function Contato() {
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5, delay: 0.4 }} 
-            className="flex flex-col items-center bg-dark-900 rounded-xl p-6 shadow-sm min-w-[240px] max-w-[240px]"
+            className="flex flex-col items-center bg-[#1f1f1f] border border-[#2a2a2a] rounded-xl p-6 shadow-sm min-w-[240px] max-w-[240px]"
           >
             <FaMapMarkerAlt className="text-primary-500 mb-2" size={28} />
             <span className="font-semibold text-lg text-white mb-1">Endereço</span>
             <span className="text-gray-400 text-sm text-center">Rua São José do Goiabal, 77</span>
             <span className="text-gray-300 text-base mt-1">CEP 03887-050</span>
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.5, delay: 0.5 }} 
+            className="flex flex-col items-center bg-[#1f1f1f] border border-[#2a2a2a] rounded-xl p-6 shadow-sm min-w-[240px] max-w-[240px]"
+          >
+            <FaInstagram className="text-primary-500 mb-2" size={28} />
+            <span className="font-semibold text-lg text-white mb-1">Instagram</span>
+            <span className="text-gray-400 text-sm text-center">Siga-nos nas redes sociais</span>
+            <a href="https://instagram.com/saraimodas" target="_blank" rel="noopener noreferrer" className="text-gray-300 text-base mt-1 hover:text-primary-500 underline-offset-4 transition-colors">@saraimodas</a>
           </motion.div>
         </div>
         <motion.section 

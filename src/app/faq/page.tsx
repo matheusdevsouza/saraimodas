@@ -3,48 +3,48 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaQuestionCircle } from 'react-icons/fa';
 const FAQSkeleton = () => (
-  <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
+  <div className="min-h-screen bg-[#1a1a1a] text-white pt-48 pb-12 px-4 md:px-0 animate-skeleton-fade">
     <div className="max-w-4xl mx-auto flex flex-col gap-8">
       <div className="text-center">
-        <div className="h-12 bg-gray-800 rounded-lg mx-auto max-w-md mb-4 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+        <div className="h-12 bg-gray-800/50 rounded-lg mx-auto max-w-md mb-4 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
         </div>
-        <div className="h-6 bg-gray-800 rounded-md mx-auto max-w-lg relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+        <div className="h-6 bg-gray-800/50 rounded-md mx-auto max-w-lg relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
         </div>
       </div>
       <div className="space-y-4">
         {[...Array(15)].map((_, i) => (
-          <div key={i} className="overflow-hidden rounded-xl bg-dark-900/80 border border-dark-700">
+          <div key={i} className="overflow-hidden rounded-xl bg-[#1f1f1f] border border-[#2a2a2a] animate-skeleton-pulse" style={{ animationDelay: `${i * 0.05}s` }}>
             <div className="w-full flex items-center justify-between px-5 py-4">
-              <div className="h-5 bg-gray-700 rounded w-3/4 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+              <div className="h-5 bg-gray-700/50 rounded w-3/4 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
               </div>
-              <div className="w-5 h-5 bg-gray-700 rounded relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+              <div className="w-5 h-5 bg-gray-700/50 rounded relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
               </div>
             </div>
           </div>
         ))}
       </div>
       <div className="text-center mt-12">
-        <div className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8">
-          <div className="w-12 h-12 bg-gray-700 rounded-full mx-auto mb-4 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+        <div className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl p-8 animate-skeleton-pulse">
+          <div className="w-12 h-12 bg-gray-700/50 rounded-full mx-auto mb-4 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
           </div>
-          <div className="h-6 bg-gray-700 rounded w-48 mx-auto mb-4 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+          <div className="h-6 bg-gray-700/50 rounded w-48 mx-auto mb-4 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
           </div>
           <div className="space-y-2 mb-6">
-            <div className="h-4 bg-gray-700 rounded w-full relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+            <div className="h-4 bg-gray-700/50 rounded w-full relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
             </div>
-            <div className="h-4 bg-gray-700 rounded w-3/4 mx-auto relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+            <div className="h-4 bg-gray-700/50 rounded w-3/4 mx-auto relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
             </div>
           </div>
-          <div className="h-12 bg-gray-700 rounded-lg w-32 mx-auto relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+          <div className="h-12 bg-gray-700/50 rounded-lg w-32 mx-auto relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
           </div>
         </div>
       </div>
@@ -87,7 +87,7 @@ export default function FAQ() {
     return <FAQSkeleton />;
   }
   return (
-    <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
+    <div className="min-h-screen bg-[#1a1a1a] text-white pt-48 pb-12 px-4 md:px-0">
       <div className="max-w-4xl mx-auto flex flex-col gap-8 text-left">
         <motion.div 
           className="text-center"
@@ -95,8 +95,8 @@ export default function FAQ() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-0">Perguntas Frequentes</h1>
-          <p className="text-gray-400 text-lg mb-10">Encontre respostas para as principais dúvidas sobre nossos produtos e serviços</p>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Perguntas Frequentes</h1>
+          <p className="text-gray-400 text-lg">Encontre respostas para as principais dúvidas sobre nossos produtos e serviços</p>
         </motion.div>
         <motion.section 
           initial={{ opacity: 0, y: 20 }} 
@@ -112,7 +112,7 @@ export default function FAQ() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 + (i * 0.05), duration: 0.4 }}
-                className={`overflow-hidden rounded-xl transition-all duration-300 ${isOpen ? 'border-l-4 border-primary-500 bg-dark-800/70' : 'border-l-4 border-transparent bg-dark-900/80'} border`}
+                className={`overflow-hidden rounded-xl transition-all duration-300 ${isOpen ? 'border-2 border-primary-500 border-l-4 bg-[#1f1f1f]' : 'border-2 border-[#2a2a2a] bg-[#1f1f1f]'}`}
               >
                 <button
                   type="button"
@@ -153,7 +153,7 @@ export default function FAQ() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          <div className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8">
+          <div className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl p-8">
             <motion.div
               initial={{ scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -168,7 +168,7 @@ export default function FAQ() {
             </p>
             <motion.a 
               href="/contato" 
-              className="inline-block bg-primary-500 hover:bg-primary-600 text-white font-semibold px-8 py-3 rounded-lg transition-colors duration-300"
+              className="inline-block bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] text-white font-semibold px-8 py-3 rounded-lg transition-all duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

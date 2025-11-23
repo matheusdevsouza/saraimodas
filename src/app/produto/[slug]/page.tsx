@@ -614,7 +614,7 @@ export default function ProdutoPage() {
                   />
                   <button
                     onClick={handleCalcularFrete}
-                    className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                    className="bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] text-white px-6 py-3 rounded-lg font-semibold transition-all"
                   >
                     Calcular
                   </button>
@@ -847,7 +847,7 @@ export default function ProdutoPage() {
                     navigator.clipboard.writeText(window.location.href);
                     setShowShareModal(false);
                   }}
-                  className="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 px-4 rounded-xl font-semibold transition-colors"
+                  className="w-full bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] text-white py-3 px-4 rounded-xl font-semibold transition-all"
                 >
                   Copiar Link
                 </button>

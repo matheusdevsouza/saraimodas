@@ -105,7 +105,7 @@ export default function SidebarCart({ open, onClose }: SidebarCartProps) {
               disabled={!canProceedToCheckout}
               className={`w-full py-3 px-6 rounded-xl font-semibold transition-all ${
                 canProceedToCheckout
-                  ? 'bg-primary-500 text-white hover:bg-primary-600 shadow-lg hover:shadow-xl transform hover:scale-[1.02]'
+                  ? 'bg-primary-500 text-white hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] shadow-lg hover:shadow-xl transform hover:scale-[1.02]'
                   : 'bg-dark-700 text-gray-400 cursor-not-allowed'
               }`}
             >

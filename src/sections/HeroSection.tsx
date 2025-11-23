@@ -108,7 +108,7 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 1.1 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-block px-8 py-4 bg-[var(--logo-gold,#D4AF37)] text-[#0D0D0D] font-semibold uppercase tracking-wider hover:bg-[var(--logo-gold,#D4AF37)]/90 transition-all duration-300 rounded-lg shadow-lg"
+            className="inline-block px-8 py-4 bg-[var(--logo-gold,#D4AF37)] text-[#0D0D0D] font-semibold uppercase tracking-wider hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] transition-all duration-300 rounded-lg shadow-lg"
           >
             Explorar Coleção
           </motion.a>

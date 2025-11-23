@@ -39,10 +39,33 @@ export function SmoothScroll({ children, options }: SmoothScrollProps) {
   const lenisRef = useRef<Lenis | null>(null)
   const rafIdRef = useRef<number | null>(null)
   const pathname = usePathname()
+  
+  const checkIsMobile = () => {
+    return typeof window !== 'undefined' && window.innerWidth < 768
+  }
+  
+  const destroyLenis = () => {
+    if (rafIdRef.current !== null) {
+      cancelAnimationFrame(rafIdRef.current)
+      rafIdRef.current = null
+    }
+    if (lenisRef.current) {
+      lenisRef.current.destroy()
+      lenisRef.current = null
+    }
+  }
+  
   useEffect(() => {
     if (pathname?.startsWith('/admin')) {
+      destroyLenis()
       return
     }
+    
+    if (checkIsMobile()) {
+      destroyLenis()
+      return
+    }
+    
     const lenis = new Lenis({
       duration: options?.duration ?? 1.2,
       easing: options?.easing ?? ((t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))),
@@ -67,17 +90,22 @@ export function SmoothScroll({ children, options }: SmoothScrollProps) {
       ScrollTrigger.update()
     }
     lenis.on('scroll', scrollTriggerUpdate)
-    return () => {
-      if (rafIdRef.current !== null) {
-        cancelAnimationFrame(rafIdRef.current)
-        rafIdRef.current = null
+    
+    const handleResize = () => {
+      if (checkIsMobile() && lenisRef.current) {
+        destroyLenis()
       }
-      lenis.destroy()
-      lenisRef.current = null
+    }
+    
+    window.addEventListener('resize', handleResize)
+    
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      destroyLenis()
     }
   }, [pathname, options])
   useEffect(() => {
-    if (lenisRef.current && !pathname?.startsWith('/admin')) {
+    if (lenisRef.current && !pathname?.startsWith('/admin') && !checkIsMobile()) {
       lenisRef.current.scrollTo(0, {
         immediate: true,
       })

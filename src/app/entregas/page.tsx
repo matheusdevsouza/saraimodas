@@ -3,47 +3,47 @@ import React, { useState, useEffect } from 'react';
 import { FaTruck, FaMapMarkerAlt, FaClock, FaShieldAlt, FaBox, FaSearch, FaGift, FaGlobe } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 const EntregasSkeleton = () => (
-  <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
+  <div className="min-h-screen bg-dark-950 text-white pt-48 pb-12 px-4 md:px-0 animate-skeleton-fade">
     <div className="max-w-4xl mx-auto flex flex-col gap-8">
       <div className="text-center">
-        <div className="h-12 bg-gray-800 rounded-lg mx-auto max-w-md mb-4 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+        <div className="h-12 bg-gray-800/50 rounded-lg mx-auto max-w-md mb-4 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
         </div>
-        <div className="h-6 bg-gray-800 rounded-md mx-auto max-w-lg relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+        <div className="h-6 bg-gray-800/50 rounded-md mx-auto max-w-lg relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
         </div>
       </div>
       <div className="space-y-8">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8">
+          <div key={i} className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl p-8 animate-skeleton-pulse" style={{ animationDelay: `${i * 0.15}s` }}>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-6 h-6 bg-gray-700 rounded relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+              <div className="w-6 h-6 bg-gray-700/50 rounded relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
               </div>
-              <div className="h-6 bg-gray-700 rounded w-48 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+              <div className="h-6 bg-gray-700/50 rounded w-48 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
               </div>
             </div>
             <div className="space-y-3">
-              <div className="h-4 bg-gray-700 rounded w-full relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+              <div className="h-4 bg-gray-700/50 rounded w-full relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
               </div>
-              <div className="h-4 bg-gray-700 rounded w-3/4 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+              <div className="h-4 bg-gray-700/50 rounded w-3/4 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
               </div>
-              <div className="h-4 bg-gray-700 rounded w-5/6 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+              <div className="h-4 bg-gray-700/50 rounded w-5/6 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
               </div>
             </div>
             {i === 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 {[...Array(2)].map((_, j) => (
                   <div key={j} className="bg-dark-700/50 rounded-lg p-4">
-                    <div className="h-5 bg-gray-600 rounded w-3/4 mb-2 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-gray-600 via-gray-500 to-gray-600 animate-shimmer"></div>
+                    <div className="h-5 bg-gray-600/50 rounded w-3/4 mb-2 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-500/50 to-transparent animate-shimmer"></div>
                     </div>
-                    <div className="h-4 bg-gray-600 rounded w-full relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-gray-600 via-gray-500 to-gray-600 animate-shimmer"></div>
+                    <div className="h-4 bg-gray-600/50 rounded w-full relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-500/50 to-transparent animate-shimmer"></div>
                     </div>
                   </div>
                 ))}
@@ -53,14 +53,14 @@ const EntregasSkeleton = () => (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
                 {[...Array(3)].map((_, j) => (
                   <div key={j} className="text-center">
-                    <div className="w-16 h-16 bg-gray-700 rounded-full mx-auto mb-3 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+                    <div className="w-16 h-16 bg-gray-700/50 rounded-full mx-auto mb-3 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
                     </div>
-                    <div className="h-5 bg-gray-700 rounded w-full mb-2 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+                    <div className="h-5 bg-gray-700/50 rounded w-full mb-2 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
                     </div>
-                    <div className="h-4 bg-gray-700 rounded w-2/3 mx-auto relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+                    <div className="h-4 bg-gray-700/50 rounded w-2/3 mx-auto relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
                     </div>
                   </div>
                 ))}
@@ -70,11 +70,11 @@ const EntregasSkeleton = () => (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                 {[...Array(2)].map((_, j) => (
                   <div key={j}>
-                    <div className="h-5 bg-gray-600 rounded w-3/4 mb-2 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-gray-600 via-gray-500 to-gray-600 animate-shimmer"></div>
+                    <div className="h-5 bg-gray-600/50 rounded w-3/4 mb-2 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-500/50 to-transparent animate-shimmer"></div>
                     </div>
-                    <div className="h-4 bg-gray-600 rounded w-full relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-gray-600 via-gray-500 to-gray-600 animate-shimmer"></div>
+                    <div className="h-4 bg-gray-600/50 rounded w-full relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-500/50 to-transparent animate-shimmer"></div>
                     </div>
                   </div>
                 ))}
@@ -83,8 +83,8 @@ const EntregasSkeleton = () => (
             {i === 3 && (
               <div className="space-y-2 mt-4">
                 {[...Array(4)].map((_, j) => (
-                  <div key={j} className="h-4 bg-gray-700 rounded w-full relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+                  <div key={j} className="h-4 bg-gray-700/50 rounded w-full relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
                   </div>
                 ))}
               </div>
@@ -121,7 +121,7 @@ export default function Entregas() {
     return <EntregasSkeleton />;
   }
   return (
-    <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
+    <div className="min-h-screen bg-dark-950 text-white pt-48 pb-12 px-4 md:px-0">
       <div className="max-w-4xl mx-auto flex flex-col gap-8">
         <motion.div 
           className="text-center"
@@ -129,12 +129,12 @@ export default function Entregas() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-0">Entregas</h1>
-          <p className="text-gray-400 text-lg mb-10">Conheça nossas opções de entrega</p>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Entregas</h1>
+          <p className="text-gray-400 text-lg">Conheça nossas opções de entrega</p>
         </motion.div>
         <section className="space-y-8">
           <motion.div 
-            className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
+            className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -147,18 +147,18 @@ export default function Entregas() {
               Oferecemos frete grátis para compras acima de R$ 199 em todo o Brasil.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-dark-700/50 rounded-lg p-4">
+              <div className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-primary-400 mb-2">Compras acima de R$ 199</h3>
                 <p className="text-gray-300 text-sm">Frete grátis para todo o Brasil</p>
               </div>
-              <div className="bg-dark-700/50 rounded-lg p-4">
+              <div className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-primary-400 mb-2">Compras abaixo de R$ 199</h3>
                 <p className="text-gray-300 text-sm">Frete calculado automaticamente</p>
               </div>
             </div>
           </motion.div>
           <motion.div 
-            className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
+            className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -182,7 +182,7 @@ export default function Entregas() {
             </div>
           </motion.div>
           <motion.div 
-            className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
+            className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
@@ -207,7 +207,7 @@ export default function Entregas() {
             </motion.ul>
           </motion.div>
           <motion.div 
-            className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
+            className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}

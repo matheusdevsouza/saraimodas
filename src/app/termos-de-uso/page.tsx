@@ -3,36 +3,36 @@ import React, { useState, useEffect } from 'react';
 import { FaGavel, FaShieldAlt, FaExclamationTriangle, FaFileContract, FaUserShield, FaBalanceScale } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 const TermosSkeleton = () => (
-  <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
+  <div className="min-h-screen bg-dark-950 text-white pt-48 pb-12 px-4 md:px-0 animate-skeleton-fade">
     <div className="max-w-4xl mx-auto flex flex-col gap-8">
       <div className="text-center">
-        <div className="h-12 bg-gray-800 rounded-lg mx-auto max-w-md mb-4 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+        <div className="h-12 bg-gray-800/50 rounded-lg mx-auto max-w-md mb-4 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
         </div>
-        <div className="h-6 bg-gray-800 rounded-md mx-auto max-w-lg relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+        <div className="h-6 bg-gray-800/50 rounded-md mx-auto max-w-lg relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
         </div>
       </div>
       <div className="space-y-8">
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8">
+          <div key={i} className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl p-8 animate-skeleton-pulse" style={{ animationDelay: `${i * 0.1}s` }}>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-6 h-6 bg-gray-700 rounded relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+              <div className="w-6 h-6 bg-gray-700/50 rounded relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
               </div>
-              <div className="h-6 bg-gray-700 rounded w-48 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+              <div className="h-6 bg-gray-700/50 rounded w-48 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
               </div>
             </div>
             <div className="space-y-3">
-              <div className="h-4 bg-gray-700 rounded w-full relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+              <div className="h-4 bg-gray-700/50 rounded w-full relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
               </div>
-              <div className="h-4 bg-gray-700 rounded w-3/4 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+              <div className="h-4 bg-gray-700/50 rounded w-3/4 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
               </div>
-              <div className="h-4 bg-gray-700 rounded w-5/6 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 animate-shimmer"></div>
+              <div className="h-4 bg-gray-700/50 rounded w-5/6 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/50 to-transparent animate-shimmer"></div>
               </div>
             </div>
           </div>
@@ -53,7 +53,7 @@ export default function TermosDeUso() {
     return <TermosSkeleton />;
   }
   return (
-    <div className="min-h-screen bg-dark-950 text-white py-12 px-4 md:px-0">
+    <div className="min-h-screen bg-dark-950 text-white pt-48 pb-12 px-4 md:px-0">
       <div className="max-w-4xl mx-auto flex flex-col gap-8">
         <motion.div 
           className="text-center"
@@ -61,12 +61,12 @@ export default function TermosDeUso() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-0">Termos de Uso</h1>
-          <p className="text-gray-400 text-lg mb-10">Leia atentamente os termos de uso antes de utilizar nosso site</p>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-4">Termos de Uso</h1>
+          <p className="text-gray-400 text-lg">Leia atentamente os termos de uso antes de utilizar nosso site</p>
         </motion.div>
         <section className="space-y-8">
           <motion.div 
-            className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
+            className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -78,7 +78,7 @@ export default function TermosDeUso() {
             <p className="text-gray-300">Ao acessar o site Sarai Modas, você concorda em cumprir estes Termos de Uso e todas as leis e regulamentos aplicáveis.</p>
           </motion.div>
           <motion.div 
-            className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
+            className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -90,7 +90,7 @@ export default function TermosDeUso() {
             <p className="text-gray-300">Você se compromete a utilizar o site apenas para fins legais e de acordo com estes termos. É proibido utilizar o site para fins ilícitos ou que possam prejudicar terceiros.</p>
           </motion.div>
           <motion.div 
-            className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
+            className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
@@ -102,7 +102,7 @@ export default function TermosDeUso() {
             <p className="text-gray-300">Todo o conteúdo do site, incluindo textos, imagens, marcas e logotipos, é protegido por direitos autorais e não pode ser utilizado sem autorização prévia.</p>
           </motion.div>
           <motion.div 
-            className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
+            className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
@@ -114,7 +114,7 @@ export default function TermosDeUso() {
             <p className="text-gray-300">Não nos responsabilizamos por danos decorrentes do uso ou da impossibilidade de uso do site, incluindo eventuais falhas técnicas ou indisponibilidade.</p>
           </motion.div>
           <motion.div 
-            className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
+            className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
@@ -126,7 +126,7 @@ export default function TermosDeUso() {
             <p className="text-gray-300">Reservamo-nos o direito de modificar estes termos a qualquer momento. As alterações entram em vigor imediatamente após a publicação no site.</p>
           </motion.div>
           <motion.div 
-            className="bg-dark-800/50 border border-dark-700 rounded-2xl p-8"
+            className="bg-[#1f1f1f] border border-[#2a2a2a] rounded-2xl p-8"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}

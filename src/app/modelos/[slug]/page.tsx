@@ -208,7 +208,7 @@ export default function ModelPage() {
                       </span>
                     )}
                   </div>
-                  <button className="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm transition-all duration-200 mt-auto">
+                  <button className="w-full bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] text-white font-bold px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm transition-all duration-200 mt-auto">
                     Ver detalhes
                   </button>
                 </div>

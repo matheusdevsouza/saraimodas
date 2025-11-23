@@ -17,36 +17,36 @@ interface Testimonial {
   updated_at: string
 }
 const TestimonialSkeleton = () => (
-  <div className="bg-dark-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/30 max-w-lg mx-auto">
+  <div className="bg-dark-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700/30 max-w-lg mx-auto animate-skeleton-fade">
     <div className="mb-6 space-y-3">
-      <div className="h-4 bg-gray-800 rounded-md relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+      <div className="h-4 bg-gray-800/50 rounded-md relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
       </div>
-      <div className="h-4 bg-gray-800 rounded-md w-4/5 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+      <div className="h-4 bg-gray-800/50 rounded-md w-4/5 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
       </div>
-      <div className="h-4 bg-gray-800 rounded-md w-3/5 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+      <div className="h-4 bg-gray-800/50 rounded-md w-3/5 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
       </div>
     </div>
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-gray-800 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+        <div className="w-12 h-12 rounded-full bg-gray-800/50 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
         </div>
         <div>
-          <div className="h-4 w-24 bg-gray-800 rounded-md mb-1 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+          <div className="h-4 w-24 bg-gray-800/50 rounded-md mb-1 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
           </div>
-          <div className="h-3 w-20 bg-gray-800 rounded-md relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+          <div className="h-3 w-20 bg-gray-800/50 rounded-md relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
           </div>
         </div>
       </div>
       <div className="flex gap-1">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="w-4 h-4 bg-gray-800 rounded-sm relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+          <div key={i} className="w-4 h-4 bg-gray-800/50 rounded-sm relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
           </div>
         ))}
       </div>

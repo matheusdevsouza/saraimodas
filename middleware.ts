@@ -230,7 +230,28 @@ function detectSuspiciousPatterns(request: NextRequest): boolean {
   return false;
 }
 
-function setAuditHeaders(response: NextResponse): NextResponse {
+function setSecurityHeaders(response: NextResponse): NextResponse {
+  const csp = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
+    "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com",
+    "img-src 'self' data: https: blob:",
+    "connect-src 'self' https://api.mercadopago.com https://viacep.com.br https://www.googletagmanager.com https://www.google-analytics.com https://17track.net",
+    "frame-src 'self' https://www.mercadopago.com.br https://www.mercadopago.com https://17track.net",
+    "frame-ancestors 'none'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "upgrade-insecure-requests"
+  ].join('; ');
+
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-XSS-Protection', '1; mode=block');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), interest-cohort=()');
+  response.headers.set('Content-Security-Policy', csp);
   response.headers.set('X-Audit-ID', `audit-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
   response.headers.set('X-Security-Level', 'HIGH');
   response.headers.set('X-Protection-Status', 'ACTIVE');
@@ -333,7 +354,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const response = NextResponse.next();
-  setAuditHeaders(response);
+  setSecurityHeaders(response);
 
   if (isPublicRoute(pathname)) {
     return response;

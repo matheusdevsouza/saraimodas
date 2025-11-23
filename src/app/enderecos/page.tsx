@@ -431,7 +431,7 @@ export default function EnderecosPage() {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="flex-1 bg-primary-500 hover:bg-primary-600 disabled:bg-primary-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 disabled:scale-100 flex items-center justify-center gap-2"
+                    className="flex-1 bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] disabled:bg-primary-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 disabled:scale-100 flex items-center justify-center gap-2"
                   >
                     {saving ? (
                       <>
@@ -502,7 +502,7 @@ export default function EnderecosPage() {
               </p>
               <button
                 onClick={() => setShowForm(true)}
-                className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105"
+                className="bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-105"
               >
                 Adicionar Endereço
               </button>

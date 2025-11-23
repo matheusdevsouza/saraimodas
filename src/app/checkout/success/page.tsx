@@ -104,7 +104,7 @@ export default function CheckoutSuccessPage() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => router.push('/')}
-            className="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-8 py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
+            className="bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] text-white font-semibold px-8 py-3 rounded-xl transition-all flex items-center justify-center gap-2"
           >
             <House size={18} />
             Voltar ao Início

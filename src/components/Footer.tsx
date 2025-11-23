@@ -63,8 +63,14 @@ export function Footer() {
       <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-16">
         <div className="hidden lg:grid grid-cols-4 gap-8">
           <div>
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="relative w-14 h-14 sm:w-16 sm:h-16">
+            <motion.a
+              href="/"
+              whileHover={{ scale: 1.05 }}
+              className="inline-flex items-center cursor-pointer group relative z-10 mb-6"
+              title="Sarai Modas - Ir para a página inicial"
+              style={{ transformOrigin: 'center' }}
+            >
+              <div className="relative w-14 h-14 sm:w-16 sm:h-16" style={{ transformOrigin: 'center' }}>
                 <Image
                   src="/images/logo.png"
                   alt="Sarai Modas"
@@ -73,7 +79,7 @@ export function Footer() {
                   className="object-contain filter brightness-110"
                 />
               </div>
-            </div>
+            </motion.a>
             <p className="text-base text-gray-400 mb-8">
               Moda feminina de alta sofisticação. Elegância em cada detalhe.
             </p>

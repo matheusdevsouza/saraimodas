@@ -105,7 +105,7 @@ const ProductCard = ({
       </div>
       <Link
         href={`/produto/${product.slug}`}
-        className="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 group-hover:scale-105"
+        className="w-full bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 group-hover:scale-105"
       >
         <ShoppingCart size={18} />
         Ver Produto
@@ -115,14 +115,26 @@ const ProductCard = ({
   </motion.div>
 )
 const ProductSkeleton = () => (
-  <div className="bg-dark-900/80 border border-dark-700 rounded-2xl overflow-hidden animate-pulse">
-    <div className="aspect-square bg-dark-800" />
+  <div className="bg-dark-900/80 border border-dark-700 rounded-2xl overflow-hidden animate-skeleton-fade">
+    <div className="aspect-square bg-dark-800/50 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/30 to-transparent animate-shimmer"></div>
+    </div>
     <div className="p-4 space-y-3">
-      <div className="h-4 bg-dark-800 rounded w-3/4" />
-      <div className="h-3 bg-dark-800 rounded w-1/2" />
-      <div className="h-5 bg-dark-800 rounded w-1/3" />
-      <div className="h-4 bg-dark-800 rounded w-1/2" />
-      <div className="h-12 bg-dark-800 rounded-xl w-full" />
+      <div className="h-4 bg-dark-800/50 rounded w-3/4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/30 to-transparent animate-shimmer"></div>
+      </div>
+      <div className="h-3 bg-dark-800/50 rounded w-1/2 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/30 to-transparent animate-shimmer"></div>
+      </div>
+      <div className="h-5 bg-dark-800/50 rounded w-1/3 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/30 to-transparent animate-shimmer"></div>
+      </div>
+      <div className="h-4 bg-dark-800/50 rounded w-1/2 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/30 to-transparent animate-shimmer"></div>
+      </div>
+      <div className="h-12 bg-dark-800/50 rounded-xl w-full relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/30 to-transparent animate-shimmer"></div>
+      </div>
     </div>
   </div>
 )
@@ -461,7 +473,7 @@ function SearchContent() {
                 </p>
                 <Link
                   href="/produtos"
-                  className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors duration-200"
+                  className="inline-flex items-center gap-2 bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200"
                 >
                   Ver Todos os Produtos
                   <ArrowRight size={16} />
@@ -522,7 +534,7 @@ function SearchContent() {
                   Cancelar
                 </button>
                 <button
-                  className="flex-1 px-6 py-3 rounded-lg bg-primary-500 text-white font-bold hover:bg-primary-600 transition-colors disabled:bg-dark-700 disabled:cursor-not-allowed"
+                  className="flex-1 px-6 py-3 rounded-lg bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] text-white font-bold transition-all disabled:bg-dark-700 disabled:cursor-not-allowed"
                   disabled={!selectedSize}
                   onClick={() => {
                     if (selectedSize) {

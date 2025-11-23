@@ -75,15 +75,15 @@ function ProdutosContent() {
     setModeloSelecionado(prev => prev === slug ? null : slug);
   }
   return (
-    <section className="min-h-screen bg-dark-900 py-8 md:py-12">
+    <section className="min-h-screen bg-dark-950 pt-48 pb-12">
       <div className="container mx-auto px-4">
         {loading ? (
           <div className="text-center mb-8">
-            <div className="h-12 bg-gray-800 rounded-lg mx-auto max-w-md mb-4 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+            <div className="h-12 bg-gray-800/50 rounded-lg mx-auto max-w-md mb-4 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
             </div>
-            <div className="h-6 bg-gray-800 rounded-md mx-auto max-w-lg relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer"></div>
+            <div className="h-6 bg-gray-800/50 rounded-md mx-auto max-w-lg relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-700/50 to-transparent animate-shimmer"></div>
             </div>
           </div>
         ) : (
@@ -220,7 +220,7 @@ function ProdutosContent() {
                     </div>
                     <h3 className="text-base font-semibold text-white text-center group-hover:text-primary-400 transition-colors duration-300 mb-1 line-clamp-2">{prod.name}</h3>
                     <span className="text-primary-400 font-bold text-lg mb-2">R$ {prod.price}</span>
-                    <button className="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold px-4 py-2 rounded-xl text-sm transition-all duration-200 mt-auto">Ver detalhes</button>
+                    <button className="w-full bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] text-white font-bold px-4 py-2 rounded-xl text-sm transition-all duration-200 mt-auto">Ver detalhes</button>
                   </Link>
                 ))}
               </div>
@@ -234,7 +234,7 @@ function ProdutosContent() {
 export default function ProdutosPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-dark-900 flex items-center justify-center">
+      <div className="min-h-screen bg-dark-950 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
       </div>
     }>

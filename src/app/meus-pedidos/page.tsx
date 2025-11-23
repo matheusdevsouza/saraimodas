@@ -491,7 +491,7 @@ export default function MeusPedidosPage() {
                       </p>
                       <a 
                         href="/produtos"
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors"
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] text-white rounded-lg transition-all"
                       >
                         Ver Produtos
                       </a>
@@ -507,7 +507,7 @@ export default function MeusPedidosPage() {
                       </p>
                       <button 
                         onClick={clearFilters}
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors"
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-gradient-to-r hover:from-[var(--logo-gold,#D4A574)] hover:via-[var(--logo-gold-light,#E6B896)] hover:to-[var(--logo-gold,#D4A574)] text-white rounded-lg transition-all"
                       >
                         Limpar Filtros
                       </button>
