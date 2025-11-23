@@ -1,0 +1,210 @@
+import { NextRequest, NextResponse } from 'next/server';
+import database from '@/lib/database';
+import { authenticateUser, isAdmin } from '@/lib/auth';
+import { decryptFromDatabase } from '@/lib/transparent-encryption';
+
+export async function GET(request: NextRequest) {
+  try {
+    const user = await authenticateUser(request);
+    if (!user || !isAdmin(user)) {
+      return NextResponse.json(
+        { success: false, error: 'Acesso negado. Apenas administradores autorizados.' },
+        { status: 401 }
+      );
+    }
+
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const search = searchParams.get('search') || '';
+    const status = searchParams.get('status') || '';
+    const paymentStatus = searchParams.get('paymentStatus') || '';
+
+    let whereClause = '';
+    const params: any[] = [];
+
+    if (search) {
+      whereClause += ' WHERE (order_number LIKE ? OR customer_name LIKE ? OR customer_email LIKE ?)';
+      const searchTerm = `%${search}%`;
+      params.push(searchTerm, searchTerm, searchTerm);
+    }
+
+    if (status && status !== 'all') {
+      if (whereClause) {
+        whereClause += ' AND status = ?';
+      } else {
+        whereClause = ' WHERE status = ?';
+      }
+      params.push(status);
+    }
+
+    if (paymentStatus && paymentStatus !== 'all') {
+      if (whereClause) {
+        whereClause += ' AND payment_status = ?';
+      } else {
+        whereClause = ' WHERE payment_status = ?';
+      }
+      params.push(paymentStatus);
+    }
+
+    const offset = (page - 1) * limit;
+    
+    const orders = await database.query(`
+      SELECT * FROM orders 
+      ${whereClause}
+      ORDER BY created_at DESC 
+      LIMIT ? OFFSET ?
+    `, [...params, limit.toString(), offset.toString()]);
+
+    const totalResult = await database.query(`
+      SELECT COUNT(*) as total FROM orders 
+      ${whereClause}
+    `, params);
+    
+    const totalOrders = totalResult[0].total;
+
+    const [statsResult] = await database.query(`
+      SELECT 
+        COUNT(*) as totalOrders,
+        SUM(total_amount) as totalRevenue,
+        COUNT(CASE WHEN status = 'pending' THEN 1 END) as pendingCount,
+        COUNT(CASE WHEN status = 'processing' THEN 1 END) as processingCount,
+        COUNT(CASE WHEN status = 'shipped' THEN 1 END) as shippedCount,
+        COUNT(CASE WHEN status = 'delivered' THEN 1 END) as deliveredCount,
+        COUNT(CASE WHEN payment_status = 'pending' THEN 1 END) as paymentPendingCount,
+        COUNT(CASE WHEN payment_status = 'paid' THEN 1 END) as paymentPaidCount
+      FROM orders
+    `);
+
+    const displayData = (value: string | null, fieldName: string = 'campo') => {
+      return value || null;
+    };
+
+    const orderIds = orders.map((order: any) => order.id);
+    let orderItems: any[] = [];
+    
+    if (orderIds.length > 0) {
+      const placeholders = orderIds.map(() => '?').join(',');
+      const [items] = await database.query(`
+        SELECT 
+          order_id,
+          product_name,
+          quantity,
+          unit_price,
+          total_price,
+          size,
+          color
+        FROM order_items 
+        WHERE order_id IN (${placeholders})
+        ORDER BY order_id, id
+      `, orderIds);
+      
+      orderItems = Array.isArray(items) ? items : [];
+    }
+
+    const itemsByOrder = orderItems.reduce((acc: any, item: any) => {
+      if (!acc[item.order_id]) {
+        acc[item.order_id] = [];
+      }
+      acc[item.order_id].push({
+        id: item.order_id,
+        product_name: item.product_name,
+        quantity: parseInt(item.quantity),
+        unit_price: parseFloat(item.unit_price),
+        total_price: parseFloat(item.total_price),
+        size: item.size,
+        color: item.color
+      });
+      return acc;
+    }, {});
+
+    const processedOrders = orders.map((order: any) => {
+      const decryptedOrder = decryptFromDatabase('orders', order);
+      return {
+        id: decryptedOrder.id,
+        order_number: decryptedOrder.order_number,
+        customer_name: decryptedOrder.customer_name || 'Cliente não identificado',
+        customer_email: decryptedOrder.customer_email,
+        customer_phone: decryptedOrder.customer_phone,
+        customer_address: decryptedOrder.shipping_address,
+        total_amount: parseFloat(decryptedOrder.total_amount),
+        status: decryptedOrder.status,
+        payment_status: decryptedOrder.payment_status,
+        createdAt: decryptedOrder.created_at,
+        updatedAt: decryptedOrder.updated_at,
+        tracking_code: decryptedOrder.tracking_code,
+        tracking_url: decryptedOrder.tracking_url,
+        shipping_company: decryptedOrder.shipping_company,
+        shipping_status: decryptedOrder.shipping_status,
+        subtotal: parseFloat(decryptedOrder.subtotal),
+        shipping_cost: parseFloat(decryptedOrder.shipping_cost),
+        items: itemsByOrder[decryptedOrder.id] || []
+      };
+    });
+
+    const stats = {
+      totalOrders: parseInt(statsResult.totalOrders) || 0,
+      totalRevenue: parseFloat(statsResult.totalRevenue) || 0,
+      statusBreakdown: {
+        pending: parseInt(statsResult.pendingCount) || 0,
+        processing: parseInt(statsResult.processingCount) || 0,
+        shipped: parseInt(statsResult.shippedCount) || 0,
+        delivered: parseInt(statsResult.deliveredCount) || 0
+      },
+      paymentBreakdown: {
+        pending: parseInt(statsResult.paymentPendingCount) || 0,
+        paid: parseInt(statsResult.paymentPaidCount) || 0
+      }
+    };
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        orders: processedOrders,
+        stats: stats,
+        pagination: {
+          page,
+          limit,
+          total: totalOrders,
+          pages: Math.ceil(totalOrders / limit)
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error('Erro ao buscar pedidos:', error);
+    console.error('Stack trace:', error instanceof Error ? error.stack : 'No stack trace');
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: 'Erro interno do servidor',
+        details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : String(error)) : undefined
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const user = await authenticateUser(request);
+    if (!user || !isAdmin(user)) {
+      return NextResponse.json(
+        { success: false, error: 'Acesso negado. Apenas administradores autorizados.' },
+        { status: 401 }
+      );
+    }
+
+    return NextResponse.json(
+      { success: false, error: 'Método não implementado' },
+      { status: 501 }
+    );
+
+  } catch (error) {
+    console.error('Erro ao criar pedido:', error);
+    return NextResponse.json(
+      { success: false, error: 'Erro interno do servidor' },
+      { status: 500 }
+    );
+  }
+}

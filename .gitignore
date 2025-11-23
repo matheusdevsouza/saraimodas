@@ -1,0 +1,172 @@
+# ===========================================
+# GITIGNORE - SARAI MODAS
+# ===========================================
+
+# Última atualização: 23/11/2025
+
+
+
+# NUNCAAAA COMITTE NENHUM DESSES!!!!
+
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.prod
+.env.local.prod
+.env.example
+env.example
+*.env
+*.env.*
+
+
+# chaves
+
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+*.jks
+*.keystore
+private/certificates/
+ssl/
+certificates/
+keys/
+
+
+# banco de dados
+
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+database/*.sql
+database_backup_*.sql
+*.backup.sql
+private/database/
+database/
+prisma/dev.db
+prisma/prod.db
+backups/
+*.dump
+*.sql.gz
+*.sql.zip
+
+
+# dependencias
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.npm
+.yarn-integrity
+.yarn/
+.pnp.*
+
+
+# build
+
+.next/
+out/
+dist/
+build/
+.vercel/
+
+
+# typescript
+
+*.tsbuildinfo
+.tsbuildinfo
+
+
+# uploads
+
+public/uploads/*
+!public/uploads/products/
+!public/uploads/products/.gitkeep
+!public/uploads/models/
+!public/uploads/models/.gitkeep
+!public/uploads/.gitkeep
+
+
+# uploads privados e temporarios
+
+private/uploads/
+temp_uploads/
+
+
+# configuracoes e logs
+
+config/production.js
+config/local.js
+private/config/
+
+
+# logs
+
+logs/
+*.log
+private/logs/
+
+
+# pastas de desenvolvimento e teste
+
+private/
+temp_emails/
+emails/
+tests/
+scripts/
+docs/
+
+
+# arquivos temporarios
+
+temp_*
+
+
+# ide e editores
+
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+
+# sistema operacional
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+
+# coverage
+
+coverage/
+.nyc_output/
+
+
+# arquivos de backup específicos encontrados
+
+ultimate-security-pentest.js
+*.backup.tsx
+*.bak_*
+vemprafonte/
+vemprafontesp/
+
+
+# exceçoes
+
+!package.json
+!package-lock.json
+!next.config.js
+!middleware.ts
+!prisma/schema.prisma
+!README.md
+!.gitignore
